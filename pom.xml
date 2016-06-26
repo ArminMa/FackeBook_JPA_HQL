@@ -9,10 +9,10 @@
         <relativePath />
     </parent>
 
-    <artifactId>DbMySQLFackeBook</artifactId>
+    <artifactId>FackeBookJpaHQL</artifactId>
     <packaging>war</packaging>
     <name>FakeBook-Project</name>
-    <description>Spring Boot War Sample</description>
+    <description>Spring Boot War</description>
 
     <organization>
         <name>KTH</name>
