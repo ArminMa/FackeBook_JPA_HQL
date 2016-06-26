@@ -1,0 +1,156 @@
+package org.kth.HI1034.model;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.AssociationOverride;
+import javax.persistence.AssociationOverrides;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.validation.constraints.Past;
+import java.util.Date;
+
+@Entity
+@Table(name = "friend_request", indexes =
+		{
+				@Index(name = "from_user_id_idx", columnList = "from_user_id"),
+				@Index(name = "to_user_id_idx", columnList = "to_user_id")
+
+		}
+
+)
+@AssociationOverrides({
+		@AssociationOverride(name = "pk.requestTo",
+				joinColumns = @JoinColumn(name = "to_user_id")),
+		@AssociationOverride(name = "pk.requestFrom",
+				joinColumns = @JoinColumn(name = "from_user_id")) })
+
+public class FriendRequest implements java.io.Serializable {
+
+	private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id", insertable=false, updatable=false, unique=true, nullable=false)
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@Transient
+	public boolean isNew() {
+		return (this.id == null);
+	}
+
+	public FriendRequest() {
+	}
+
+	/**
+	 * @param requestFrom sender of the request
+	 * @param requestTo receiver of the request
+	 *
+	 * new FriendRequest( requestFromUser, requestToUser)
+	 */
+	public FriendRequest(FaceUser requestFrom, FaceUser requestTo) {
+		this.pk = new FriendRequestID(requestFrom, requestTo);
+	}
+
+	/**
+	 *
+	 * @param requestFrom sender of the request
+	 * @param requestTo receiver of the request
+	 * @param requestedDate request sent this date
+	 * new FriendRequest( requestFromUser, requestToUser, new Date())
+	 */
+	public FriendRequest(FaceUser requestFrom, FaceUser requestTo, Date requestedDate) {
+		this.pk = new FriendRequestID(requestFrom, requestTo);
+		this.requestedDate = requestedDate;
+	}
+
+	public FriendRequestID pk;
+	@Fetch(FetchMode.JOIN)
+	@Embedded
+	public FriendRequestID getPk() {
+		return pk;
+	}
+	public void setPk(FriendRequestID receivedMailID) {
+		this.pk = receivedMailID;
+	}
+
+
+	@Transient
+	public FaceUser getRequestTo() {
+		return getPk().getRequestTo();
+	}
+	public void setRequestTo(FaceUser requestTo) {
+		getPk().setRequestTo(requestTo);
+	}
+
+	@Transient
+	public FaceUser getRequestFrom() {
+		return pk.getRequestFrom();
+	}
+
+	public void setRequestFrom(FaceUser receivingUser) {
+		getPk().setRequestFrom(receivingUser);
+	}
+
+	private Date requestedDate;
+	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy.MM.dd hh.mm.ss.SSS")
+//	@NotNull
+	@Past
+	@CreatedDate
+	@Column(name = "requested_date",
+			nullable = true,
+			insertable = true,
+			updatable = true)
+
+	public Date getRequestedDate() {
+		return requestedDate;
+	}
+	public void setRequestedDate(Date requestedDate) {
+		this.requestedDate = requestedDate;
+	}
+
+	private Date acceptedDate;
+	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy.MM.dd hh.mm.ss.SSS")
+//	@NotNull
+	@Past
+	@CreatedDate
+	@Column(name = "accepted_date",
+			nullable = true,
+			insertable = true,
+			updatable = true)
+
+	public Date getAcceptedDate() {
+		return acceptedDate;
+	}
+	public void setAcceptedDate(Date acceptedDate) {
+		this.acceptedDate = acceptedDate;
+	}
+
+	@Override
+	public String toString() {
+		return "\nFriendRequest\t{\n" +
+				"\n\t\t requestFrom=" + pk.getRequestFrom() +
+				"\n\t\t requestTo=" + pk.getRequestTo() +
+				"\n\t\t requestedDate=" + requestedDate +
+				"\n\t\t acceptedDate=" + acceptedDate +
+				"\t}";
+	}
+}
