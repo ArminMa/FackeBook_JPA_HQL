@@ -24,10 +24,7 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Past;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -306,7 +303,6 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 //	}
 
 	private SortedSet<UserReceivedMail> receivedFaceMails = new TreeSet<>();
-
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "pk.receivingUser")
 //	@BatchSize(size=25)
 //	@LazyCollection(LazyCollectionOption.FALSE)
@@ -314,14 +310,11 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 	public SortedSet<UserReceivedMail> getReceivedFaceMails() {
 		return receivedFaceMails;
 	}
-
 	public void setReceivedFaceMails(SortedSet<UserReceivedMail> myReceivedFaceMails) {
 		this.receivedFaceMails = myReceivedFaceMails;
 	}
 
-
 	private SortedSet<UserReceivedMail> sentFaceMails = new TreeSet<>();
-
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "pk.author")
 //	@BatchSize(size=25)
 //	@LazyCollection(LazyCollectionOption.FALSE)
@@ -329,28 +322,31 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 	public SortedSet<UserReceivedMail> getSentFaceMails() {
 		return sentFaceMails;
 	}
-
 	public void setSentFaceMails(SortedSet<UserReceivedMail> mailSentFaceMails) {
 		this.sentFaceMails = mailSentFaceMails;
 	}
 
-//	private SortedSet<FriendRequest> sentFriendRequests = new TreeSet<FriendRequest>();
-//	@OneToMany(mappedBy = "pk.requestFrom", fetch=FetchType.LAZY, cascade = CascadeType.DETACH )
-//	public SortedSet<FriendRequest> getSentFriendRequests() {
-//		return sentFriendRequests;
-//	}
-//	public void setSentFriendRequests(SortedSet<FriendRequest> sentFriendRequests) {
-//		this.sentFriendRequests = sentFriendRequests;
-//	}
-//
-//	private SortedSet<FriendRequest> receivedFriendRequests = new TreeSet<FriendRequest>();
-//	@OneToMany(mappedBy = "pk.requestTo", fetch=FetchType.LAZY, cascade = CascadeType.DETACH )
-//	public SortedSet<FriendRequest> getReceivedFriendRequests() {
-//		return receivedFriendRequests;
-//	}
-//	public void setReceivedFriendRequests(SortedSet<FriendRequest> receivedFriendRequests) {
-//		this.receivedFriendRequests = receivedFriendRequests;
-//	}
+
+
+	private SortedSet<FriendRequest> sentFriendRequests = new TreeSet<FriendRequest>();
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "pk.requestFrom")
+	@SortNatural
+	public SortedSet<FriendRequest> getSentFriendRequests() {
+		return sentFriendRequests;
+	}
+	public void setSentFriendRequests(SortedSet<FriendRequest> sentFriendRequests) {
+		this.sentFriendRequests = sentFriendRequests;
+	}
+
+	private SortedSet<FriendRequest> receivedFriendRequests = new TreeSet<FriendRequest>();
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY,  mappedBy = "pk.requestTo")
+	@SortNatural
+	public SortedSet<FriendRequest> getReceivedFriendRequests() {
+		return receivedFriendRequests;
+	}
+	public void setReceivedFriendRequests(SortedSet<FriendRequest> receivedFriendRequests) {
+		this.receivedFriendRequests = receivedFriendRequests;
+	}
 
 	@Override
 	public String toString() {

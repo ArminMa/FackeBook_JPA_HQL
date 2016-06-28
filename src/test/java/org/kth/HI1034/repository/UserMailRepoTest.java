@@ -23,7 +23,7 @@ import static junit.framework.TestCase.assertNotNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = ApplicationWar.class)
 //@ActiveProfiles(DbProfile.H2)
-public class UserJpaRelationshipTest {
+public class UserMailRepoTest {
 
 	@Autowired
 	private FaceUserRepository userRepo;
@@ -61,29 +61,29 @@ public class UserJpaRelationshipTest {
 
 	@Before
 	public void setUp() throws Exception {
-		System.out.println("\n\n-----------------MailRepositoryTest.setUp-start----------------------------\n\n");
+		System.out.println("\n\n-----------------UserMailRepoTest.setUp-start----------------------------\n\n");
 
 
 		//------------ creating Users -----------
-		faceFaceUser1 = new FaceUser("mail1@gmail.com", "FaceUser1", "password", "firstName1", "lastName1" , new Date());
+		faceFaceUser1 = new FaceUser("UserMailRepoTest1@gmail.com", "FaceUser1", "password", "firstName1", "lastName1" , new Date());
 		faceFaceUser1 = userRepo.save(faceFaceUser1);
 		userRepo.flush();
 		Assert.notNull(faceFaceUser1);
 
 
-		faceFaceUser2 = new FaceUser("mail2@gmail.com", "FaceUser2", "password", "firstName2", "lastName2", new Date() );
+		faceFaceUser2 = new FaceUser("UserMailRepoTest2@gmail.com", "FaceUser2", "password", "firstName2", "lastName2", new Date() );
 		faceFaceUser2 = userRepo.save(faceFaceUser2);
 		userRepo.flush();
 		assertNotNull(faceFaceUser2);
 
 
-		faceFaceUser3 = new FaceUser("mail3@gmail.com", "FaceUser3", "password", "firstName3", "lastName3"  , new Date());
+		faceFaceUser3 = new FaceUser("UserMailRepoTest3@gmail.com", "FaceUser3", "password", "firstName3", "lastName3"  , new Date());
 		faceFaceUser3 = userRepo.save(faceFaceUser3);
 		userRepo.flush();
 		Assert.notNull(faceFaceUser3);
 
 
-		faceFaceUser4 = new FaceUser("mail4@gmail.com", "FaceUser4", "password", "firstName4", "lastName4"  , new Date());
+		faceFaceUser4 = new FaceUser("UserMailRepoTest4@gmail.com", "FaceUser4", "password", "firstName4", "lastName4"  , new Date());
 		faceFaceUser4 = userRepo.save(faceFaceUser4);
 		userRepo.flush();
 		Assert.notNull(faceFaceUser4);
@@ -175,7 +175,7 @@ public class UserJpaRelationshipTest {
 		assertNotNull(userReceivedMail);
 
 
-		System.out.println("\n\n-----------------MailRepositoryTest.setUp-end----------------------------\n\n");
+		System.out.println("\n\n-----------------UserMailRepoTest.setUp-end----------------------------\n\n");
 
 	}
 
@@ -184,7 +184,7 @@ public class UserJpaRelationshipTest {
 	@Test
 	public void testUserMailRelationshipFaceUser(){
 
-		System.out.println("\n-----------------MailRepositoryTest.testUserMailRelationshipFaceUser-start----------------------------\n\n");
+		System.out.println("\n-----------------UserMailRepoTest.testUserMailRelationshipFaceUser-start----------------------------\n\n");
 
 		FaceUser testFaceUser11 = userRepo.findOne(faceFaceUser1.getId());
 		assertNotNull(testFaceUser11);
@@ -229,23 +229,23 @@ public class UserJpaRelationshipTest {
 //		Assert.isTrue(friendRequestFromUser1List.get(0).getRequestFrom().getId().equals(faceFaceUser1.getId()));
 
 
-		System.out.println("\n-----------------MailRepositoryTest.testUserMailRelationshipFaceUser-end----------------------------\n\n");
+		System.out.println("\n-----------------UserMailRepoTest.testUserMailRelationshipFaceUser-end----------------------------\n\n");
 
 	}
 
 //	@Test
 //	public void testUserFriendsRelationship(){
 //
-////		System.out.println("\n-----------------debug-start----------------------------\nMailRepositoryTest.286: \n" +
+////		System.out.println("\n-----------------debug-start----------------------------\nUserMailRepoTest.286: \n" +
 ////				MoreObjects.toStringHelper(this)
 ////						.toString() + "\n-----------------debug-end----------------------------\n");
 //
-//		System.out.println("\n-----------------MailRepositoryTest.testUserFriendsRelationship-start----------------------------\n\n");
+//		System.out.println("\n-----------------UserMailRepoTest.testUserFriendsRelationship-start----------------------------\n\n");
 //
 //
 //
 //
-//		System.out.println("\n-----------------MailRepositoryTest.testUserFriendsRelationship-end----------------------------\n\n");
+//		System.out.println("\n-----------------UserMailRepoTest.testUserFriendsRelationship-end----------------------------\n\n");
 //
 //
 //
@@ -255,11 +255,10 @@ public class UserJpaRelationshipTest {
 	@After
 	public void tearDown() throws Exception {
 
-		System.out.println("\n\n-----------------MailRepositoryTest.tearDown-start----------------------------\n\n");
+		System.out.println("\n\n-----------------UserMailRepoTest.tearDown-start----------------------------\n\n");
 
 		//remove user 1 from database
-//		friendRequestRepo.deleteToOrFromByUserId(faceFaceUser1.getId());
-//		friendRequestRepo.flush();
+
 
 		userReceivedMailRepo.deleteReceivedMailByUserId(faceFaceUser1.getId());
 		userReceivedMailRepo.flush();
@@ -275,8 +274,7 @@ public class UserJpaRelationshipTest {
 //		friendRequestRepo.deleteToOrFromByUserId(faceFaceUser2.getId());
 //		friendRequestRepo.flush();
 
-		userRepo.delete(faceFaceUser2.getId());
-		userRepo.flush();
+
 
 
 
@@ -287,8 +285,7 @@ public class UserJpaRelationshipTest {
 //		userReceivedMailRepo.deleteReceivedMailByUserId(faceFaceUser3.getId());
 //		userReceivedMailRepo.flush();
 
-		userRepo.delete(faceFaceUser3.getId());
-		userRepo.flush();
+
 
 
 
@@ -301,7 +298,14 @@ public class UserJpaRelationshipTest {
 //		mailRepo.flush();
 
 
-		System.out.println("\n\n-----------------MailRepositoryTest.tearDown-end----------------------------\n\n");
+
+		userRepo.delete(faceFaceUser3.getId());
+		userRepo.flush();
+		userRepo.delete(faceFaceUser2.getId());
+		userRepo.flush();
+
+
+		System.out.println("\n\n-----------------UserMailRepoTest.tearDown-end----------------------------\n\n");
 
 	}
 

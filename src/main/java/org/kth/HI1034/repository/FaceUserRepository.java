@@ -29,7 +29,21 @@ public interface FaceUserRepository extends JpaRepository<FaceUser, Long>, JpaSp
 	@Query(value = "delete from FaceUser U where U.id = :userId" )
 	void deleteThisFaceUser(@Param("userId") Long userID);
 
+//	@Modifying
+//	@Transactional
+//	FaceUser save(FaceUser userList);
 
+//	@Modifying
+//	@Transactional
+//	List<FaceUser> save(List<FaceUser> userList);
+
+// "SELECT p FROM Peron p WHERE name IN (:names)
+// INSERT INTO X(A, B, C1, C2) SELECT A, B, 'foo', 'bar' FROM X data
+//
+//	@Modifying/*(clearAutomatically = true)*/
+//	@Transactional
+//	@Query(value = "INSERT INTO into UserReceivedMail  set urm.read= :isRead WHERE urm.pk.receivingUser.id = :userId and urm.pk.receivedMail.id = :mailId")
+//	void updateReceivedMailByUserIdAndMailId(@Param("isRead") Boolean read,@Param("userId") Long userID, @Param("mailId") Long mailID);
 
 //	@Modifying
 //	@Transactional
