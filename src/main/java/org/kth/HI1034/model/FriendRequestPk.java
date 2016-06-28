@@ -30,7 +30,7 @@ public class FriendRequestPk implements Serializable, Comparable<FriendRequestPk
 	}
 
 
-	@ManyToOne(fetch= FetchType.LAZY)
+	@ManyToOne(fetch= FetchType.EAGER)
 	public FaceUser getRequestTo() {
 		return requestTo;
 	}

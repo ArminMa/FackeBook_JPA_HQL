@@ -1,6 +1,8 @@
 package org.kth.HI1034.model;
 
 import com.google.common.base.MoreObjects;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -333,7 +335,8 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 	}
 
 	private SortedSet<FriendRequest> receivedFriendRequests = new TreeSet<FriendRequest>();
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY,  mappedBy = "pk.requestTo")
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER,  mappedBy = "pk.requestTo")
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@SortNatural
 	public SortedSet<FriendRequest> getReceivedFriendRequests() {
 		return receivedFriendRequests;
