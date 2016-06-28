@@ -1,7 +1,6 @@
 package org.kth.HI1034.model;
 
 import com.google.common.base.MoreObjects;
-import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedDate;
@@ -20,7 +19,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -146,7 +144,7 @@ public class FaceMail implements Serializable ,Comparable<FaceMail> {
 	@Override
 	public int compareTo(FaceMail o) {
 		int thisTime = this.hashCode();
-		long anotherTime = o.hashCode();
-		return (thisTime<anotherTime ? -1 : (thisTime==anotherTime ? 0 : 1));
+		long anotherEntity = o.hashCode();
+		return (thisTime<anotherEntity ? -1 : (thisTime==anotherEntity ? 0 : 1));
 	}
 }

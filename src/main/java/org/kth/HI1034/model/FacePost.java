@@ -15,15 +15,35 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "face_post")
-public class FacePost implements Serializable {
+public class FacePost implements Serializable ,Comparable<FacePost>{
 
 	private static final int MAX_LENGTH_POST = 500;
+
+
+	public FacePost() {
+	}
+
+
+	/**
+	 *
+	 * @param postText      1   String
+	 * @param sentDate      2   java.util.Date
+	 * @param author        3   FaceUser
+	 * @param receiver      4   FaceUser
+	 */
+	public FacePost(String postText, Date sentDate, FaceUser author, FaceUser receiver) {
+		this.postText = postText;
+		this.sentDate = sentDate;
+		this.author = author;
+		this.receiver = receiver;
+	}
 
 	private Long id;
 	@Id
@@ -51,7 +71,7 @@ public class FacePost implements Serializable {
 	private Date sentDate;
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy.MM.dd.hh.mm.ss.SSS")
-//	@NotNull
+	@NotNull
 	@Past
 	@CreatedDate
 	@Column(name = "sent_date",
@@ -82,5 +102,39 @@ public class FacePost implements Serializable {
 	}
 	public void setReceiver(FaceUser requestTo) {
 		this.receiver = requestTo;
+	}
+
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		FacePost facePost = (FacePost) o;
+
+		if (id != null ? !id.equals(facePost.id) : facePost.id != null) return false;
+		if (postText != null ? !postText.equals(facePost.postText) : facePost.postText != null) return false;
+		if (sentDate != null ? !sentDate.equals(facePost.sentDate) : facePost.sentDate != null) return false;
+		if (author != null ? !author.equals(facePost.author) : facePost.author != null) return false;
+		return receiver != null ? receiver.equals(facePost.receiver) : facePost.receiver == null;
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = id != null ? id.hashCode() : 0;
+		result = 31 * result + (postText != null ? postText.hashCode() : 0);
+		result = 31 * result + (sentDate != null ? sentDate.hashCode() : 0);
+		result = 31 * result + (author != null ? author.hashCode() : 0);
+		result = 31 * result + (receiver != null ? receiver.hashCode() : 0);
+		return result;
+	}
+
+
+	@Override
+	public int compareTo(FacePost o) {
+		int thisTime = this.hashCode();
+		long anotherEntity = o.hashCode();
+		return (thisTime<anotherEntity ? -1 : (thisTime==anotherEntity ? 0 : 1));
 	}
 }

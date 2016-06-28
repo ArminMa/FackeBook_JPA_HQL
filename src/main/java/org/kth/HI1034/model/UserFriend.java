@@ -108,7 +108,7 @@ public class UserFriend implements Serializable, Comparable<UserFriend> {
 	@Override
 	public int compareTo(UserFriend o) {
 		int thisTime = this.hashCode();
-		long anotherTime = o.hashCode();
-		return (thisTime < anotherTime ? -1 : (thisTime == anotherTime ? 0 : 1));
+		long anotherEntity = o.hashCode();
+		return (thisTime < anotherEntity ? -1 : (thisTime == anotherEntity ? 0 : 1));
 	}
 }

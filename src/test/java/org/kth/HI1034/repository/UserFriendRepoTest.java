@@ -42,11 +42,11 @@ public class UserFriendRepoTest {
 		System.out.println("\n\n-----------------UserFriendRepoTest.setUp-start----------------------------\n\n");
 
 		//------------ creating Users -----------
+		userList.add(new FaceUser("UserFriendRepoTest0@gmail.com", "FaceUser0", "password", "firstName0", "lastName0", new Date()));
 		userList.add(new FaceUser("UserFriendRepoTest1@gmail.com", "FaceUser1", "password", "firstName1", "lastName1", new Date()));
-		userList.add(new FaceUser("UserFriendRepoTest2@gmail.com", "FaceUser2", "password", "firstName2", "lastName2", new Date()));
-		userList.add( new FaceUser("UserFriendRepoTes3t@gmail.com", "FaceUser3", "password", "firstName3", "lastName3", new Date()));
+		userList.add( new FaceUser("UserFriendRepoTes2t@gmail.com", "FaceUser2", "password", "firstName2", "lastName2", new Date()));
+		userList.add(new FaceUser("UserFriendRepoTest3@gmail.com", "FaceUser3", "password", "firstName3", "lastName3", new Date()));
 		userList.add(new FaceUser("UserFriendRepoTest4@gmail.com", "FaceUser4", "password", "firstName4", "lastName4", new Date()));
-		userList.add(new FaceUser("UserFriendRepoTest5@gmail.com", "FaceUser5", "password", "firstName5", "lastName5", new Date()));
 		//if the this return set or SortedSet dow cast to ArrayList while fix this problem
 		userList = userRepo.save( userList);
 		userRepo.flush();
@@ -81,6 +81,13 @@ public class UserFriendRepoTest {
 		userFriendRepo.flush();
 		Assert.notNull( userFriend );
 		Assert.isTrue( userFriend.getPk().getAccepter().getId().equals(userList.get(4).getId() ) );
+
+		//todo activate thes part of the test and hope that its works
+//		userFriend = new UserFriend(userList.get(2), userList.get(4), new Date() );
+//		userFriendRepo.save( userFriend  ) ;
+//		userFriendRepo.flush();
+//		Assert.isNull( userFriend ); // user 2 and 4 are already friends
+
 
 		//------------- user 3 is friends with user 0,1 ------------
 
@@ -126,6 +133,8 @@ public class UserFriendRepoTest {
 	@After
 	public void tearDown() throws Exception {
 		System.out.println("\n\n-----------------UserFriendRepoTest.tearDown-start----------------------------\n\n");
+
+		// this wokrs but we want to rest if its possible to remove one by one
 
 //		friendRequestRepo.deleteAllInBatch();
 //		friendRequestRepo.flush();

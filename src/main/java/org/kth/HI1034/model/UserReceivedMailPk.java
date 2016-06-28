@@ -84,7 +84,7 @@ public class UserReceivedMailPk implements java.io.Serializable, Comparable<User
 	@Override
 	public int compareTo(UserReceivedMailPk o) {
 		int thisTime = this.hashCode();
-		long anotherTime = o.hashCode();
-		return (thisTime<anotherTime ? -1 : (thisTime==anotherTime ? 0 : 1));
+		long anotherEntity = o.hashCode();
+		return (thisTime<anotherEntity ? -1 : (thisTime==anotherEntity ? 0 : 1));
 	}
 }
