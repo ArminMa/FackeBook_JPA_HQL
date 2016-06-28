@@ -11,11 +11,15 @@ import org.kth.HI1034.model.FaceUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = ApplicationWar.class)
@@ -43,8 +47,9 @@ public class UserPostRepoTest {
 		//if the this return set or SortedSet dow cast to ArrayList while fix this problem
 		userList = userRepo.save( userList);
 		userRepo.flush();
-		Assert.notNull(userList);
-		Assert.isTrue(userList.size() == 5);
+
+		assertNotNull(userList);
+		assertTrue(userList.size() == 5);
 
 
 		postList.add( new FacePost("Post 0", new Date(), userList.get(0), userList.get(1) ) );
@@ -65,8 +70,8 @@ public class UserPostRepoTest {
 
 
 
-		Assert.notNull(postList);
-		Assert.isTrue(postList.size() == 7);
+		assertNotNull(postList);
+		assertTrue(postList.size() == 7);
 
 		System.out.println("\n\n-----------------UserPostRepoTest.setUp-end----------------------------\n\n");
 
@@ -77,7 +82,12 @@ public class UserPostRepoTest {
 
 		System.out.println("\n\n----------------- UserPostRepoTest.setUp-start ----------------------------\n\n");
 
-
+		// A user is supposed to get receivingPost eagerly, lets test that out
+		FaceUser user2 = userRepo.findByEmail(userList.get(2).getEmail());
+		assertNotNull(user2);
+		assertNotNull(user2.getReceivedFacePost());
+		assertFalse( user2.getReceivedFacePost().isEmpty() );
+		assertTrue(user2.getReceivedFacePost().size() == 3);
 
 		System.out.println("\n\n----------------- UserPostRepoTest.setUp-end ----------------------------\n\n");
 	}
