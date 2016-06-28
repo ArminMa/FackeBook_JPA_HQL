@@ -10,15 +10,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.SortedSet;
 
 
 public interface FriendRequestRepository extends JpaRepository<FriendRequest, FriendRequestPk>,
 		JpaSpecificationExecutor<FriendRequest> {
 
 
-	@Query(value = "select FR from FriendRequest FR where FR.pk.requestFrom.id = :userId")
-	SortedSet<FriendRequest> findAllFromThisUserId(@Param("userId") Long userID);
+
 
 	@Modifying
 	@Transactional
@@ -46,7 +44,10 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Fr
 			"FROM FriendRequest FR where FR.pk.requestFrom.id =:requester")
 	List<FriendRequest> findAllFriendRequestFromUserByUserId(@Param("requester") Long fromUserId);
 
-	@Query(value = "SELECT FR.pk.requestTo FROM FriendRequest FR " +
+	@Query(value = "SELECT FR FROM FriendRequest FR " +
 			"where FR.pk.requestTo.id =:receiver_id")
 	List<FriendRequest> findAllFriendRequestToUserByUserId(@Param("receiver_id") Long toUserId);
+
+	@Query(value = "select FR from FriendRequest FR where FR.pk.requestFrom.id = :userId")
+	List<FriendRequest> findAllFromThisUserId(@Param("userId") Long userID);
 }

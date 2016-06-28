@@ -89,41 +89,7 @@ public class UserMailRepoTest {
 		Assert.notNull(faceFaceUser4);
 
 
-		//******************** creating friend request and friends *********************
 
-//		//------------ friend request from user 1 to user 2 -----------
-//		friendRequest1 = new FriendRequest(faceFaceUser1, faceFaceUser2, new Date());
-//		friendRequest1 = friendRequestRepo.save(friendRequest1);
-//		friendRequestRepo.flush();
-//		assertNotNull(friendRequest1);
-//
-//		//------------ friend request from user 1 to user 3 -----------
-//		friendRequest1 = new FriendRequest(faceFaceUser1, faceFaceUser3, new Date());
-//		friendRequest1 = friendRequestRepo.save(friendRequest1);
-//		friendRequestRepo.flush();
-//		assertNotNull(friendRequest1);
-//
-//		//------------ friend request from user 3 to user 2 -----------
-//		friendRequest1 = new FriendRequest(faceFaceUser1, faceFaceUser4, new Date());
-//		friendRequest1 = friendRequestRepo.save(friendRequest1);
-//		friendRequestRepo.flush();
-//		assertNotNull(friendRequest1);
-//
-//		//------------- user 2 and 3 are friends------------
-//		userFriend = new UserFriend(faceFaceUser2, faceFaceUser3);
-//		userFriendRepo.save(userFriend);
-//		userFriendRepo.flush();
-//
-//		//------------- user 4 is are friends with user 1,2 and 3 ------------
-//		SortedSet<UserFriend> userFriends = new TreeSet<>();
-
-
-//		faceFaceUser4.getFriends().add(faceFaceUser1);
-//		faceFaceUser4.getFriends().add(faceFaceUser2);
-//		faceFaceUser4.getFriends().add(faceFaceUser3);
-//		faceFaceUser4 = userRepo.save(faceFaceUser4);
-//		userRepo.flush();
-//		assertNotNull(faceFaceUser4);
 
 
 
@@ -223,82 +189,45 @@ public class UserMailRepoTest {
 		readUser2FaceMail.stream().forEach(readMail -> Assert.isTrue(readMail.getId().equals(faceFaceMailB.getId())));
 
 
-//		List<FriendRequest> friendRequestFromUser1List = friendRequestRepo.findAllFromThisUserId(faceFaceUser1.getId());
-//		assertNotNull(friendRequestFromUser1List);
-//		Assert.isTrue(!friendRequestFromUser1List.isEmpty());
-//		Assert.isTrue(friendRequestFromUser1List.get(0).getRequestFrom().getId().equals(faceFaceUser1.getId()));
-
 
 		System.out.println("\n-----------------UserMailRepoTest.testUserMailRelationshipFaceUser-end----------------------------\n\n");
 
 	}
-
-//	@Test
-//	public void testUserFriendsRelationship(){
-//
-////		System.out.println("\n-----------------debug-start----------------------------\nUserMailRepoTest.286: \n" +
-////				MoreObjects.toStringHelper(this)
-////						.toString() + "\n-----------------debug-end----------------------------\n");
-//
-//		System.out.println("\n-----------------UserMailRepoTest.testUserFriendsRelationship-start----------------------------\n\n");
-//
-//
-//
-//
-//		System.out.println("\n-----------------UserMailRepoTest.testUserFriendsRelationship-end----------------------------\n\n");
-//
-//
-//
-//
-//	}
 
 	@After
 	public void tearDown() throws Exception {
 
 		System.out.println("\n\n-----------------UserMailRepoTest.tearDown-start----------------------------\n\n");
 
-		//remove user 1 from database
-
-
+		//remove all received mails from user 1
 		userReceivedMailRepo.deleteReceivedMailByUserId(faceFaceUser1.getId());
 		userReceivedMailRepo.flush();
 
-//		userRepo.delete(faceFaceUser1.getId());
-//		userRepo.flush();
+		//remove user 1 this will remove all connection to other entity's
+		userRepo.delete(faceFaceUser1.getId());
+		userRepo.flush();
 
 
-		//remove user 2 from database
-//		userReceivedMailRepo.deleteReceivedMailByUserId(faceFaceUser2.getId());
-//		userReceivedMailRepo.flush();
-//
-//		friendRequestRepo.deleteToOrFromByUserId(faceFaceUser2.getId());
-//		friendRequestRepo.flush();
+		//remove all received mails from user 2
+		userReceivedMailRepo.deleteReceivedMailByUserId(faceFaceUser2.getId());
+		userReceivedMailRepo.flush();
+
+		//remove user 3 this will remove all connection to other entity's
+		userReceivedMailRepo.deleteReceivedMailByUserId(faceFaceUser3.getId());
+		userReceivedMailRepo.flush();
 
 
-
-
-
-		//remove user 3 from database
-//		friendRequestRepo.deleteToOrFromByUserId(faceFaceUser3.getId());
-//		friendRequestRepo.flush();
-
-//		userReceivedMailRepo.deleteReceivedMailByUserId(faceFaceUser3.getId());
-//		userReceivedMailRepo.flush();
-
-
-
-
-
-		//remove all mails from database
-//		mailRepo.delete(faceFaceMailA.getId());
-//		mailRepo.flush();
-//		mailRepo.delete(faceFaceMailB.getId());
-//		mailRepo.flush();
-//		mailRepo.delete(faceFaceMailC.getId());
-//		mailRepo.flush();
+//		remove all mails from database
+		mailRepo.delete(faceFaceMailA.getId());
+		mailRepo.flush();
+		mailRepo.delete(faceFaceMailB.getId());
+		mailRepo.flush();
+		mailRepo.delete(faceFaceMailC.getId());
+		mailRepo.flush();
 
 
 
+		//remove the remaining users from database
 		userRepo.delete(faceFaceUser3.getId());
 		userRepo.flush();
 		userRepo.delete(faceFaceUser2.getId());

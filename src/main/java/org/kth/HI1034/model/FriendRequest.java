@@ -1,7 +1,5 @@
 package org.kth.HI1034.model;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -21,6 +19,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -35,7 +34,7 @@ import java.util.Date;
 				joinColumns = @JoinColumn(name = "to_user_id")),
 		@AssociationOverride(name = "pk.requestFrom",
 				joinColumns = @JoinColumn(name = "from_user_id")) })
-public class FriendRequest implements java.io.Serializable , Comparable<FriendRequest> {
+public class FriendRequest implements Serializable, Comparable<FriendRequest> {
 
 	private Long id;
 	@Id
@@ -79,7 +78,7 @@ public class FriendRequest implements java.io.Serializable , Comparable<FriendRe
 	}
 
 	public FriendRequestPk pk;
-	@Fetch(FetchMode.JOIN)
+//	@Fetch(FetchMode.JOIN)
 	@Embedded
 	public FriendRequestPk getPk() {
 		return pk;
@@ -101,14 +100,13 @@ public class FriendRequest implements java.io.Serializable , Comparable<FriendRe
 	public FaceUser getRequestFrom() {
 		return pk.getRequestFrom();
 	}
-
 	public void setRequestFrom(FaceUser receivingUser) {
 		getPk().setRequestFrom(receivingUser);
 	}
 
 	private Date requestedDate;
 	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "yyyy.MM.dd hh.mm.ss.SSS")
+	@DateTimeFormat(pattern = "yyyy.MM.dd.hh.mm.ss.SSS")
 	@NotNull
 	@CreatedDate
 	@Column(name = "requested_date",
@@ -125,7 +123,7 @@ public class FriendRequest implements java.io.Serializable , Comparable<FriendRe
 
 	private Date acceptedDate;
 	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "yyyy.MM.dd hh.mm.ss.SSS")
+	@DateTimeFormat(pattern = "yyyy.MM.dd.hh.mm.ss.SSS")
 //	@NotNull
 	@Past
 	@CreatedDate
@@ -133,7 +131,6 @@ public class FriendRequest implements java.io.Serializable , Comparable<FriendRe
 			nullable = true,
 			insertable = true,
 			updatable = true)
-
 	public Date getAcceptedDate() {
 		return acceptedDate;
 	}

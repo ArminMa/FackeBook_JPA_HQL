@@ -249,38 +249,32 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 		this.accountUpdated = accountUpdated;
 	}
 
-
-
-
-
-
-
-
 	/*
 	 * User Mapping starts Here
 	 */
 
 
-//	private SortedSet<UserFriend> acceptedFriends = new TreeSet<UserFriend>();
-//	@OneToMany(mappedBy = "pk.accepter", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	private SortedSet<UserFriend> acceptedFriends = new TreeSet<UserFriend>();
+	@OneToMany( cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "pk.accepter")
 //	@LazyCollection(LazyCollectionOption.FALSE)
-//	@SortNatural
-//	public SortedSet<UserFriend> getAcceptedFriends() {
-//		return acceptedFriends;
-//	}
-//	public void setAcceptedFriends(SortedSet<UserFriend> acceptedFriends) {
-//		this.acceptedFriends = acceptedFriends;
-//	}
-//
-//	private SortedSet<UserFriend> requestedFriends = new TreeSet<UserFriend>();
-//	@OneToMany(mappedBy = "pk.requester", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+	@SortNatural
+	public SortedSet<UserFriend> getAcceptedFriends() {
+		return acceptedFriends;
+	}
+	public void setAcceptedFriends(SortedSet<UserFriend> acceptedFriends) {
+		this.acceptedFriends = acceptedFriends;
+	}
+
+	private SortedSet<UserFriend> requestedFriends = new TreeSet<UserFriend>();
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "pk.requester")
 //	@LazyCollection(LazyCollectionOption.FALSE)
-//	public SortedSet<UserFriend> getRequestedFriends() {
-//		return requestedFriends;
-//	}
-//	public void setRequestedFriends(SortedSet<UserFriend> requestedFriends) {
-//		this.requestedFriends = requestedFriends;
-//	}
+	@SortNatural
+	public SortedSet<UserFriend> getRequestedFriends() {
+		return requestedFriends;
+	}
+	public void setRequestedFriends(SortedSet<UserFriend> requestedFriends) {
+		this.requestedFriends = requestedFriends;
+	}
 //
 //	private SortedSet<FacePost> receivedFacePost = new TreeSet<FacePost>();
 //	@OneToMany(mappedBy = "receiver", fetch=FetchType.EAGER)
