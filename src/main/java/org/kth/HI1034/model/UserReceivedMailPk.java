@@ -29,7 +29,7 @@ public class UserReceivedMailPk implements java.io.Serializable, Comparable<User
 
 
 	private FaceMail receivedMail;
-	@ManyToOne(fetch= FetchType.LAZY )
+	@ManyToOne(fetch= FetchType.EAGER )
 	public FaceMail getReceivedMail() {
 		return receivedMail;
 	}

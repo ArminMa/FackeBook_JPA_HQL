@@ -1,6 +1,9 @@
 package org.kth.HI1034.model;
 
 import com.google.common.base.MoreObjects;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.SortNatural;
@@ -256,52 +259,47 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 	 */
 
 
-	private SortedSet<UserFriend> acceptedFriends = new TreeSet<UserFriend>();
-	@OneToMany( cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "pk.accepter")
-//	@LazyCollection(LazyCollectionOption.FALSE)
+
+
+
+
+	//----------------Post--------------------------
+
+	//We don't want to remove the post after its posted eg, if the user is removed
+	//If we do that other will not be able to se it.
+	private SortedSet<FacePost> receivedFacePost = new TreeSet<>();
+	@OneToMany(cascade = {  CascadeType.DETACH , CascadeType.MERGE ,
+							CascadeType.REFRESH, CascadeType.PERSIST },
+							fetch=FetchType.EAGER , mappedBy = "receiver")
+	@Fetch(value = FetchMode.SUBSELECT)
 	@SortNatural
-	public SortedSet<UserFriend> getAcceptedFriends() {
-		return acceptedFriends;
+	public SortedSet<FacePost> getReceivedFacePost() {
+		return receivedFacePost;
 	}
-	public void setAcceptedFriends(SortedSet<UserFriend> acceptedFriends) {
-		this.acceptedFriends = acceptedFriends;
+	public void setReceivedFacePost(SortedSet<FacePost> receivedFacePost) {
+		this.receivedFacePost = receivedFacePost;
 	}
 
-	private SortedSet<UserFriend> requestedFriends = new TreeSet<UserFriend>();
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "pk.requester")
-//	@LazyCollection(LazyCollectionOption.FALSE)
+	private SortedSet<FacePost> sentFacePost = new TreeSet<>();
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY, mappedBy = "author")
+//	@Fetch(value = FetchMode.SUBSELECT)
 	@SortNatural
-	public SortedSet<UserFriend> getRequestedFriends() {
-		return requestedFriends;
+	public SortedSet<FacePost> getSentFacePost() {
+		return sentFacePost;
 	}
-	public void setRequestedFriends(SortedSet<UserFriend> requestedFriends) {
-		this.requestedFriends = requestedFriends;
+	public void setSentFacePost(SortedSet<FacePost> sentFacePost) {
+		this.sentFacePost = sentFacePost;
 	}
-//
-//	private SortedSet<FacePost> receivedFacePost = new TreeSet<FacePost>();
-//	@OneToMany(mappedBy = "receiver", fetch=FetchType.EAGER)
-//	@Fetch(value = FetchMode.SUBSELECT)
-//	public SortedSet<FacePost> getReceivedFacePost() {
-//		return receivedFacePost;
-//	}
-//	public void setReceivedFacePost(SortedSet<FacePost> receivedFacePost) {
-//		this.receivedFacePost = receivedFacePost;
-//	}
-//
-//	private SortedSet<FacePost> sentFacePost = new TreeSet<FacePost>();
-//	@OneToMany(mappedBy = "author", fetch=FetchType.EAGER)
-//	@Fetch(value = FetchMode.SUBSELECT)
-//	public SortedSet<FacePost> getSentFacePost() {
-//		return sentFacePost;
-//	}
-//	public void setSentFacePost(SortedSet<FacePost> sentFacePost) {
-//		this.sentFacePost = sentFacePost;
-//	}
+
+
+
+
+	//----------------User Received Mail--------------------------
 
 	private SortedSet<UserReceivedMail> receivedFaceMails = new TreeSet<>();
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "pk.receivingUser")
-//	@BatchSize(size=25)
-//	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "pk.receivingUser")
+	@BatchSize(size=25)
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@SortNatural
 	public SortedSet<UserReceivedMail> getReceivedFaceMails() {
 		return receivedFaceMails;
@@ -324,7 +322,10 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 
 
 
-	private SortedSet<FriendRequest> sentFriendRequests = new TreeSet<FriendRequest>();
+
+	//---------------- Friend Request to and from user --------------------------
+
+	private SortedSet<FriendRequest> sentFriendRequests = new TreeSet<>();
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "pk.requestFrom")
 	@SortNatural
 	public SortedSet<FriendRequest> getSentFriendRequests() {
@@ -334,7 +335,7 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 		this.sentFriendRequests = sentFriendRequests;
 	}
 
-	private SortedSet<FriendRequest> receivedFriendRequests = new TreeSet<FriendRequest>();
+	private SortedSet<FriendRequest> receivedFriendRequests = new TreeSet<>();
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER,  mappedBy = "pk.requestTo")
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@SortNatural
@@ -344,6 +345,35 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 	public void setReceivedFriendRequests(SortedSet<FriendRequest> receivedFriendRequests) {
 		this.receivedFriendRequests = receivedFriendRequests;
 	}
+
+
+	//--------------------------------Friends---------------------------------------------
+
+	private SortedSet<UserFriend> acceptedFriends = new TreeSet<>();
+	@OneToMany( cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "pk.accepter")
+//	@LazyCollection(LazyCollectionOption.FALSE)
+	@SortNatural
+	public SortedSet<UserFriend> getAcceptedFriends() {
+		return acceptedFriends;
+	}
+	public void setAcceptedFriends(SortedSet<UserFriend> acceptedFriends) {
+		this.acceptedFriends = acceptedFriends;
+	}
+
+	private SortedSet<UserFriend> requestedFriends = new TreeSet<>();
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "pk.requester")
+//	@LazyCollection(LazyCollectionOption.FALSE)
+	@SortNatural
+	public SortedSet<UserFriend> getRequestedFriends() {
+		return requestedFriends;
+	}
+	public void setRequestedFriends(SortedSet<UserFriend> requestedFriends) {
+		this.requestedFriends = requestedFriends;
+	}
+
+
+
+
 
 	@Override
 	public String toString() {

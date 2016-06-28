@@ -232,7 +232,8 @@ public class UserMailRepoTest {
 		userRepo.flush();
 		userRepo.delete(faceFaceUser2.getId());
 		userRepo.flush();
-
+		userRepo.delete(faceFaceUser4.getId());
+		userRepo.flush();
 
 		System.out.println("\n\n-----------------UserMailRepoTest.tearDown-end----------------------------\n\n");
 
