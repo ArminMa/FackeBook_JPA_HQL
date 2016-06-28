@@ -23,7 +23,7 @@
 //
 //
 //	@RequestMapping("/users")
-//	List<User> characters() {
+//	Set<User> characters() {
 //		return repository.findAll();
 //	}
 //

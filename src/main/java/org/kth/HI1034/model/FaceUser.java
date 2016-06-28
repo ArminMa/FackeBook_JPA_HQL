@@ -1,22 +1,21 @@
 package org.kth.HI1034.model;
 
 import com.google.common.base.MoreObjects;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.core.style.ToStringCreator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -157,7 +156,6 @@ public class FaceUser implements Serializable {
 		this.username = username;
 	}
 
-
 	private boolean accountExpired = false;
 	@Column(name = "account_expired")
 	public boolean getAccountExpired() {
@@ -167,7 +165,6 @@ public class FaceUser implements Serializable {
 		this.accountExpired = accountExpired;
 	}
 
-
 	private boolean accountLocked = false;
 	@Column(name = "account_locked")
 	public boolean getAccountLocked() {
@@ -176,7 +173,6 @@ public class FaceUser implements Serializable {
 	public void setAccountLocked(boolean accountLocked) {
 		this.accountLocked = accountLocked;
 	}
-
 
 	private boolean credentialsExpired = false;
 	@Column(name = "credentials_expired")
@@ -190,7 +186,7 @@ public class FaceUser implements Serializable {
 
 
 	private Boolean enabled = true;
-	@Column
+	@Column(name = "account_enabled")
 	@Basic
 	public boolean getEnabled() {
 		return enabled;
@@ -233,26 +229,62 @@ public class FaceUser implements Serializable {
 	}
 
 
-	private List<FaceUser> friends = new ArrayList<FaceUser>();
-	@ManyToMany(fetch=FetchType.EAGER)
-	@JoinTable(name = "user_friends",
-			joinColumns = @JoinColumn(name = "user_id"),
-			inverseJoinColumns = @JoinColumn(name = "user_friend_id") ,
-			indexes =
-					{
-							@Index(name = "userF_id_idx1", columnList = "user_id") ,
-							@Index(name = "userF_id_idx2", columnList = "user_friend_id")
-					}
-	)
-	public List<FaceUser> getFriends() {
-		return friends;
-	}
-	public void setFriends(List<FaceUser> friends) {
-		this.friends = friends;
-	}
 
-	private List<UserReceivedMail> receivedFaceMails = new ArrayList<UserReceivedMail>();
-	@OneToMany( mappedBy = "pk.receivedMail", fetch = FetchType.LAZY, orphanRemoval=true)
+
+
+
+
+
+	/*
+	 * User Mapping starts Here
+	 */
+
+
+//	private SortedSet<UserFriend> acceptedFriends = new TreeSet<UserFriend>();
+//	@OneToMany(mappedBy = "pk.accepter", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+//	@LazyCollection(LazyCollectionOption.FALSE)
+//	@SortNatural
+//	public SortedSet<UserFriend> getAcceptedFriends() {
+//		return acceptedFriends;
+//	}
+//	public void setAcceptedFriends(SortedSet<UserFriend> acceptedFriends) {
+//		this.acceptedFriends = acceptedFriends;
+//	}
+//
+//	private SortedSet<UserFriend> requestedFriends = new TreeSet<UserFriend>();
+//	@OneToMany(mappedBy = "pk.requester", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+//	@LazyCollection(LazyCollectionOption.FALSE)
+//	public SortedSet<UserFriend> getRequestedFriends() {
+//		return requestedFriends;
+//	}
+//	public void setRequestedFriends(SortedSet<UserFriend> requestedFriends) {
+//		this.requestedFriends = requestedFriends;
+//	}
+//
+//	private SortedSet<FacePost> receivedFacePost = new TreeSet<FacePost>();
+//	@OneToMany(mappedBy = "receiver", fetch=FetchType.EAGER)
+//	@Fetch(value = FetchMode.SUBSELECT)
+//	public SortedSet<FacePost> getReceivedFacePost() {
+//		return receivedFacePost;
+//	}
+//	public void setReceivedFacePost(SortedSet<FacePost> receivedFacePost) {
+//		this.receivedFacePost = receivedFacePost;
+//	}
+//
+//	private SortedSet<FacePost> sentFacePost = new TreeSet<FacePost>();
+//	@OneToMany(mappedBy = "author", fetch=FetchType.EAGER)
+//	@Fetch(value = FetchMode.SUBSELECT)
+//	public SortedSet<FacePost> getSentFacePost() {
+//		return sentFacePost;
+//	}
+//	public void setSentFacePost(SortedSet<FacePost> sentFacePost) {
+//		this.sentFacePost = sentFacePost;
+//	}
+
+	private List<UserReceivedMail> receivedFaceMails = new ArrayList<>();
+	@OneToMany(cascade= CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy="pk.receivingUser")
+	@BatchSize(size=25)
+//	@LazyCollection(LazyCollectionOption.FALSE)
 	public List<UserReceivedMail> getReceivedFaceMails() {
 		return receivedFaceMails;
 	}
@@ -260,32 +292,35 @@ public class FaceUser implements Serializable {
 		this.receivedFaceMails = myReceivedFaceMails;
 	}
 
-	private List<FaceMail> sentFaceMails = new ArrayList<FaceMail>();
-	@OneToMany(mappedBy = "author", fetch=FetchType.EAGER, orphanRemoval=true)
-	public List<FaceMail> getSentFaceMails() {
+
+	private List<UserReceivedMail> sentFaceMails = new ArrayList<>();
+	@OneToMany(cascade= CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy="pk.author")
+	@BatchSize(size=25)
+//	@LazyCollection(LazyCollectionOption.FALSE)
+	public List<UserReceivedMail> getSentFaceMails() {
 		return sentFaceMails;
 	}
-	public void setSentFaceMails(List<FaceMail> mailSentFaceMails) {
+	public void setSentFaceMails(List<UserReceivedMail> mailSentFaceMails) {
 		this.sentFaceMails = mailSentFaceMails;
 	}
 
-	private List<FriendRequest> sentFriendRequests = new ArrayList<FriendRequest>();
-	@OneToMany(mappedBy = "pk.requestFrom", fetch=FetchType.LAZY , orphanRemoval=true)
-	public List<FriendRequest> getSentFriendRequests() {
-		return sentFriendRequests;
-	}
-	public void setSentFriendRequests(List<FriendRequest> sentFriendRequests) {
-		this.sentFriendRequests = sentFriendRequests;
-	}
-
-	private List<FriendRequest> receivedFriendRequests = new ArrayList<FriendRequest>();
-	@OneToMany(mappedBy = "pk.requestTo", fetch=FetchType.EAGER , orphanRemoval=true)
-	public List<FriendRequest> getReceivedFriendRequests() {
-		return receivedFriendRequests;
-	}
-	public void setReceivedFriendRequests(List<FriendRequest> receivedFriendRequests) {
-		this.receivedFriendRequests = receivedFriendRequests;
-	}
+//	private SortedSet<FriendRequest> sentFriendRequests = new TreeSet<FriendRequest>();
+//	@OneToMany(mappedBy = "pk.requestFrom", fetch=FetchType.LAZY, cascade = CascadeType.DETACH )
+//	public SortedSet<FriendRequest> getSentFriendRequests() {
+//		return sentFriendRequests;
+//	}
+//	public void setSentFriendRequests(SortedSet<FriendRequest> sentFriendRequests) {
+//		this.sentFriendRequests = sentFriendRequests;
+//	}
+//
+//	private SortedSet<FriendRequest> receivedFriendRequests = new TreeSet<FriendRequest>();
+//	@OneToMany(mappedBy = "pk.requestTo", fetch=FetchType.LAZY, cascade = CascadeType.DETACH )
+//	public SortedSet<FriendRequest> getReceivedFriendRequests() {
+//		return receivedFriendRequests;
+//	}
+//	public void setReceivedFriendRequests(SortedSet<FriendRequest> receivedFriendRequests) {
+//		this.receivedFriendRequests = receivedFriendRequests;
+//	}
 
 	@Override
 	public String toString() {
@@ -296,8 +331,17 @@ public class FaceUser implements Serializable {
 				.add("lastName", lastName)
 				.add("password", password)
 				.add("userName", username)
-				.add("\n\tSentMails", "\t\t" + sentFaceMails)
-				.add("\n\tmyReceivedFaceMailFails", "\t\t" + receivedFaceMails)
+//				.add("\n\tSentMails", "\t\t" + sentFaceMails)
+//				.add("\n\tmyReceivedFaceMailFails", "\t\t" + receivedFaceMails)
 				.toString() );
+	}
+
+	public String toString2() {
+		return new ToStringCreator(this)
+				.append("id", this.getId())
+				.append("new", this.isNew())
+				.append("lastName", this.getLastName())
+				.append("firstName", this.getFirstName())
+				.toString();
 	}
 }

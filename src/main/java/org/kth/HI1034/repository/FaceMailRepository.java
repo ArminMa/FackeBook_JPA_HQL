@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 
 public interface FaceMailRepository extends JpaRepository<FaceMail, Long>, JpaSpecificationExecutor<FaceMail> {
@@ -23,8 +24,8 @@ public interface FaceMailRepository extends JpaRepository<FaceMail, Long>, JpaSp
 	 */
 	@Modifying/*(clearAutomatically = true)*/
 	@Transactional
-	@Query(value = "update UserReceivedMail M  set M.read= :isRead " +
-			"WHERE M.pk.receivedMail.id = :mailId and M.pk.receivedMail.id = :userId")
+	@Query(value = "update UserReceivedMail M set M.read= :isRead " +
+			"WHERE M.pk.receivedMail.id = :mailId and M.pk.receivingUser.id = :userId")
 	void markReceivedMailByUserIdAndMailIdAsRead(@Param("isRead") Boolean read,
 	                                             @Param("userId") Long userID,
 	                                             @Param("mailId") Long mailID);
@@ -32,35 +33,31 @@ public interface FaceMailRepository extends JpaRepository<FaceMail, Long>, JpaSp
 	/**
 	 * @param author_Id   1   Long
 	 * @param author_Id     2   Long
-	 * @return              List<FaceMail>
+	 * @return              Set<FaceMail>
 	 */
-	@Query(value = "SELECT M.pk.receivedMail FROM UserReceivedMail M WHERE M.pk.receivedMail.author.id = :author_id AND M.pk.receivingUser.id = :receiver_id" )
-	List<FaceMail> findAllMailByAuthorAndReceivingUserId(@Param("author_id") Long author_Id,
-	                                                     @Param("receiver_id") Long receiver_Id);
+	@Query(value = "SELECT M.pk.receivedMail FROM UserReceivedMail M WHERE M.pk.author.id = :authorId AND M.pk.receivingUser.id = :receiverId" )
+	Set<FaceMail> findAllMailByAuthorAndReceivingUserId(@Param("authorId") Long author_Id,
+	                                                     @Param("receiverId") Long receiver_Id);
 
 
-	@Query(value = "SELECT M FROM FaceMail M, in(M.receiversFaceMails) RFM " +
-			"where RFM.pk.receivingUser.id = :userId" )
+	@Query(value = "SELECT M.pk.receivedMail FROM UserReceivedMail M where M.pk.receivingUser.id = :userId" )
 	List<FaceMail> findAllReceivedMailByUserId(@Param("userId") Long user_id);
 
-	@Query(value = "SELECT M FROM FaceMail M where M.author = :userId" )
-	List<FaceMail> findAllSentMailByUserId(@Param("userId") Long user_id);
+	@Query(value = "SELECT M.pk.receivedMail FROM UserReceivedMail M where M.pk.receivedMail.id = :senderId" )
+	Set<FaceMail> findAllSentMailByUserId(@Param("senderId") Long user_id);
 
-	@Query(value = "SELECT M FROM FaceMail M, IN(M.receiversFaceMails) RFM " +
-			"WHERE RFM.pk.receivingUser.id = :userId AND RFM.read = TRUE" )
-	List<FaceMail> findAllReadReceivedMailByUserId(@Param("userId") Long user_id);
+	@Query(value = "SELECT M.pk.receivedMail FROM UserReceivedMail M " +
+			"where M.pk.receivingUser.id =:receiver_id and M.read = TRUE")
+	List<FaceMail> findAllReadReceivedMailByUserId(@Param("receiver_id") Long user_id);
 
-	@Query(value = "SELECT M FROM FaceMail M, IN(M.receiversFaceMails) RFM " +
-			"WHERE RFM.pk.receivingUser.id = :userId AND RFM.read = FALSE" )
-	List<FaceMail> findAllUnReadReceivedMailByUserId(@Param("userId") Long user_id);
+	@Query(value = "SELECT M.pk.receivedMail FROM UserReceivedMail M " +
+			"where M.pk.receivingUser.id =:receiver_id and M.read = FALSE")
+	Set<FaceMail> findAllUnReadReceivedMailById(@Param("receiver_id") Long user_id);
 
 	@Modifying
 	@Transactional
-	@Query(value = "delete from UserReceivedMail RM where" +
-			"(SELECT URM FROM UserReceivedMail URM, " +
-			"in(URM.pk.receivingUser) RU " +
-			"where RU.id = :userId1 ) = :userId2 ")
-	void deleteConnectionbetweenReceivingUserAndMail(@Param("userId1") Long userID1, @Param("userId2") Long userID2);
+	@Query(value = "delete from UserReceivedMail RM where RM.pk.receivingUser.id = :userId or RM.pk.author.id = :userId")
+	void deleteConnectionbetweenReceivingUsersAndMail(@Param("userId") Long userId);
 
 	@Modifying
 	@Transactional
@@ -70,6 +67,8 @@ public interface FaceMailRepository extends JpaRepository<FaceMail, Long>, JpaSp
 	@Transactional
 	@Query(value = "delete from FaceMail U where U.id = :mailId" )
 	void deleteFaceMailByMailId(@Param("mailId") Long mailid);
+
+
 
 
 }

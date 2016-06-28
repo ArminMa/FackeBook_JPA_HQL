@@ -15,7 +15,7 @@ public class FaceuserPojo {
   private String password;
   private String username;
 
-  private List<FaceMailPojo> sentMail = new ArrayList<FaceMailPojo>();
+  private List<FaceMailPojo> sentMail = new ArrayList<>();
 
   public Long getId() {
     return id;

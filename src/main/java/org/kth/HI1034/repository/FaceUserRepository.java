@@ -17,7 +17,7 @@ public interface FaceUserRepository extends JpaRepository<FaceUser, Long>, JpaSp
 	FaceUser findByEmail(@Param("theEmail")String email);
 
 //	@Query(value = "SELECT U FROM FaceUser U, IN(U.sentFriendRequests) SFR WHERE SFR.pk.requestFrom.id = :userId" )
-//	List<FaceUser> findUsersWhereFriendRequestFromThisUserIsSent(@Param("fromUserId") Long userFromId);
+//	Set<FaceUser> findUsersWhereFriendRequestFromThisUserIsSent(@Param("fromUserId") Long userFromId);
 
 
 //	SELECT DISTINCT auth FROM Author auth
@@ -30,6 +30,11 @@ public interface FaceUserRepository extends JpaRepository<FaceUser, Long>, JpaSp
 	void deleteThisFaceUser(@Param("userId") Long userID);
 
 
+
+//	@Modifying
+//	@Transactional
+//	@Query(value = "INSERT from FaceUser U where U.id = :userId" )
+//	void saveUserAndFriend(@Param("userId") Long userID);
 
 
 

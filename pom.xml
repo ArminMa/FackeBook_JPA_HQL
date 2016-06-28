@@ -27,6 +27,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <start-class>org.kth.HI1034.ApplicationWar</start-class>
         <java.version>1.8</java.version>
+        <heroku.appName>fackebookarmin</heroku.appName>
     </properties>
 
 
@@ -212,7 +213,20 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>com.heroku.sdk</groupId>
+                <artifactId>heroku-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <configuration>
+                    <appName>${heroku.appName}</appName>
+                </configuration>
+            </plugin>
+
         </plugins>
+
+
+
     </build>
 
 

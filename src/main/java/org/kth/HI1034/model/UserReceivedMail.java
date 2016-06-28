@@ -4,53 +4,76 @@ package org.kth.HI1034.model;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.AssociationOverride;
-import javax.persistence.AssociationOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "user_reciveid_mail", indexes =
-				{
-					@Index(name = "user_id_idx", columnList = "user_id") ,
-					@Index(name = "mail_id_idx", columnList = "mail_id")
-				}
-		)
-@AssociationOverrides({
-		@AssociationOverride(name = "pk.receivingUser",
-				joinColumns = @JoinColumn(name = "user_id")),
-		@AssociationOverride(name = "pk.receivedMail",
-				joinColumns = @JoinColumn(name = "mail_id")) })
-
+@Table(name = "user_reciveid_mail")
 public class UserReceivedMail implements Serializable {
 
 
 	public UserReceivedMail() {
-		pk = new UserReceivedMailID();
+		pk = new UserReceivedMailPk();
+	}
+
+	public UserReceivedMail(FaceMail receivedMail, FaceUser receivingUser , FaceUser author) {
+		this.pk = new UserReceivedMailPk(receivedMail, receivingUser, author);
+
 	}
 
 
-	public UserReceivedMail(FaceMail receivedMail, FaceUser receivingUser ) {
-		pk = new UserReceivedMailID(receivedMail, receivingUser);
+
+	private Boolean message_read = false;
+	@NotNull
+	@Column(name = "message_read",
+			nullable = false,
+			insertable = true,
+			updatable = true)
+	public Boolean getRead() {
+		return message_read;
+	}
+	public void setRead(Boolean read) {
+		this.message_read = read;
 	}
 
-	public UserReceivedMailID pk;
+	private Date receivedDate;
+	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy.MM.dd hh.mm.ss.SSS")
+//	@NotNull
+	@CreatedDate
+	@Column(name = "received_date",
+			nullable = true,
+			insertable = true,
+			updatable = true)
+	public Date getReceivedDate() {
+		return receivedDate;
+	}
+	public void setReceivedDate(Date receivedDate) {
+		this.receivedDate = receivedDate;
+	}
+
+
+
+	// ------------------------------------------------------------------------------------------
+
+
+
+
+
+	public UserReceivedMailPk pk;
 	@EmbeddedId
-	public UserReceivedMailID getPk() {
+	public UserReceivedMailPk getPk() {
 		return pk;
 	}
-	public void setPk(UserReceivedMailID receivedMailID) {
+	public void setPk(UserReceivedMailPk receivedMailID) {
 		this.pk = receivedMailID;
 	}
 
@@ -72,36 +95,12 @@ public class UserReceivedMail implements Serializable {
 		getPk().setReceivingUser(receivingUser);
 	}
 
-
-	private Boolean message_read = false;
-	@NotNull
-	@Column(name = "message_read",
-			nullable = false,
-			insertable = true,
-			updatable = true)
-	public Boolean getRead() {
-		return message_read;
+	@Transient
+	public FaceUser getAuthor() {
+		return getPk().getAuthor();
 	}
-	public void setRead(Boolean read) {
-		this.message_read = read;
+	public void setAuthor(FaceUser author) {
+		getPk().setAuthor(author);
 	}
-
-	private Date receivedDate;
-	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "yyyy.MM.dd hh.mm.ss.SSS")
-//	@NotNull
-	@Past
-	@CreatedDate
-	@Column(name = "received_date",
-			nullable = true,
-			insertable = true,
-			updatable = true)
-	public Date getReceivedDate() {
-		return receivedDate;
-	}
-	public void setReceivedDate(Date receivedDate) {
-		this.receivedDate = receivedDate;
-	}
-
 
 }
