@@ -5,8 +5,11 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -17,8 +20,19 @@ import java.util.Date;
 
 @Entity
 @Table(name = "user_reciveid_mail")
-public class UserReceivedMail implements Serializable {
+public class UserReceivedMail implements Serializable, Comparable<UserReceivedMail> {
 
+
+	private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id", insertable=false, updatable=false, unique=true, nullable=false)
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public UserReceivedMail() {
 		pk = new UserReceivedMailPk();
@@ -69,7 +83,7 @@ public class UserReceivedMail implements Serializable {
 
 
 	public UserReceivedMailPk pk;
-	@EmbeddedId
+	@Embedded
 	public UserReceivedMailPk getPk() {
 		return pk;
 	}
@@ -103,4 +117,35 @@ public class UserReceivedMail implements Serializable {
 		getPk().setAuthor(author);
 	}
 
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		UserReceivedMail that = (UserReceivedMail) o;
+
+		if (id != null ? !id.equals(that.id) : that.id != null)
+			return false;
+		if (message_read != null ? !message_read.equals(that.message_read) : that.message_read != null) return false;
+		if (receivedDate != null ? !receivedDate.equals(that.receivedDate) : that.receivedDate != null) return false;
+		return pk != null ? pk.equals(that.pk) : that.pk == null;
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = id != null ? id.hashCode() : 0;
+		result = 31 * result + (message_read != null ? message_read.hashCode() : 0);
+		result = 31 * result + (receivedDate != null ? receivedDate.hashCode() : 0);
+		return result;
+	}
+
+
+	@Override
+	public int compareTo(UserReceivedMail o) {
+		int thisTime = this.hashCode();
+		long anotherTime = o.hashCode();
+		return (thisTime<anotherTime ? -1 : (thisTime==anotherTime ? 0 : 1));
+	}
 }

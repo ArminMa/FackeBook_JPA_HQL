@@ -189,44 +189,44 @@ public class UserJpaRelationshipTest {
 		FaceUser testFaceUser11 = userRepo.findOne(faceFaceUser1.getId());
 		assertNotNull(testFaceUser11);
 
-//		List<FaceMail> faceMailsUser1 = mailRepo.findAllReceivedMailByUserId(testFaceUser11.getId());
-//		assertNotNull(faceMailsUser1);
-//		assertFalse(faceMailsUser1.isEmpty());
-//
-//		FaceUser testFaceUser2 = userRepo.findByEmail(faceFaceUser2.getEmail());
-//		assertNotNull(testFaceUser2);
-//
-//		List<FaceMail> faceMails1 = mailRepo.findAllReceivedMailByUserId(testFaceUser2.getId());
-//		assertNotNull(faceMails1);
-//		assertFalse(faceMails1.isEmpty());
-//
-//
-//
-//
-//
-//		//check if MailX is read
-//		List<FaceMail> readUser2FaceMail = mailRepo.findAllReadReceivedMailByUserId(testFaceUser2.getId());
-//		assertNotNull(readUser2FaceMail);
-//		assertTrue(readUser2FaceMail.size() == 1);
-//		assertTrue(readUser2FaceMail.get(0).getId().equals(faceFaceMailB.getId()));
-//
-//		//check all Unread Mails
-//		Set<FaceMail> user2UnReadFaceMails = mailRepo.findAllUnReadReceivedMailById(testFaceUser2.getId());
-//		assertNotNull(user2UnReadFaceMails);
-//		assertTrue(user2UnReadFaceMails.size() == 1);
-//
-//		FaceMail faceMailsread = mailRepo.findOne(faceMails1.get(1).getId());
-//		assertNotNull(faceMailsread);
-//
-//		Set<FaceMail> userReceivedMail1 = mailRepo.findAllMailByAuthorAndReceivingUserId(testFaceUser11.getId(), testFaceUser2.getId() );
-//		assertNotNull(userReceivedMail1);
-//		assertTrue( userReceivedMail1.size() == 2 );
+		Set<FaceMail> faceMailsUser1 = mailRepo.findAllReceivedMailByUserId(testFaceUser11.getId());
+		Assert.notNull(faceMailsUser1);
+		Assert.notEmpty(faceMailsUser1);
+
+		FaceUser testFaceUser2 = userRepo.findByEmail(faceFaceUser2.getEmail());
+		Assert.notNull(testFaceUser2);
+
+		Set<FaceMail> faceMails1 = mailRepo.findAllReceivedMailByUserId(testFaceUser2.getId());
+		Assert.notNull(faceMails1);
+		Assert.notEmpty(faceMails1);
+
+		//test to fiend one unique mail by id
+		FaceMail faceMailsread = mailRepo.findOne(faceMails1.iterator().next().getId());
+		assertNotNull(faceMailsread);
+
+
+		//check all Unread Mails
+		Set<FaceMail> user2UnReadFaceMails = mailRepo.findAllUnReadReceivedMailById(testFaceUser2.getId());
+		assertNotNull(user2UnReadFaceMails);
+		Assert.isTrue(user2UnReadFaceMails.size() == 1);
+
+		Set<FaceMail> userReceivedMail1 = mailRepo.findAllMailByAuthorAndReceivingUserId(testFaceUser11.getId(), testFaceUser2.getId() );
+		assertNotNull(userReceivedMail1);
+		Assert.isTrue( userReceivedMail1.size() == 2 );
+
+		//check if MailX is read
+		Set<FaceMail> readUser2FaceMail = mailRepo.findAllReadReceivedMailByUserId(testFaceUser2.getId());
+		assertNotNull(readUser2FaceMail);
+		Assert.isTrue(readUser2FaceMail.size() == 1);
+
+		//their should be 1 read mail adn that mail should b Mail B, everything else while throw BUILD FAILURE
+		readUser2FaceMail.stream().forEach(readMail -> Assert.isTrue(readMail.getId().equals(faceFaceMailB.getId())));
 
 
 //		List<FriendRequest> friendRequestFromUser1List = friendRequestRepo.findAllFromThisUserId(faceFaceUser1.getId());
 //		assertNotNull(friendRequestFromUser1List);
-//		assertTrue(!friendRequestFromUser1List.isEmpty());
-//		assertTrue(friendRequestFromUser1List.get(0).getRequestFrom().getId().equals(faceFaceUser1.getId()));
+//		Assert.isTrue(!friendRequestFromUser1List.isEmpty());
+//		Assert.isTrue(friendRequestFromUser1List.get(0).getRequestFrom().getId().equals(faceFaceUser1.getId()));
 
 
 		System.out.println("\n-----------------MailRepositoryTest.testUserMailRelationshipFaceUser-end----------------------------\n\n");
@@ -264,8 +264,8 @@ public class UserJpaRelationshipTest {
 		userReceivedMailRepo.deleteReceivedMailByUserId(faceFaceUser1.getId());
 		userReceivedMailRepo.flush();
 
-		userRepo.delete(faceFaceUser1.getId());
-		userRepo.flush();
+//		userRepo.delete(faceFaceUser1.getId());
+//		userRepo.flush();
 
 
 		//remove user 2 from database
@@ -293,12 +293,12 @@ public class UserJpaRelationshipTest {
 
 
 		//remove all mails from database
-		mailRepo.delete(faceFaceMailA.getId());
-		mailRepo.flush();
-		mailRepo.delete(faceFaceMailB.getId());
-		mailRepo.flush();
-		mailRepo.delete(faceFaceMailC.getId());
-		mailRepo.flush();
+//		mailRepo.delete(faceFaceMailA.getId());
+//		mailRepo.flush();
+//		mailRepo.delete(faceFaceMailB.getId());
+//		mailRepo.flush();
+//		mailRepo.delete(faceFaceMailC.getId());
+//		mailRepo.flush();
 
 
 		System.out.println("\n\n-----------------MailRepositoryTest.tearDown-end----------------------------\n\n");

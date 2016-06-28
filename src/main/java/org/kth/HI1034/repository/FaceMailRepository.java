@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Set;
 
 
@@ -41,14 +40,14 @@ public interface FaceMailRepository extends JpaRepository<FaceMail, Long>, JpaSp
 
 
 	@Query(value = "SELECT M.pk.receivedMail FROM UserReceivedMail M where M.pk.receivingUser.id = :userId" )
-	List<FaceMail> findAllReceivedMailByUserId(@Param("userId") Long user_id);
+	Set<FaceMail> findAllReceivedMailByUserId(@Param("userId") Long user_id);
 
 	@Query(value = "SELECT M.pk.receivedMail FROM UserReceivedMail M where M.pk.receivedMail.id = :senderId" )
 	Set<FaceMail> findAllSentMailByUserId(@Param("senderId") Long user_id);
 
 	@Query(value = "SELECT M.pk.receivedMail FROM UserReceivedMail M " +
 			"where M.pk.receivingUser.id =:receiver_id and M.read = TRUE")
-	List<FaceMail> findAllReadReceivedMailByUserId(@Param("receiver_id") Long user_id);
+	Set<FaceMail> findAllReadReceivedMailByUserId(@Param("receiver_id") Long user_id);
 
 	@Query(value = "SELECT M.pk.receivedMail FROM UserReceivedMail M " +
 			"where M.pk.receivingUser.id =:receiver_id and M.read = FALSE")

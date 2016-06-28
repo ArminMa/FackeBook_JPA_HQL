@@ -2,6 +2,7 @@ package org.kth.HI1034.model;
 
 import com.google.common.base.MoreObjects;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.SortNatural;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,14 +19,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 @Entity
 @Table(name = "face_mail")
-public class FaceMail implements Serializable {
+public class FaceMail implements Serializable ,Comparable<FaceMail> {
 
 	private static final int MAX_LENGTH_HEADER = 254;
 	private static final int MAX_LENGTH_MAIL = 5000;
@@ -99,16 +100,38 @@ public class FaceMail implements Serializable {
 		this.sentDate = sentDate;
 	}
 
-	private List<UserReceivedMail> receiversFaceMail = new ArrayList<>();
+	private SortedSet<UserReceivedMail> receiversFaceMail = new TreeSet<>();
 	@OneToMany(cascade= CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy="pk.receivedMail")
-	@BatchSize(size=25)
-	public List<UserReceivedMail> getReceiversFaceMail() {
+	@SortNatural
+	public SortedSet<UserReceivedMail> getReceiversFaceMail() {
 		return receiversFaceMail;
 	}
-	public void setReceiversFaceMail(List<UserReceivedMail> receiversFaceMail) {
+	public void setReceiversFaceMail(SortedSet<UserReceivedMail> receiversFaceMail) {
 		this.receiversFaceMail = receiversFaceMail;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		FaceMail faceMail = (FaceMail) o;
+
+		if (id != null ? !id.equals(faceMail.id) : faceMail.id != null) return false;
+		if (header != null ? !header.equals(faceMail.header) : faceMail.header != null) return false;
+		if (mailText != null ? !mailText.equals(faceMail.mailText) : faceMail.mailText != null) return false;
+		return sentDate != null ? sentDate.equals(faceMail.sentDate) : faceMail.sentDate == null;
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = id != null ? id.hashCode() : 0;
+		result = 31 * result + (header != null ? header.hashCode() : 0);
+		result = 31 * result + (mailText != null ? mailText.hashCode() : 0);
+		result = 31 * result + (sentDate != null ? sentDate.hashCode() : 0);
+		return result;
+	}
 
 	@Override
 	public String toString() {
@@ -117,5 +140,13 @@ public class FaceMail implements Serializable {
 				.add("header", header)
 				.add("mailText", mailText)
 				.toString();
+	}
+
+
+	@Override
+	public int compareTo(FaceMail o) {
+		int thisTime = this.hashCode();
+		long anotherTime = o.hashCode();
+		return (thisTime<anotherTime ? -1 : (thisTime==anotherTime ? 0 : 1));
 	}
 }
