@@ -21,6 +21,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -257,13 +258,28 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 	/*
 	 * User Mapping starts Here
 	 */
+//---------------------------- authority ------------------------
+
+//	CascadeType.DETACH means that if i disappear if the rows where i i'm in "in between this and other table"
+// should be remove. we don't want that
+
+//	CascadeType.REMOVE wants to remove the other side Entity if this is removed, that is not god hear.
+
+	private SortedSet<Authority> authorities = new TreeSet<>();
+	@ManyToMany(cascade = { CascadeType.DETACH  , CascadeType.MERGE , CascadeType.REFRESH, CascadeType.PERSIST },
+			fetch=FetchType.LAZY , mappedBy = "usersAuthorities")
+	@Fetch(value = FetchMode.SUBSELECT)
+	@SortNatural
+	public SortedSet<Authority> getAuthorities() {
+		return authorities;
+	}
+
+	public void setAuthorities(SortedSet<Authority> authorities) {
+		this.authorities = authorities;
+	}
 
 
-
-
-
-
-	//----------------Post--------------------------
+//----------------Post--------------------------
 
 	//We don't want to remove the post after its posted eg, if the user is removed
 	//If we do that other will not be able to se it.
@@ -281,7 +297,9 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 	}
 
 	private SortedSet<FacePost> sentFacePost = new TreeSet<>();
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY, mappedBy = "author")
+	@OneToMany(cascade = {  CascadeType.DETACH , CascadeType.MERGE ,
+							CascadeType.REFRESH, CascadeType.PERSIST },
+			fetch=FetchType.LAZY, mappedBy = "author")
 //	@Fetch(value = FetchMode.SUBSELECT)
 	@SortNatural
 	public SortedSet<FacePost> getSentFacePost() {

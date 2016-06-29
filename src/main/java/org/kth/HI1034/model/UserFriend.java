@@ -18,11 +18,11 @@ import java.util.Date;
 public class UserFriend implements Serializable, Comparable<UserFriend> {
 
 	public UserFriend() {
-		this.pk = new UserFriedID();
+		this.pk = new UserFriendID();
 	}
 
 	public UserFriend(FaceUser accepter, FaceUser requester, Date beginningOfFriendship) {
-		this.pk = new UserFriedID(accepter, requester);
+		this.pk = new UserFriendID(accepter, requester);
 		this.friendshipBegan = beginningOfFriendship;
 	}
 
@@ -58,13 +58,13 @@ public class UserFriend implements Serializable, Comparable<UserFriend> {
 	}
 
 
-	private UserFriedID pk;
+	private UserFriendID pk;
 	@EmbeddedId
-	public UserFriedID getPk() {
+	public UserFriendID getPk() {
 		return pk;
 	}
-	public void setPk(UserFriedID userFriedID) {
-		this.pk = userFriedID;
+	public void setPk(UserFriendID userFriendID) {
+		this.pk = userFriendID;
 	}
 
 	@Transient

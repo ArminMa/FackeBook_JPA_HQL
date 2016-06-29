@@ -16,7 +16,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -72,7 +71,6 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy.MM.dd.hh.mm.ss.SSS")
 	@NotNull
-	@Past
 	@CreatedDate
 	@Column(name = "sent_date",
 			nullable = true,
@@ -96,7 +94,7 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 	}
 
 	public FaceUser receiver;
-	@ManyToOne(fetch= FetchType.EAGER )
+	@ManyToOne(fetch= FetchType.LAZY )
 	public FaceUser getReceiver() {
 		return receiver;
 	}
@@ -104,6 +102,7 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 		this.receiver = requestTo;
 	}
 
+77777
 
 	@Override
 	public boolean equals(Object o) {

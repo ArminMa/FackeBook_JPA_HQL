@@ -6,16 +6,16 @@ import javax.persistence.ManyToOne;
 import java.io.Serializable;
 
 @Embeddable
-public class UserFriedID implements Serializable, Comparable<UserFriedID>{
+public class UserFriendID implements Serializable, Comparable<UserFriendID>{
 
 	public FaceUser accepter;
 	public FaceUser requester;
 
-	public UserFriedID() {
+	public UserFriendID() {
 
 	}
 
-	public UserFriedID(FaceUser user, FaceUser friend) {
+	public UserFriendID(FaceUser user, FaceUser friend) {
 		this.accepter = user;
 		this.requester = friend;
 	}
@@ -41,7 +41,7 @@ public class UserFriedID implements Serializable, Comparable<UserFriedID>{
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		UserFriedID that = (UserFriedID) o;
+		UserFriendID that = (UserFriendID) o;
 
 		if (accepter != null ? !accepter.equals(that.accepter) : that.accepter != null) return false;
 		return requester != null ? requester.equals(that.requester) : that.requester == null;
@@ -56,7 +56,7 @@ public class UserFriedID implements Serializable, Comparable<UserFriedID>{
 	}
 
 	@Override
-	public int compareTo(UserFriedID o) {
+	public int compareTo(UserFriendID o) {
 		int thisTime = this.hashCode();
 		long anotherEntity = o.hashCode();
 		return (thisTime < anotherEntity ? -1 : (thisTime == anotherEntity ? 0 : 1));

@@ -1,6 +1,5 @@
 package org.kth.HI1034.repository;
 
-import com.google.common.base.MoreObjects;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,14 +10,18 @@ import org.kth.HI1034.model.FaceUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -63,10 +66,8 @@ public class UserPostRepoTest {
 		postList = userPostRepo.save( postList);
 		userPostRepo.flush();
 
-		System.out.println("\n\nUserPostRepoTest.setUp\n" +
-		                MoreObjects.toStringHelper(postList)
-		                .add("postList.size ", postList.size())
-		                .toString() + "\n\n");
+
+
 
 
 
@@ -89,6 +90,9 @@ public class UserPostRepoTest {
 		assertFalse( user2.getReceivedFacePost().isEmpty() );
 		assertTrue(user2.getReceivedFacePost().size() == 3);
 
+		//sent Post is not loaded Eagerly so that should be null
+		assertNull(user2.getSentFacePost());
+
 		System.out.println("\n\n----------------- UserPostRepoTest.setUp-end ----------------------------\n\n");
 	}
 
@@ -96,10 +100,22 @@ public class UserPostRepoTest {
 	@After
 	public void tearDown() throws Exception {
 
-		userPostRepo.delete(postList.get(0));
-		postList.remove(0);
-		userPostRepo.delete(postList.get(2));
-		postList.remove(2);
+		userPostRepo.delete(postList.get(0));		postList.remove(0);
+		userPostRepo.delete(postList.get(0));       postList.remove(0);
+
+
+		// removal of a user should not remove his sent post
+		FaceUser user3 = userRepo.findByEmail(userList.get(3).getEmail());
+		assertNotNull(user3);
+		FacePost postToUser3 = userPostRepo.findOne(postList.get(0).getId());
+		assertNotNull(postToUser3);
+		Assert.notEmpty( user3.getReceivedFacePost() );
+		assertEquals(user3.getReceivedFacePost().first().getId(),postToUser3.getId());
+
+
+
+
+
 
 		userPostRepo.delete(postList);
 
