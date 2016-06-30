@@ -21,6 +21,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -241,7 +243,7 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy.MM.dd hh.mm.ss.SSS")
-	@Past
+
 	@CreatedDate
 	@Column(name = "acount_updated_date",
 			nullable = true,
@@ -283,24 +285,11 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 
 	//We don't want to remove the post after its posted eg, if the user is removed
 	//If we do that other will not be able to se it.
-	private SortedSet<FacePost> receivedFacePost = new TreeSet<>();
-	@OneToMany(cascade = {  CascadeType.DETACH , CascadeType.MERGE ,
-							CascadeType.REFRESH, CascadeType.PERSIST },
-							fetch=FetchType.EAGER , mappedBy = "receiver")
-	@Fetch(value = FetchMode.SUBSELECT)
-	@SortNatural
-	public SortedSet<FacePost> getReceivedFacePost() {
-		return receivedFacePost;
-	}
-	public void setReceivedFacePost(SortedSet<FacePost> receivedFacePost) {
-		this.receivedFacePost = receivedFacePost;
-	}
+
 
 	private SortedSet<FacePost> sentFacePost = new TreeSet<>();
-	@OneToMany(cascade = {  CascadeType.DETACH , CascadeType.MERGE ,
-							CascadeType.REFRESH, CascadeType.PERSIST },
-			fetch=FetchType.LAZY, mappedBy = "author")
-//	@Fetch(value = FetchMode.SUBSELECT)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, fetch = FetchType.LAZY, mappedBy = "pk.author")
+	@LazyCollection(LazyCollectionOption.TRUE)
 	@SortNatural
 	public SortedSet<FacePost> getSentFacePost() {
 		return sentFacePost;
@@ -309,7 +298,17 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 		this.sentFacePost = sentFacePost;
 	}
 
+	private SortedSet<FacePost> receivedFacePost = new TreeSet<>();
+	@OneToMany( cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "pk.receiver")
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@SortNatural
 
+	public SortedSet<FacePost> getReceivedFacePost() {
+		return receivedFacePost;
+	}
+	public void setReceivedFacePost(SortedSet<FacePost> receivedFacePost) {
+		this.receivedFacePost = receivedFacePost;
+	}
 
 
 	//----------------User Received Mail--------------------------

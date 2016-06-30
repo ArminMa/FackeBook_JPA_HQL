@@ -34,6 +34,8 @@ public class UserReceivedMail implements Serializable, Comparable<UserReceivedMa
 		this.id = id;
 	}
 
+
+
 	public UserReceivedMail() {
 		pk = new UserReceivedMailPk();
 	}

@@ -6,12 +6,11 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,11 +26,11 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 
 
 	public FacePost() {
+//		pk = new FacePostPk();
 	}
 
-
 	/**
-	 *
+	 *	<code>FacePost</code>
 	 * @param postText      1   String
 	 * @param sentDate      2   java.util.Date
 	 * @param author        3   FaceUser
@@ -40,13 +39,13 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 	public FacePost(String postText, Date sentDate, FaceUser author, FaceUser receiver) {
 		this.postText = postText;
 		this.sentDate = sentDate;
-		this.author = author;
-		this.receiver = receiver;
+		this.pk = new FacePostPk( author, receiver);
 	}
 
 	private Long id;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id", insertable = false, updatable = false, unique = true, nullable = false)
 	public Long getId() {
 		return id;
 	}
@@ -84,50 +83,17 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 	}
 
 
-	public FaceUser author;
-	@ManyToOne(fetch= FetchType.LAZY)
-	public FaceUser getAuthor() {
-		return author;
+	public FacePostPk pk;
+	@Embedded
+	public FacePostPk getPk() {
+		return pk;
 	}
-	public void setAuthor(FaceUser requestFrom) {
-		this.author = requestFrom;
-	}
-
-	public FaceUser receiver;
-	@ManyToOne(fetch= FetchType.LAZY )
-	public FaceUser getReceiver() {
-		return receiver;
-	}
-	public void setReceiver(FaceUser requestTo) {
-		this.receiver = requestTo;
+	public void setPk(FacePostPk receivedMailID) {
+		this.pk = receivedMailID;
 	}
 
-77777
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
 
-		FacePost facePost = (FacePost) o;
-
-		if (id != null ? !id.equals(facePost.id) : facePost.id != null) return false;
-		if (postText != null ? !postText.equals(facePost.postText) : facePost.postText != null) return false;
-		if (sentDate != null ? !sentDate.equals(facePost.sentDate) : facePost.sentDate != null) return false;
-		if (author != null ? !author.equals(facePost.author) : facePost.author != null) return false;
-		return receiver != null ? receiver.equals(facePost.receiver) : facePost.receiver == null;
-
-	}
-
-	@Override
-	public int hashCode() {
-		int result = id != null ? id.hashCode() : 0;
-		result = 31 * result + (postText != null ? postText.hashCode() : 0);
-		result = 31 * result + (sentDate != null ? sentDate.hashCode() : 0);
-		result = 31 * result + (author != null ? author.hashCode() : 0);
-		result = 31 * result + (receiver != null ? receiver.hashCode() : 0);
-		return result;
-	}
 
 
 	@Override
