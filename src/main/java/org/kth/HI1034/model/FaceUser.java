@@ -2,6 +2,7 @@ package org.kth.HI1034.model;
 
 import com.google.common.base.MoreObjects;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.LazyCollection;
@@ -288,9 +289,10 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 
 
 	private SortedSet<FacePost> sentFacePost = new TreeSet<>();
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, fetch = FetchType.LAZY, mappedBy = "pk.author")
+	@OneToMany( orphanRemoval = false, fetch = FetchType.LAZY, mappedBy = "pk.author")
 	@LazyCollection(LazyCollectionOption.TRUE)
 	@SortNatural
+	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	public SortedSet<FacePost> getSentFacePost() {
 		return sentFacePost;
 	}
@@ -299,10 +301,10 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 	}
 
 	private SortedSet<FacePost> receivedFacePost = new TreeSet<>();
-	@OneToMany( cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "pk.receiver")
+	@OneToMany(  orphanRemoval = false, fetch = FetchType.EAGER, mappedBy = "pk.receiver")
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@SortNatural
-
+	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	public SortedSet<FacePost> getReceivedFacePost() {
 		return receivedFacePost;
 	}

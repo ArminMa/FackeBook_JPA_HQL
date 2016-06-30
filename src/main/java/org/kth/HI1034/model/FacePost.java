@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -38,8 +39,10 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 	 */
 	public FacePost(String postText, Date sentDate, FaceUser author, FaceUser receiver) {
 		this.postText = postText;
+		this.authorUserName = author.getUsername();
+		this.authorEmail = author.getEmail();
 		this.sentDate = sentDate;
-		this.pk = new FacePostPk( author, receiver);
+		this.pk = new FacePostPk(author , receiver );
 	}
 
 	private Long id;
@@ -64,6 +67,28 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 	}
 	public void setPostText(String postText) {
 		this.postText = postText;
+	}
+
+
+	private String authorUserName;
+	@Column(name = "author_user_name")
+	public String getAuthorUserName() {
+		return authorUserName;
+	}
+
+	public void setAuthorUserName(String authorUserName) {
+		this.authorUserName = authorUserName;
+	}
+
+
+	private String authorEmail;
+	@Column(name = "author_email")
+	public String getAuthorEmail() {
+		return authorEmail;
+	}
+
+	public void setAuthorEmail(String senderEmail) {
+		this.authorEmail = senderEmail;
 	}
 
 	private Date sentDate;
@@ -91,8 +116,20 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 	public void setPk(FacePostPk receivedMailID) {
 		this.pk = receivedMailID;
 	}
-
-
+	@Transient
+	public FaceUser getAuthor() {
+		return getPk().getAuthor();
+	}
+	public void setAuthor(FaceUser requestFrom) {
+		this.getPk().setAuthor(requestFrom);
+	}
+	@Transient
+	public FaceUser getReceiver() {
+		return getPk().getReceiver();
+	}
+	public void setReceiver(FaceUser requestTo) {
+		this.getPk().setReceiver(requestTo);
+	}
 
 
 

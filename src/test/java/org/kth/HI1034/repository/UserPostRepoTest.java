@@ -113,16 +113,22 @@ public class UserPostRepoTest {
 		//a User is supposed to get sent posts Lazy, lets test that by asserting the exeption thrown
 		assertThatThrownBy(() -> { user.getSentFacePost().first(); }).isInstanceOf(LazyInitializationException.class);
 
-		// removal of a user should not remove his sent post
-		FaceUser user1 = userRepo.findByEmail(userList.get(1).getEmail());
-		assertThat(user1).isNotNull();
-		FacePost postToUser3 = userPostRepo.findOne(postList.get(1).getId());
-		assertThat(postToUser3).isNotNull();
-		assertThat( user1.getReceivedFacePost() ).isNotEmpty();
-		assertThat(user1.getReceivedFacePost().first().getId()).isEqualTo(postToUser3.getId());
+
+		user = userRepo.findByEmail(userList.get(1).getEmail());
+		assertThat(user).isNotNull();
+		assertThat(user.getReceivedFacePost()).isNotEmpty();
+		assertThat(user.getReceivedFacePost().size()).isEqualTo(1);
+		//the author in all received post should be fetched EAGERLY
+		assertThat(user.getReceivedFacePost().first().getAuthor().getId()).isEqualTo(userList.get(0).getId());
+		FacePost postToUser1 = userPostRepo.findOne(postList.get(1).getId());
+		assertThat(postToUser1).isNotNull();
+		//postList(1) should be the post that was sent to user 1
+		assertThat( user.getReceivedFacePost().first().getId() ).isEqualTo(postToUser1.getId());
+
 
 		System.out.println("\n\n----------------- UserPostRepoTest.setUp-end ----------------------------\n\n");
 	}
+
 
 
 	@After
@@ -132,7 +138,7 @@ public class UserPostRepoTest {
 //		userPostRepo.delete(postList.get(0));       postList.remove(0);
 
 
-
+		// removal of a user should not remove his sent post
 
 
 
