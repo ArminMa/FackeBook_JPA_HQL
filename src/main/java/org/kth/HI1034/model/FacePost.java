@@ -5,19 +5,25 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "face_post")
@@ -42,7 +48,9 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 		this.authorUserName = author.getUsername();
 		this.authorEmail = author.getEmail();
 		this.sentDate = sentDate;
-		this.pk = new FacePostPk(author , receiver );
+		this.author = (author);
+		this.receiver.add(receiver);
+
 	}
 
 	private Long id;
@@ -57,11 +65,37 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 	}
 
 
+	private FaceUser author;
+	@ManyToOne(fetch= FetchType.EAGER )
+	@JoinTable(name = "post_author_user",
+			joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id" ))
+	public FaceUser getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(FaceUser author) {
+		this.author = author;
+	}
+
+
+	private List<FaceUser> receiver = new ArrayList<>();
+	@OneToMany(fetch= FetchType.EAGER , orphanRemoval = false , cascade = CascadeType.DETACH)
+	@JoinTable(name = "post_received_user",
+			joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+	public List<FaceUser> getReceiver() {
+		return receiver;
+	}
+
+	public void setReceiver(List<FaceUser> receiver) {
+		this.receiver = receiver;
+	}
 
 
 	private String postText;
 	@Length(max=MAX_LENGTH_POST)
-	@Column(name = "post_text")
+	@Column(name = "post_text" , length = MAX_LENGTH_POST)
 	public String getPostText() {
 		return postText;
 	}
@@ -108,28 +142,28 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 	}
 
 
-	public FacePostPk pk;
-	@Embedded
-	public FacePostPk getPk() {
-		return pk;
-	}
-	public void setPk(FacePostPk receivedMailID) {
-		this.pk = receivedMailID;
-	}
-	@Transient
-	public FaceUser getAuthor() {
-		return getPk().getAuthor();
-	}
-	public void setAuthor(FaceUser requestFrom) {
-		this.getPk().setAuthor(requestFrom);
-	}
-	@Transient
-	public FaceUser getReceiver() {
-		return getPk().getReceiver();
-	}
-	public void setReceiver(FaceUser requestTo) {
-		this.getPk().setReceiver(requestTo);
-	}
+//	public FacePostPk pk;
+//	@Embedded
+//	public FacePostPk getPk() {
+//		return pk;
+//	}
+//	public void setPk(FacePostPk receivedMailID) {
+//		this.pk = receivedMailID;
+//	}
+//	@Transient
+//	public FaceUser getAuthor() {
+//		return getPk().getAuthor();
+//	}
+//	public void setAuthor(FaceUser requestFrom) {
+//		this.getPk().setAuthor(requestFrom);
+//	}
+//	@Transient
+//	public FaceUser getReceiver() {
+//		return getPk().getReceiver();
+//	}
+//	public void setReceiver(FaceUser requestTo) {
+//		this.getPk().setReceiver(requestTo);
+//	}
 
 
 

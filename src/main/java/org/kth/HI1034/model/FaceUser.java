@@ -91,7 +91,7 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 	private Long id;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id", insertable = false, updatable = false, unique = true, nullable = false)
 	public Long getId() {
 		return id;
@@ -288,29 +288,36 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 	//If we do that other will not be able to se it.
 
 
-	private SortedSet<FacePost> sentFacePost = new TreeSet<>();
-	@OneToMany( orphanRemoval = false, fetch = FetchType.LAZY, mappedBy = "pk.author")
-	@LazyCollection(LazyCollectionOption.TRUE)
-	@SortNatural
-	@Cascade({org.hibernate.annotations.CascadeType.ALL})
-	public SortedSet<FacePost> getSentFacePost() {
-		return sentFacePost;
-	}
-	public void setSentFacePost(SortedSet<FacePost> sentFacePost) {
-		this.sentFacePost = sentFacePost;
-	}
-
-	private SortedSet<FacePost> receivedFacePost = new TreeSet<>();
-	@OneToMany(  orphanRemoval = false, fetch = FetchType.EAGER, mappedBy = "pk.receiver")
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@SortNatural
-	@Cascade({org.hibernate.annotations.CascadeType.ALL})
-	public SortedSet<FacePost> getReceivedFacePost() {
-		return receivedFacePost;
-	}
-	public void setReceivedFacePost(SortedSet<FacePost> receivedFacePost) {
-		this.receivedFacePost = receivedFacePost;
-	}
+//	private SortedSet<FacePost> sentFacePost = new TreeSet<>();
+//	@ManyToMany(  fetch = FetchType.LAZY)
+//	@LazyCollection(LazyCollectionOption.TRUE)
+//	@SortNatural
+////	@Cascade({org.hibernate.annotations.CascadeType.ALL})
+//	@JoinTable(name = "user_sent_post",
+//			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+//			inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"))
+//
+//	public SortedSet<FacePost> getSentFacePost() {
+//		return sentFacePost;
+//	}
+//	public void setSentFacePost(SortedSet<FacePost> sentFacePost) {
+//		this.sentFacePost = sentFacePost;
+//	}
+//
+//	private SortedSet<FacePost> receivedFacePost = new TreeSet<>();
+//	@ManyToMany(   fetch = FetchType.EAGER)
+//	@LazyCollection(LazyCollectionOption.FALSE)
+//	@SortNatural
+////	@Cascade({org.hibernate.annotations.CascadeType.ALL})
+//	@JoinTable(name = "user_received_post",
+//			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+//			inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"))
+//	public SortedSet<FacePost> getReceivedFacePost() {
+//		return receivedFacePost;
+//	}
+//	public void setReceivedFacePost(SortedSet<FacePost> receivedFacePost) {
+//		this.receivedFacePost = receivedFacePost;
+//	}
 
 
 	//----------------User Received Mail--------------------------
