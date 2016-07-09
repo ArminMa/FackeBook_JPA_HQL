@@ -305,13 +305,9 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 //	}
 //
 //	private SortedSet<FacePost> receivedFacePost = new TreeSet<>();
-//	@ManyToMany(   fetch = FetchType.EAGER)
+//	@ManyToMany(   fetch = FetchType.EAGER , cascade = CascadeType.ALL, mappedBy = "receivers")
 //	@LazyCollection(LazyCollectionOption.FALSE)
 //	@SortNatural
-////	@Cascade({org.hibernate.annotations.CascadeType.ALL})
-//	@JoinTable(name = "user_received_post",
-//			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-//			inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"))
 //	public SortedSet<FacePost> getReceivedFacePost() {
 //		return receivedFacePost;
 //	}
