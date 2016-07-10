@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @RestController
 public class PingController {
 
-	@RequestMapping("/")
+	@RequestMapping("/hello")
 	public Hello hello() {
 
 		return new Hello("Hello Worls!");

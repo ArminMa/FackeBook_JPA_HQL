@@ -18,6 +18,8 @@ public class ApplicationWar extends SpringBootServletInitializer {
 		return application.sources(Application.class);
 	}
 
+
+
 	public static void main(String[] args) {
 		SpringApplication.run(ApplicationWar.class, args);
 	}

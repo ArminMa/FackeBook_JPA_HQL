@@ -54,7 +54,7 @@ public class PingControllerTest {
 	@Test
 	public void hello() throws Exception {
 		Gson gson = new Gson();
-		String hello2 = this.mockMvc.perform(get("/").accept(applicationJsonMediaType))
+		String hello2 = this.mockMvc.perform(get("/hello").accept(applicationJsonMediaType))
 						.andExpect(status().isOk())
 						.andReturn().getResponse().getContentAsString();
 
@@ -64,7 +64,7 @@ public class PingControllerTest {
 
 
 		Hello hello = gson.fromJson(
-				this.mockMvc.perform(get("/").accept(applicationJsonMediaType))
+				this.mockMvc.perform(get("/hello").accept(applicationJsonMediaType))
 						.andExpect(status().isOk())
 						.andExpect(content().contentType(applicationJsonMediaType))
 						.andReturn().getResponse().getContentAsString()
