@@ -48,6 +48,5 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Fr
 			"where FR.pk.requestTo.id =:receiver_id")
 	List<FriendRequest> findAllFriendRequestToUserByUserId(@Param("receiver_id") Long toUserId);
 
-	@Query(value = "select FR from FriendRequest FR where FR.pk.requestFrom.id = :userId")
-	List<FriendRequest> findAllFromThisUserId(@Param("userId") Long userID);
+
 }

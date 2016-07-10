@@ -3,6 +3,7 @@ package org.kth.HI1034.model;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.kth.HI1034.model.entity.user.FaceUser;
 import org.kth.HI1034.util.enums.Role;
 import org.springframework.security.core.GrantedAuthority;
 

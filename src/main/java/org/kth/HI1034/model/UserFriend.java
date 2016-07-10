@@ -1,6 +1,7 @@
 package org.kth.HI1034.model;
 
 
+import org.kth.HI1034.model.entity.user.FaceUser;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -18,7 +19,7 @@ import java.util.Date;
 public class UserFriend implements Serializable, Comparable<UserFriend> {
 
 	public UserFriend() {
-		this.pk = new UserFriendID();
+
 	}
 
 	public UserFriend(FaceUser accepter, FaceUser requester, Date beginningOfFriendship) {

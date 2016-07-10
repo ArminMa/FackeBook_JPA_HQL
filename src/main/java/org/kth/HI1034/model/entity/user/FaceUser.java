@@ -1,8 +1,7 @@
-package org.kth.HI1034.model;
+package org.kth.HI1034.model.entity.user;
 
 import com.google.common.base.MoreObjects;
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.LazyCollection;
@@ -10,6 +9,10 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.kth.HI1034.model.Authority;
+import org.kth.HI1034.model.FriendRequest;
+import org.kth.HI1034.model.UserFriend;
+import org.kth.HI1034.model.UserReceivedMail;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -281,41 +284,6 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 		this.authorities = authorities;
 	}
 
-
-//----------------Post--------------------------
-
-	//We don't want to remove the post after its posted eg, if the user is removed
-	//If we do that other will not be able to se it.
-
-
-//	private SortedSet<FacePost> sentFacePost = new TreeSet<>();
-//	@ManyToMany(  fetch = FetchType.LAZY)
-//	@LazyCollection(LazyCollectionOption.TRUE)
-//	@SortNatural
-////	@Cascade({org.hibernate.annotations.CascadeType.ALL})
-//	@JoinTable(name = "user_sent_post",
-//			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-//			inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"))
-//
-//	public SortedSet<FacePost> getSentFacePost() {
-//		return sentFacePost;
-//	}
-//	public void setSentFacePost(SortedSet<FacePost> sentFacePost) {
-//		this.sentFacePost = sentFacePost;
-//	}
-//
-//	private SortedSet<FacePost> receivedFacePost = new TreeSet<>();
-//	@ManyToMany(   fetch = FetchType.EAGER , cascade = CascadeType.ALL, mappedBy = "receivers")
-//	@LazyCollection(LazyCollectionOption.FALSE)
-//	@SortNatural
-//	public SortedSet<FacePost> getReceivedFacePost() {
-//		return receivedFacePost;
-//	}
-//	public void setReceivedFacePost(SortedSet<FacePost> receivedFacePost) {
-//		this.receivedFacePost = receivedFacePost;
-//	}
-
-
 	//----------------User Received Mail--------------------------
 
 	private SortedSet<UserReceivedMail> receivedFaceMails = new TreeSet<>();
@@ -371,9 +339,11 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 
 	//--------------------------------Friends---------------------------------------------
 
+
+
 	private SortedSet<UserFriend> acceptedFriends = new TreeSet<>();
 	@OneToMany( cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "pk.accepter")
-//	@LazyCollection(LazyCollectionOption.FALSE)
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@SortNatural
 	public SortedSet<UserFriend> getAcceptedFriends() {
 		return acceptedFriends;
@@ -384,7 +354,7 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 
 	private SortedSet<UserFriend> requestedFriends = new TreeSet<>();
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "pk.requester")
-//	@LazyCollection(LazyCollectionOption.FALSE)
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@SortNatural
 	public SortedSet<UserFriend> getRequestedFriends() {
 		return requestedFriends;

@@ -5,9 +5,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.kth.HI1034.ApplicationWar;
-import org.kth.HI1034.model.FaceUser;
+import org.kth.HI1034.model.entity.user.FaceUser;
 import org.kth.HI1034.model.entity.post.FacePost;
-import org.kth.HI1034.model.entity.post.PostUser;
+import org.kth.HI1034.model.entity.user.UserDetached;
 import org.kth.HI1034.repository.post.PostRepository;
 import org.kth.HI1034.repository.post.PostUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class UserPostRepoTest {
 
 	@Autowired
 	private PostUserRepository postUserRepo;
-	private List<PostUser> postUserList = new ArrayList<>();
+	private List<UserDetached> userDetachedList = new ArrayList<>();
 
 	@Test
 	public void A_setUp() throws Exception {
@@ -58,15 +58,17 @@ public class UserPostRepoTest {
 		assertThat(userList.size()).isEqualTo(5);
 
 
-		postUserList.add(new PostUser("UserFriendRepoTest0@gmail.com", "FaceUser0"));
-		postUserList.add(new PostUser("UserFriendRepoTest1@gmail.com", "FaceUser1"));
-		postUserList.add(new PostUser("UserFriendRepoTest2@gmail.com", "FaceUser2"));
-		postUserList.add(new PostUser("UserFriendRepoTest3@gmail.com", "FaceUser3"));
-		postUserList.add(new PostUser("UserFriendRepoTest4@gmail.com", "FaceUser4"));
-		postUserList = postUserRepo.save( postUserList);
+		// each entry is tightly linked to an email and username.
+		// a user may be deleted from the system and this will not affect the sent and mail to other users.
+		userDetachedList.add(new UserDetached("UserFriendRepoTest0@gmail.com", "FaceUser0"));
+		userDetachedList.add(new UserDetached("UserFriendRepoTest1@gmail.com", "FaceUser1"));
+		userDetachedList.add(new UserDetached("UserFriendRepoTest2@gmail.com", "FaceUser2"));
+		userDetachedList.add(new UserDetached("UserFriendRepoTest3@gmail.com", "FaceUser3"));
+		userDetachedList.add(new UserDetached("UserFriendRepoTest4@gmail.com", "FaceUser4"));
+		userDetachedList = postUserRepo.save(userDetachedList);
 		postUserRepo.flush();
-		assertThat(postUserList).isNotNull();
-		assertThat(postUserList.size()).isEqualTo(5);
+		assertThat(userDetachedList).isNotNull();
+		assertThat(userDetachedList.size()).isEqualTo(5);
 
 		postList.add( new FacePost("Post 0", new Date(), userList.get(0), userList.get(0))  ) ;
 		postList.add( new FacePost("Post 1", new Date(), userList.get(0) , userList.get(1)) );
@@ -113,6 +115,15 @@ public class UserPostRepoTest {
 		assertThat(receivedPostListForUser1).isNotEmpty();
 		assertThat(receivedPostListForUser1).hasSize(1);
 
+		// remove the post from the users received post list
+		postRepo.delete(receivedPostListForUser1.get(0));
+		postRepo.flush();
+
+		// the list should contain 0 posts
+		receivedPostListForUser1 = postRepo.findAllReceiverToUserByUserId(userList.get(1).getEmail());
+		assertThat(receivedPostListForUser1).isNotNull();
+		assertThat(receivedPostListForUser1).isEmpty();
+		assertThat(receivedPostListForUser1).hasSize(0);
 
 		System.out.println("\n\n----------------- UserPostRepoTest.B_postTest-end ----------------------------\n\n");
 
@@ -120,20 +131,18 @@ public class UserPostRepoTest {
 
 		System.out.println("\n\n----------------- UserPostRepoTest.Z_tearDown-start ----------------------------\n\n");
 
-//		postRepo.delete(postList.get(0));		postList.remove(0);
-//		postRepo.delete(postList.get(0));       postList.remove(0);
-
-
-		// removal of a user should not remove his sent post
-
-
-
-
-//
-//
-//		postRepo.delete(postList);
+		//remove all Users and that should not affect sent and received posts
 		userRepo.delete(userList);
 		userRepo.flush();
+
+		//remove the posts
+		postRepo.delete(postList);
+		postRepo.flush();
+		// remove the detached user information
+		postUserRepo.delete(userDetachedList);
+		postUserRepo.flush();
+
+
 
 		System.out.println("\n\n----------------- UserPostRepoTest.Z_tearDown-end ----------------------------\n\n");
 	}

@@ -1,5 +1,7 @@
 package org.kth.HI1034.model;
 
+import org.kth.HI1034.model.entity.user.FaceUser;
+
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
