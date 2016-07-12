@@ -2,6 +2,7 @@ package org.kth.HI1034.util.config.db;
 
 
 import org.apache.commons.dbcp2.BasicDataSource;
+
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.MySQL5InnoDBDialect;
 import org.kth.HI1034.util.enums.DbProfile;

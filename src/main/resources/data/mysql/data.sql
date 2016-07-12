@@ -111,7 +111,7 @@ INSERT INTO AccountRole (accountId, roleId) SELECT
                                             WHERE a.username = 'operations' AND r.id = 3;
 
 INSERT INTO Greeting (referenceId, text, version, createdBy, createdAt, updatedBy, updatedAt)
-VALUES ('1e0d5287-67fd-4043-9ac4-b8d358d6d7ce', 'Hello World!', 0, 'user', NOW ( ), NULL, NULL);
+VALUES ('1e0d5287-67fd-4043-9ac4-b8d358d6d7ce', 'Ping World!', 0, 'user', NOW ( ), NULL, NULL);
 INSERT INTO Greeting (referenceId, text, version, createdBy, createdAt, updatedBy, updatedAt)
 VALUES ('37c3178d-3b49-47b6-99d1-277b1a3e8df8', 'Hola Mundo!', 0, 'user', NOW ( ), NULL, NULL);
 
