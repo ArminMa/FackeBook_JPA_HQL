@@ -16,7 +16,7 @@ public interface FaceUserRepository extends JpaRepository<FaceUser, Long>, JpaSp
 
 
 	@Query(value = "select U FROM FaceUser U WHERE U.email = :theEmail")
-	FaceUser findByEmail(@Param("theEmail")String email);
+	FaceUser findByEmail(@Param("theEmail") String email);
 
 //	@Query(value = "SELECT U FROM FaceUser U, IN(U.sentFriendRequests) SFR WHERE SFR.pk.requestFrom.id = :userId" )
 //	Set<FaceUser> findUsersWhereFriendRequestFromThisUserIsSent(@Param("fromUserId") Long userFromId);
