@@ -1,7 +1,7 @@
 
     package org.kth.HI1034.exceptions;
 
-    public class ContactNotFoundException extends Exception {
+    public class ContactNotFoundException extends RuntimeException {
 
 
         private String msg;

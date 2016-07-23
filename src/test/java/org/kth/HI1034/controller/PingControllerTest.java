@@ -1,13 +1,14 @@
 package org.kth.HI1034.controller;
 
-
 import com.google.gson.Gson;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.kth.HI1034.ApplicationWar;
 import org.kth.HI1034.model.pojo.Ping;
+import org.kth.HI1034.util.MediaTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationContextLoader;
 import org.springframework.http.MediaType;
@@ -27,98 +28,107 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ApplicationWar.class, loader=SpringApplicationContextLoader.class)
 @WebAppConfiguration
-
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PingControllerTest {
+
 	@Autowired
 	private WebApplicationContext context;
 
-	private MockMvc mockMvc;
+	private MockMvc mockMvc ;
 //	private MockRestServiceServer mockServer;
 
-	private MediaType applicationJsonMediaType;
-
+	private MediaType applicationJsonMediaType ;
+	private Gson gson;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() throws Exception{
+		gson = new Gson();
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context).build();
-		applicationJsonMediaType = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
-	}
-
-	@After
-	public void tearDown() throws Exception {
-
+		this.applicationJsonMediaType =  new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 	}
 
 	@Test
-	public void hello() throws Exception {
-
-		Gson gson = new Gson();
+	public void ping1() throws Exception {
 
 		Ping pingReturnd = gson.fromJson(
-						this.mockMvc.perform(get("/ping1").accept(applicationJsonMediaType))
+				this.mockMvc.perform(get("/ping1").accept(MediaTypes.JsonUtf8))
 						.andExpect(status().isOk())
-						.andExpect(content().contentType(applicationJsonMediaType))
+						.andExpect(content().contentType(MediaTypes.JsonUtf8))
 						.andReturn().getResponse().getContentAsString()
 				, Ping.class);
 
 		assertThat(pingReturnd).isNotNull();
 		Ping ping = new Ping("Ping ping1!", "ignore me", "not Ignored");
 		assertThat(pingReturnd.equals(ping));
+	}
 
-		pingReturnd = gson.fromJson(
+	@Test
+	public void ping2() throws Exception {
+
+		Ping pingReturnd = gson.fromJson(
 				this.mockMvc.perform(get("/ping2/Armin").accept(applicationJsonMediaType))
 						.andExpect(status().isOk())
 						.andExpect(content().contentType(applicationJsonMediaType))
 						.andReturn().getResponse().getContentAsString()
 				, Ping.class);
 		assertThat(pingReturnd).isNotNull();
-		ping = new Ping("Ping Armin", "ignore me", "not Ignored");
+		Ping ping = new Ping("Ping Armin", "ignore me", "not Ignored");
 		assertThat(pingReturnd.equals(ping));
+	}
 
-		pingReturnd = gson.fromJson(
+	@Test
+	public void ping3() throws Exception {
+
+		Ping pingReturnd = gson.fromJson(
 				this.mockMvc.perform(get("/ping3?name=Armin").accept(applicationJsonMediaType))
 						.andExpect(status().isOk())
 						.andExpect(content().contentType(applicationJsonMediaType))
 						.andReturn().getResponse().getContentAsString()
 				, Ping.class);
 		assertThat(pingReturnd).isNotNull();
-		ping = new Ping("Ping Armin", "ignore me", "not Ignored");
+		Ping ping = new Ping("Ping Armin", "ignore me", "not Ignored");
 		assertThat(pingReturnd.equals(ping));
+	}
 
-		pingReturnd = gson.fromJson(
+	@Test
+	public void ping4() throws Exception {
+
+		Ping pingReturnd = gson.fromJson(
 				this.mockMvc.perform(get("/ping4/Armin").header("jwt","my token should be here").accept(applicationJsonMediaType))
 						.andExpect(status().isOk())
 						.andExpect(content().contentType(applicationJsonMediaType))
 						.andReturn().getResponse().getContentAsString()
 				, Ping.class);
 		assertThat(pingReturnd).isNotNull();
-		ping = new Ping("Ping Armin", "ignore me", "jwt = my token should be here");
+		Ping ping = new Ping("Ping Armin", "ignore me", "jwt = my token should be here");
 		assertThat(pingReturnd.equals(ping));
+	}
 
-		ping = new Ping("Ping Armin", "ignore me", "jwt = my token should be here");
-		pingReturnd = gson.fromJson(
+	@Test
+	public void ping5() throws Exception {
+
+		Ping ping = new Ping("Ping Armin", "ignore me", "jwt = my token should be here");
+		Ping pingReturnd = gson.fromJson(
 				this.mockMvc.perform
 						(
 								post("/ping5/Armin")
-								.contentType(applicationJsonMediaType)
-								.content(gson.toJson(ping))
-								.header("jwt","my token should be here")
+										.contentType(MediaTypes.JsonUtf8)
+										.content(gson.toJson(ping))
+										.header("jwt","my token should be here")
 						)
 						.andExpect(status().isOk())
-						.andExpect(content().contentType(applicationJsonMediaType))
+						.andExpect(content().contentType(MediaTypes.JsonUtf8))
 						.andExpect(header().string("jwt","some random token"))
 						.andExpect(header().string("info", "mor header info"))
 						.andReturn().getResponse().getContentAsString()
 				, Ping.class);
 		assertThat(pingReturnd).isNotNull();
 		assertThat(pingReturnd.equals(ping));
-/*
 
-
+		/*
 		System.out.println("\n\n\n\n" +
 				"----------------------------------- PCT_83 -------------------------------------\n\n" +
 				"" + gson.toJson(pingReturnd) +
@@ -126,9 +136,8 @@ public class PingControllerTest {
 				pingReturnd +
 				"\n\n" +
 				"------------------------------------------------------------------------\n\n\n\n\n");
-*/
+				*/
 	}
-
 
 
 

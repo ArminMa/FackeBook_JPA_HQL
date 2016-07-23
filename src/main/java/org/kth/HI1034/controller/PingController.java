@@ -2,9 +2,15 @@
 package org.kth.HI1034.controller;
 
 import com.google.gson.Gson;
+import org.jose4j.lang.JoseException;
+import org.kth.HI1034.controller.util.MediaTypes;
 import org.kth.HI1034.model.pojo.Ping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -23,27 +29,26 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 public class PingController {
 
+
+
 	@RequestMapping(value = "/ping1", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
-	public @ResponseBody
-	Ping ping1(
+	public @ResponseBody Ping ping1(
 			HttpServletRequest request,
 			HttpServletResponse response) {
-		Gson gson = new Gson();
+
 		Ping ping = new Ping("Ping ping1!", "ignore me", "not Ignored");
 		response.setStatus(HttpStatus.OK.value());
 		return ping;
 	}
 
 	@RequestMapping(value="/ping2/{name}", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
-	public @ResponseBody
-	Ping ping2(@PathVariable("name") String name){
+	public @ResponseBody Ping ping2(@PathVariable("name") String name){
 		Ping ping = new Ping("Ping " + name, "ignore me", "not Ignored");
 		return ping;
 	}
 
 	@RequestMapping(value="/ping3", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
-	public @ResponseBody
-	Ping ping3(@RequestParam("name") String name){
+	public @ResponseBody Ping ping3(@RequestParam("name") String name){
 		Ping ping = new Ping("Ping " + name, "ignore me", "not Ignored");
 		return ping;
 	}
@@ -71,8 +76,7 @@ public class PingController {
 					method = RequestMethod.POST
 			)
 
-	public @ResponseBody
-	Ping ping5(
+	public @ResponseBody Ping ping5(
 			@RequestHeader(name="jwt",defaultValue="where is the Token?") String jwt,
 			@PathVariable("name") String name,
 			@RequestBody Ping ping,
@@ -85,6 +89,28 @@ public class PingController {
 		return ping;
 	}
 
+
+	protected Logger logger = LoggerFactory.getLogger(getClass());
+
+	@ExceptionHandler
+	public @ResponseBody ResponseEntity<?> handleDemoException(JoseException exception ,
+	                                      HttpServletRequest req) {
+		logger.error("\nJoseException - " + exception.toString() + "\n");
+
+		Gson gson = new Gson();
+
+
+		// Because we are handling the error, the server thinks everything is
+		// OK, so the status is 200. So let's set it to something else.
+		req.setAttribute("javax.servlet.error.status_code", HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+				.contentType(MediaTypes.JsonUtf8)
+				.body(gson.toJson(exception.toString()));
+
+
+
+	}
 
 
 }

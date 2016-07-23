@@ -1,15 +1,16 @@
 package org.kth.HI1034.exceptions;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.kth.HI1034.exceptions.exeptionHandler.GenericException;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class ResourceNotFoundException extends RuntimeException {
+//@ResponseStatus(HttpStatus.NOT_FOUND)
+public class ResourceNotFoundException extends GenericException {
 
-    private static final long serialVersionUID = -1402436282978052954L;
-
-    public ResourceNotFoundException() {
-        super();
+    public ResourceNotFoundException(String msg) {
+        super(System.currentTimeMillis() + ": " + msg);
     }
+
+
+
+
 
 }

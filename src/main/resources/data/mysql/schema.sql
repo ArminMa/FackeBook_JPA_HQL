@@ -12,13 +12,13 @@ CREATE TABLE `face_mail` (
 DROP TABLE IF EXISTS `testdb.face_user`;
 CREATE TABLE `face_user` (
 	`id` bigint(20) NOT NULL AUTO_INCREMENT,
-	`account_expired` bit(1) DEFAULT NULL,
-	`account_locked` bit(1) DEFAULT NULL,
+	`accountExpired` bit(1) DEFAULT NULL,
+	`accountLocked` bit(1) DEFAULT NULL,
 	`credentials_expired` bit(1) DEFAULT NULL,
 	`email` varchar(100) NOT NULL,
 	`enabled` bit(1) DEFAULT NULL,
-	`first_name` varchar(25) NOT NULL,
-	`last_name` varchar(50) NOT NULL,
+	`firstName` varchar(25) NOT NULL,
+	`lastName` varchar(50) NOT NULL,
 	`password` varchar(255) NOT NULL,
 	`user_name` varchar(15) NOT NULL,
 	PRIMARY KEY (`id`),
