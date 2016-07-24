@@ -98,9 +98,9 @@ public class RegisterControllerTest {
 
 		//use the servers public key. to encypt the secret key
 		RsaJsonWebKey serverRsaJsonWebKey = JsonWebKeyUtil.getPublicRSAJwkFromJson(appPublicKeys.getPublicRsaWebKeyAsJson());
-		Key secretKey = JsonWebKeyUtil.symmetricKey.generateSecretAesKey();
+		Key secretKey = JsonWebKeyUtil.SymmetricKey.generateSecretAesKey();
 		// the encrypted private part of the key kan only be opened with the private part of the key
-		String encryptedSharedKey = CipherUtils.encryptWithPublicKey(JsonWebKeyUtil.symmetricKey.keyToString(secretKey.getEncoded()), serverRsaJsonWebKey.getPublicKey() );
+		String encryptedSharedKey = CipherUtils.encryptWithPublicKey(JsonWebKeyUtil.SymmetricKey.keyToString(secretKey.getEncoded()), serverRsaJsonWebKey.getPublicKey() );
 
 		faceuserPojo.setUserServerKeyPojo( new UserServerKeyPojo( "registerTest@gmail.com", encryptedSharedKey ) );
 

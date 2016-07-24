@@ -12,7 +12,7 @@
 //
 //public class CryptoHelper {
 //
-//	private Key symmetricKey;
+//	private Key SymmetricKey;
 //
 //	public static void main( String [] args ) throws Exception {
 //
@@ -29,8 +29,8 @@
 //
 //	}
 //
-//	public CryptoHelper( Key symmetricKey) {
-//		this.symmetricKey = symmetricKey;
+//	public CryptoHelper( Key SymmetricKey) {
+//		this.SymmetricKey = SymmetricKey;
 //	}
 //
 //	public CryptoHelper() throws Exception {
@@ -69,11 +69,11 @@
 //
 //
 //	public Key getSymmetricKey() {
-//		return symmetricKey;
+//		return SymmetricKey;
 //	}
 //
-//	public void setSymmetricKey(Key symmetricKey) {
-//		this.symmetricKey = symmetricKey;
+//	public void setSymmetricKey(Key SymmetricKey) {
+//		this.SymmetricKey = SymmetricKey;
 //	}
 //
 //	public static byte [] generateIV() {
@@ -96,14 +96,14 @@
 //	}
 //
 //	public byte [] encryptWithSymmetricKey( byte [] iv, byte [] plaintext ) throws Exception {
-//		Cipher cipher = Cipher.getInstance( symmetricKey.getAlgorithm() + "/CBC/PKCS5Padding" );
-//		cipher.init( Cipher.ENCRYPT_MODE, symmetricKey, new IvParameterSpec( iv ) );
+//		Cipher cipher = Cipher.getInstance( SymmetricKey.getAlgorithm() + "/CBC/PKCS5Padding" );
+//		cipher.init( Cipher.ENCRYPT_MODE, SymmetricKey, new IvParameterSpec( iv ) );
 //		return cipher.doFinal( plaintext );
 //	}
 //
 //	public byte [] decryptWithSymmetricKey( byte [] iv, byte [] ciphertext ) throws Exception {
-//		Cipher cipher = Cipher.getInstance( symmetricKey.getAlgorithm() + "/CBC/PKCS5Padding" );
-//		cipher.init( Cipher.DECRYPT_MODE, symmetricKey, new IvParameterSpec( iv ) );
+//		Cipher cipher = Cipher.getInstance( SymmetricKey.getAlgorithm() + "/CBC/PKCS5Padding" );
+//		cipher.init( Cipher.DECRYPT_MODE, SymmetricKey, new IvParameterSpec( iv ) );
 //		return cipher.doFinal( ciphertext );
 //	}
 //

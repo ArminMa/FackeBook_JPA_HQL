@@ -208,7 +208,7 @@ public class JsonWebKeyUtil {
 	}
 
 
-	public static class symmetricKey{
+	public static class SymmetricKey {
 
 		public static Key generateSecretAesKey() throws JoseException {
 			Key key = new AesKey(ByteUtil.randomBytes(16));

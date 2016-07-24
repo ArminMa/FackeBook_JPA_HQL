@@ -254,7 +254,7 @@ public class TokenUtils {
 		 *             if any issue occurs during generation. Mostly likely a key
 		 *             issue.
 		 */
-		public static String generateJWTToken(final Key key,
+		public static String generateJWT(final Key key,
 		                                      final String issuer,
 		                                      final String audience,
 		                                      final String subject,

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.security.Key;
 import java.util.List;
 
 @Service
@@ -59,12 +60,40 @@ public class RegisterServiceImpl implements RegisterService {
 
 		Assert.notNull(faceuserPojo, "the token could not be parsed");
 
+
+
+//		Json key = JsonWebKeyUtil.SymmetricKey.stringToSecretKey(faceuserPojo.getUserServerKeyPojo().getSharedKey());
+
+		String encryptedKey = faceuserPojo.getUserServerKeyPojo().getSharedKey();
+
+
+
+
 		// decrypts and saves the shared key;
 		UserServerKeyPojo userServerKeyPojo = keyService.save(faceuserPojo.getUserServerKeyPojo());
 		FaceUser faceUser = userRepository.save( Converter.convert(faceuserPojo) );
 
+		Key secretKey = JsonWebKeyUtil.SymmetricKey.stringToSecretKey(userServerKeyPojo.getSharedKey());
+
+		faceuserPojo = Converter.convert(faceUser);
+		faceuserPojo.setUserServerKeyPojo(userServerKeyPojo);
+
+		tokenPojo = new TokenPojo();
+		tokenPojo.setIssuer("registerTest@gmail.com");
+		tokenPojo.setAudience("fackebook.se");
+		tokenPojo.setSubject("you are registered and Authenticated");
+
+		String JWT = TokenUtils.SymmetricJWT.generateJWT(
+				secretKey,
+				tokenPojo.getIssuer(),
+				tokenPojo.getAudience(),
+				tokenPojo.getSubject(),
+				faceuserPojo.toString(), 10);
+
+		tokenPojo.setToken(JWT);
+
 		System.out.println("\n\n\n------------- RegisterServiceImpl? 57 -----------------" +
-				"\n" + payload +
+				"\n" + JWT +
 				"\n\n-------------RegisterServiceImpl?-----------------\n\n\n");
 
 		return tokenPojo;
