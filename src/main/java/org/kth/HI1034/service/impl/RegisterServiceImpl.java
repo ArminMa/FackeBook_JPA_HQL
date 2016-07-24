@@ -12,8 +12,10 @@ import org.kth.HI1034.security.ApiKeyFactory;
 import org.kth.HI1034.security.util.ciperUtil.JsonWebKeyUtil;
 import org.kth.HI1034.service.KeyService;
 import org.kth.HI1034.service.RegisterService;
+import org.kth.HI1034.util.GsonX;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -45,7 +47,7 @@ public class RegisterServiceImpl implements RegisterService {
 					"\n\n-------------RegisterServiceImpl?-----------------\n\n\n");
 		}
 
-		String token = TokenUtils.EllipticJWT.getPayloadCurveJWK(
+		String payload = TokenUtils.EllipticJWT.getPayloadCurveJWK(
 				tokenPojo.getIssuer(),
 				tokenPojo.getAudience(),
 				tokenPojo.getSenderJwk(),
@@ -54,8 +56,12 @@ public class RegisterServiceImpl implements RegisterService {
 		);
 
 
+		FaceuserPojo faceuserPojo = GsonX.gson.fromJson(payload, FaceuserPojo.class);
+
+		Assert.notNull(faceuserPojo, "the token could not be parsed");
+
 		System.out.println("\n\n\n------------- RegisterServiceImpl? 57 -----------------" +
-				"\n" + token +
+				"\n" + payload +
 				"\n\n-------------RegisterServiceImpl?-----------------\n\n\n");
 
 		return tokenPojo;

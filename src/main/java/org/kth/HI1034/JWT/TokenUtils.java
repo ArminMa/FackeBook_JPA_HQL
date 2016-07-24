@@ -174,7 +174,6 @@ public class TokenUtils {
 			String receiverPublicEllipticJwt,
 			String token) throws JoseException, InvalidJwtException {
 
-				//todo is is public or private for receiver?
 		EllipticCurveJsonWebKey senderPublicJWK = JsonWebKeyUtil.getEllipticJwkFromJson(senderPrivateEllipticJwt);
 		EllipticCurveJsonWebKey receiverPrivateJWK = JsonWebKeyUtil.getEllipticJwkFromJson(receiverPublicEllipticJwt);
 
