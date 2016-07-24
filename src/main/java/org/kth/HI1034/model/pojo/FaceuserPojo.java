@@ -237,8 +237,8 @@ public class FaceuserPojo implements Serializable, Comparable<FaceuserPojo> {
 
 	@Override
 	public int hashCode() {
-		int result = accountExpired != null ? accountExpired.hashCode() : 0;
-		result = 31 * result + (accountLocked != null ? accountLocked.hashCode() : 0);
+		int result = accountExpired != null ? 1 : 0;
+		result = 31 * result + (accountLocked != null ? 1 : 0);
 		result = 31 * result + (credentials_expired != null ? credentials_expired.hashCode() : 0);
 		result = 31 * result + email.hashCode();
 		result = 31 * result + (enabled != null ? enabled.hashCode() : 0);

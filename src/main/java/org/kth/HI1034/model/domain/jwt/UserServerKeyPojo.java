@@ -2,7 +2,7 @@ package org.kth.HI1034.model.domain.jwt;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.gson.Gson;
+import org.kth.HI1034.util.GsonX;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -14,8 +14,12 @@ public class UserServerKeyPojo  implements Serializable, Comparable<UserServerKe
 
 
 	private String email;
-	private String clientJwk;
-	private String serverJwk;
+	private String sharedKey;
+
+	public UserServerKeyPojo(String email, String sharedKey) {
+		this.email = email;
+		this.sharedKey = sharedKey;
+	}
 
 
 	public String getEmail() {
@@ -26,21 +30,12 @@ public class UserServerKeyPojo  implements Serializable, Comparable<UserServerKe
 		this.email = email;
 	}
 
-
-	public String getClientJwk() {
-		return clientJwk;
+	public String getSharedKey() {
+		return sharedKey;
 	}
 
-	public void setClientJwk(String clientJwk) {
-		this.clientJwk = clientJwk;
-	}
-
-	public String getServerJwk() {
-		return serverJwk;
-	}
-
-	public void setServerJwk(String serverJwk) {
-		this.serverJwk = serverJwk;
+	public void setSharedKey(String sharedKey) {
+		this.sharedKey = sharedKey;
 	}
 
 	@Override
@@ -50,13 +45,16 @@ public class UserServerKeyPojo  implements Serializable, Comparable<UserServerKe
 
 		UserServerKeyPojo that = (UserServerKeyPojo) o;
 
-		return email != null ? email.equals(that.email) : that.email == null;
+		if (email != null ? !email.equals(that.email) : that.email != null) return false;
+		return sharedKey != null ? sharedKey.equals(that.sharedKey) : that.sharedKey == null;
 
 	}
 
 	@Override
 	public int hashCode() {
-		return email != null ? email.hashCode() : 0;
+		int result = email != null ? email.hashCode() : 0;
+		result = 31 * result + (sharedKey != null ? sharedKey.hashCode() : 0);
+		return result;
 	}
 
 	@Override
@@ -68,8 +66,8 @@ public class UserServerKeyPojo  implements Serializable, Comparable<UserServerKe
 
 	@Override
 	public String toString() {
-		Gson gson = new Gson();
-		return gson.toJson(this);
+
+		return GsonX.gson.toJson(this);
 	}
 
 

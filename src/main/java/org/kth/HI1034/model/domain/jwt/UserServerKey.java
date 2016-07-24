@@ -44,30 +44,16 @@ public class UserServerKey implements Serializable, Comparable<UserServerKey> {
 	}
 
 
-	private String serverJwk;
+	private String sharedKey;
 	@Column(unique = true)
 /*	@NotEmpty*/
 	@Length( max = 2048)
-	public String getServerJwk() {
-		return serverJwk;
+	public String getSharedKey() {
+		return sharedKey;
 	}
 
-	public void setServerJwk(String serverJwk) {
-		this.serverJwk = serverJwk;
-	}
-
-
-
-	private String clientJwk;
-	@Column(unique = true)
-	@NotEmpty
-	@Length( max = 500)
-	public String getClientJwk() {
-		return clientJwk;
-	}
-
-	public void setClientJwk(String clientJwk) {
-		this.clientJwk = clientJwk;
+	public void setSharedKey(String serverJwk) {
+		this.sharedKey = serverJwk;
 	}
 
 
@@ -76,24 +62,21 @@ public class UserServerKey implements Serializable, Comparable<UserServerKey> {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		UserServerKey userServerKey = (UserServerKey) o;
+		UserServerKey that = (UserServerKey) o;
 
-		if (email != null ? !email.equals(userServerKey.email) : userServerKey.email != null) return false;
-		if (serverJwk != null ? !serverJwk.equals(userServerKey.serverJwk) : userServerKey.serverJwk != null)
-			return false;
-		return clientJwk != null ? clientJwk.equals(userServerKey.clientJwk) : userServerKey.clientJwk == null;
+		if (id != null ? !id.equals(that.id) : that.id != null) return false;
+		if (email != null ? !email.equals(that.email) : that.email != null) return false;
+		return sharedKey != null ? sharedKey.equals(that.sharedKey) : that.sharedKey == null;
 
 	}
 
 	@Override
 	public int hashCode() {
-		int result = email != null ? email.hashCode() : 0;
-		result = 31 * result + (serverJwk != null ? serverJwk.hashCode() : 0);
-		result = 31 * result + (clientJwk != null ? clientJwk.hashCode() : 0);
+		int result = id != null ? id.hashCode() : 0;
+		result = 31 * result + (email != null ? email.hashCode() : 0);
+		result = 31 * result + (sharedKey != null ? sharedKey.hashCode() : 0);
 		return result;
 	}
-
-
 
 	@Override
 	public int compareTo(UserServerKey o) {

@@ -2,13 +2,14 @@ package org.kth.HI1034.service.impl;
 
 
 import org.jose4j.jwk.EllipticCurveJsonWebKey;
+import org.kth.HI1034.AppKeyFactory;
 import org.kth.HI1034.JWT.TokenPojo;
 import org.kth.HI1034.JWT.TokenUtils;
+import org.kth.HI1034.model.converters.Converter;
 import org.kth.HI1034.model.domain.entity.user.FaceUser;
+import org.kth.HI1034.model.domain.jwt.UserServerKeyPojo;
 import org.kth.HI1034.model.domain.repository.FaceUserRepository;
-import org.kth.HI1034.model.domain.repository.UserKeyRepository;
 import org.kth.HI1034.model.pojo.FaceuserPojo;
-import org.kth.HI1034.security.ApiKeyFactory;
 import org.kth.HI1034.security.util.ciperUtil.JsonWebKeyUtil;
 import org.kth.HI1034.service.KeyService;
 import org.kth.HI1034.service.RegisterService;
@@ -25,8 +26,6 @@ public class RegisterServiceImpl implements RegisterService {
 	@Autowired
 	private FaceUserRepository userRepository;
 
-	@Autowired
-	private UserKeyRepository keyRepository;
 
 	@Autowired
 	private KeyService keyService;
@@ -34,7 +33,7 @@ public class RegisterServiceImpl implements RegisterService {
 	@Override
 	public TokenPojo registerNewUser(TokenPojo tokenPojo) throws Exception {
 
-		EllipticCurveJsonWebKey ellipticJsonWebKey = ApiKeyFactory.getEllipticJsonWebKey();
+		EllipticCurveJsonWebKey ellipticJsonWebKey = AppKeyFactory.getEllipticWebKey();
 
 //		String sendersPublicKey = CipherUtils.decryptWithPrivateKey(tokenPojo.getSenderJwk(), ellipticJsonWebKey.getPrivateKey());
 //		tokenPojo.setSenderJwk(sendersPublicKey);
@@ -59,6 +58,10 @@ public class RegisterServiceImpl implements RegisterService {
 		FaceuserPojo faceuserPojo = GsonX.gson.fromJson(payload, FaceuserPojo.class);
 
 		Assert.notNull(faceuserPojo, "the token could not be parsed");
+
+		// decrypts and saves the shared key;
+		UserServerKeyPojo userServerKeyPojo = keyService.save(faceuserPojo.getUserServerKeyPojo());
+		FaceUser faceUser = userRepository.save( Converter.convert(faceuserPojo) );
 
 		System.out.println("\n\n\n------------- RegisterServiceImpl? 57 -----------------" +
 				"\n" + payload +

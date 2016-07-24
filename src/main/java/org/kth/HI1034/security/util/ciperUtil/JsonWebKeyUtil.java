@@ -1,14 +1,18 @@
 package org.kth.HI1034.security.util.ciperUtil;
 
+import org.jose4j.base64url.Base64;
 import org.jose4j.jwk.EcJwkGenerator;
 import org.jose4j.jwk.EllipticCurveJsonWebKey;
 import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.jwk.PublicJsonWebKey;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;
+import org.jose4j.keys.AesKey;
 import org.jose4j.keys.EllipticCurves;
+import org.jose4j.lang.ByteUtil;
 import org.jose4j.lang.JoseException;
 
+import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -204,7 +208,52 @@ public class JsonWebKeyUtil {
 	}
 
 
-	public static SecureRandom getSecurRandom() {
-		return new SecureRandom( (new Long(System.nanoTime())).toString().getBytes() );
+	public static class symmetricKey{
+
+		public static Key generateSecretAesKey() throws JoseException {
+			Key key = new AesKey(ByteUtil.randomBytes(16));
+//			JsonWebKey jwk = JsonWebKey.Factory.newJwk(key);
+//			jwk.setKeyId("1234");
+//			jwk.setAlgorithm("AES");
+			return key;
+		}
+
+		/**
+		 * Convenience method that generates a corresponding Base64
+		 * encoding if any arbitrary byte array.
+		 *
+		 * @param key byte array of an encryption key
+		 * @return encoding of byte array suitable for over the wire transmission
+		 */
+		public static String keyToString(final byte[] key) {
+			return Base64.encode(key);
+		}
+
+		public static Key stringToSecretKey(final String key) {
+			return new AesKey(Base64.decode(key));
+
+		}
+
+		/**
+		 * Convenience method that decodes a Base64 string
+		 * into the corresponding byte array.
+		 *
+		 * @param key base64 encryption key.
+		 * @return the byte array decoded from the base64.
+		 */
+		public static byte[] base64Decode(final String key) {
+			return Base64.decode(key);
+		}
+
+
+
+
+		public static SecureRandom getSecurRandom() {
+			return new SecureRandom( (new Long(System.nanoTime())).toString().getBytes() );
+		}
+
+
 	}
+
+
 }

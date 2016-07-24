@@ -16,6 +16,12 @@ import org.jose4j.lang.JoseException;
 import org.kth.HI1034.security.util.ciperUtil.JsonWebKeyUtil;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Component
 public class TokenUtils {
 
@@ -194,6 +200,128 @@ public class TokenUtils {
 				.build(); // create the JwtConsumer instance
 
 		return jwtConsumer.processToClaims(token);
+	}
+
+
+	public static class SymmetricJWT{
+
+
+		public static JwtClaims validateTokenAndProcessClaims(final Key key,
+		                                                      final String issuer,
+		                                                      final String audience,
+		                                                      final String subject,
+		                                                      final String token) throws InvalidJwtException {
+
+			final JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+					.setRequireExpirationTime() // the JWT must have an expiration time
+					.setAllowedClockSkewInSeconds(180) // allow some leeway in validating time based claims to account for clock skew
+					.setExpectedIssuer(issuer) // whom the JWT needs to have been issued by
+					.setExpectedAudience(audience) // to whom the JWT is intended for
+					.setExpectedSubject(subject)
+					.setDecryptionKey(key)
+					.setEnableRequireEncryption()
+					.setDisableRequireSignature()
+					.setSkipSignatureVerification()
+					.build(); // create the JwtConsumer instance
+
+			//  Validate the JWT and process it to the Claims
+			return jwtConsumer.processToClaims(token);
+		}
+
+
+
+
+		/**
+		 * Convenience method that generates a JWT Token given a set of parameters common to JWT
+		 * implementations.
+		 *
+		 * @param key
+		 *            The key key
+		 * @param issuer
+		 *            The indended Issuer of the generated token
+		 * @param audience
+		 *            The intended Audience of the generated token
+		 * @param subject
+		 *            The indended Subject of the generated token
+		 * @param json
+		 *            JSON snippet that will be inserted into the claim under the
+		 *            key 'json'
+		 * @param expirationTimeMinutesInTheFuture
+		 *            The maximum number of minutes this generated token is valid.
+		 * @return JWT token string of the form string.string.string
+		 *
+		 * @throws JoseException
+		 *             if any issue occurs during generation. Mostly likely a key
+		 *             issue.
+		 */
+		public static String generateJWTToken(final Key key,
+		                                      final String issuer,
+		                                      final String audience,
+		                                      final String subject,
+		                                      final String json,
+		                                      final int expirationTimeMinutesInTheFuture) throws JoseException {
+
+
+			final Map<String, List<String>> claimsMap = new HashMap<>();
+
+			claimsMap.put("json", Arrays.asList(json));
+			return SymmetricJWT.generateJWT_AES128(
+					key,
+					issuer,
+					audience,
+					subject,
+					claimsMap,
+					expirationTimeMinutesInTheFuture
+			);
+		}
+
+
+		/**
+		 * Generates a JWT token using AES_128_CBC_HMAC_SHA_256.
+		 *
+		 * @param key Valid cypher key for encryption
+		 * @param issuer Corporate Name of the Issuer of this token.
+		 * @param audience The audience of the token. That is whom it is meant for. Usually a corporate name.
+		 * @param subject The subject of the token. Meaning what you are securing.
+		 * @param claimsMap The map of claims in JWT speak
+		 * @param expirationTimeMinutesInTheFuture The maximum number of minutes this generated token is valid.
+		 * @return JWT token string of the form string.string.string
+		 *
+		 * @throws JoseException Tossed if there is any failure during generation.
+		 */
+		public static String generateJWT_AES128(final Key key,
+		                                        final String issuer,
+		                                        final String audience,
+		                                        final String subject,
+		                                        final Map<String, List<String>> claimsMap,
+		                                        final int expirationTimeMinutesInTheFuture) throws JoseException {
+
+			final JwtClaims claims = new JwtClaims();
+			claims.setIssuer(issuer);  // who creates the token and signs it
+			claims.setAudience(audience); // to whom the token is intended to be sent
+			claims.setExpirationTimeMinutesInTheFuture(expirationTimeMinutesInTheFuture); // time when the token will expire (10 minutes from now)
+			claims.setGeneratedJwtId(); // a unique identifier for the token
+			claims.setIssuedAtToNow();  // when the token was issued/created (now)
+			claims.setNotBeforeMinutesInThePast(2); // time before which the token is not yet valid (2 minutes ago)
+			claims.setSubject(subject); // the subject/principal is whom the token is about
+
+			// Each claims key can point to a List of claims
+			claimsMap.keySet().stream().forEach(k -> claims.setStringListClaim(k, claimsMap.get(k)));
+
+			final JsonWebEncryption jwe = new JsonWebEncryption();
+			jwe.setPayload(claims.toJson());
+			jwe.setAlgorithmHeaderValue(KeyManagementAlgorithmIdentifiers.A128KW);
+			jwe.setEncryptionMethodHeaderParameter(ContentEncryptionAlgorithmIdentifiers.AES_128_CBC_HMAC_SHA_256);
+			jwe.setKey(key);
+
+			return jwe.getCompactSerialization();
+		}
+
+
+
+
+
+
 	}
 
 

@@ -1,17 +1,21 @@
 package org.kth.HI1034.controller;
 
-import com.google.gson.Gson;
 import org.jose4j.jwk.EllipticCurveJsonWebKey;
+import org.jose4j.jwk.RsaJsonWebKey;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.kth.HI1034.AppPublicKeys;
 import org.kth.HI1034.ApplicationWar;
 import org.kth.HI1034.JWT.TokenPojo;
 import org.kth.HI1034.JWT.TokenUtils;
+import org.kth.HI1034.model.domain.jwt.UserServerKeyPojo;
 import org.kth.HI1034.model.pojo.FaceuserPojo;
+import org.kth.HI1034.security.util.ciperUtil.CipherUtils;
 import org.kth.HI1034.security.util.ciperUtil.JsonWebKeyUtil;
+import org.kth.HI1034.util.GsonX;
 import org.kth.HI1034.util.MediaTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationContextLoader;
@@ -22,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.security.Key;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,22 +45,24 @@ public class RegisterControllerTest {
 	private WebApplicationContext context;
 
 	private MockMvc mockMvc;
-//	private MockRestServiceServer mockServer;
-	private EllipticCurveJsonWebKey serverPublicEllipticJWK;
-	private String serverPublicJWK;
-	private Gson gson;
+	private AppPublicKeys appPublicKeys;
 
 	@Before
 	public void setUp() throws Exception {
-		this.gson = new Gson();
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context).build();
 
-		serverPublicJWK = this.mockMvc.perform(get("/getAppPublicKey")
-				.accept(MediaTypes.JsonUtf8))
-				.andReturn().getResponse().getContentAsString();
+		appPublicKeys = GsonX.gson.fromJson
+				(
+						this.mockMvc.perform(get("/getAppPublicKey")
+								.accept(MediaTypes.JsonUtf8))
+								.andReturn().getResponse().getContentAsString()
 
-		serverPublicEllipticJWK = JsonWebKeyUtil.getEllipticJwkFromJson(serverPublicJWK);
-		assertThat(serverPublicEllipticJWK).isNotNull();
+						, AppPublicKeys.class
+				);
+
+		assertThat(appPublicKeys).isNotNull();
+		assertThat(appPublicKeys.getPublicEllipticWebKeyAsJson()).isNotNull();
+		assertThat(appPublicKeys.getPublicRsaWebKeyAsJson()).isNotNull();
 
 	}
 
@@ -73,8 +80,8 @@ public class RegisterControllerTest {
 	@Test
 	public void B_registerUser() throws Exception {
 
-		assertThat(serverPublicEllipticJWK).isNotNull();
-		assertThat(serverPublicJWK).isNotNull();
+		assertThat(appPublicKeys).isNotNull();
+
 
 		EllipticCurveJsonWebKey jsonWebKey = JsonWebKeyUtil.generateEllipticWebKey();
 
@@ -86,25 +93,30 @@ public class RegisterControllerTest {
 		tokenPojo.setIssuer("registerTest@gmail.com");
 		tokenPojo.setAudience("fackebook.se");
 		tokenPojo.setSenderJwk(JsonWebKeyUtil.getPrivateEcllipticWebKeyAsJson(jsonWebKey));
-		tokenPojo.setReceiverJwk(serverPublicJWK);
+		tokenPojo.setReceiverJwk(appPublicKeys.getPublicEllipticWebKeyAsJson());
 		tokenPojo.setSubject("register");
 
+		//use the servers public key. to encypt the secret key
+		RsaJsonWebKey serverRsaJsonWebKey = JsonWebKeyUtil.getPublicRSAJwkFromJson(appPublicKeys.getPublicRsaWebKeyAsJson());
+		Key secretKey = JsonWebKeyUtil.symmetricKey.generateSecretAesKey();
+		// the encrypted private part of the key kan only be opened with the private part of the key
+		String encryptedSharedKey = CipherUtils.encryptWithPublicKey(JsonWebKeyUtil.symmetricKey.keyToString(secretKey.getEncoded()), serverRsaJsonWebKey.getPublicKey() );
+
+		faceuserPojo.setUserServerKeyPojo( new UserServerKeyPojo( "registerTest@gmail.com", encryptedSharedKey ) );
 
 		String JWT = TokenUtils.EllipticJWT.ProduceJWT(
 				tokenPojo.getIssuer(),
 				tokenPojo.getAudience(),
 				tokenPojo.getSubject(),
 				JsonWebKeyUtil.getPrivateEcllipticWebKeyAsJson(jsonWebKey),
-				serverPublicJWK,
+				appPublicKeys.getPublicEllipticWebKeyAsJson(),
 				faceuserPojo.toString()
 		);
 
 		tokenPojo.setToken(JWT);
 
-		//encypt senders PublicKey with receivers public key
-//		String encyptedPublicKey = CipherUtils.encryptWithPublicKey(JsonWebKeyUtil.getPublicEcllipticWebKeyAsJson(jsonWebKey), serverPublicEllipticJWK.getPublicKey());
-//		tokenPojo.setSenderJwk(encyptedPublicKey);
 
+//
 
 
 

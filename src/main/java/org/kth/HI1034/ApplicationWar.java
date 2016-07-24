@@ -22,7 +22,7 @@ public class ApplicationWar /*extends SpringBootServletInitializer*/ {
 
 
 
-
+	private static final AppKeyFactory apiKeyFactory = new AppKeyFactory();
 
 
 

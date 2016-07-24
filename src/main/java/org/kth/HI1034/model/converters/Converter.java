@@ -29,8 +29,8 @@ public class Converter {
 		faceUser.setFirstName(ObjectNotNull(faceuserPojo.getFirstName() ) ? faceuserPojo.getFirstName() : null);
 		faceUser.setLastName( ObjectNotNull(faceuserPojo.getLastName() ) ? faceuserPojo.getLastName() : null );
 		faceUser.setEnabled( ObjectNotNull(faceuserPojo.getEnabled() ) ?  faceuserPojo.getEnabled() : true);
-		faceUser.setAccountLocked( ObjectNotNull(faceuserPojo.getAccountLocked() ) ?  faceuserPojo.getAccountLocked() : null);
-		faceUser.setAccountExpired( ObjectNotNull(faceuserPojo.getAccountExpired() ) ? faceuserPojo.getAccountExpired() : null);
+		faceUser.setAccountLocked( ObjectNotNull(faceuserPojo.getAccountLocked() ) ?  faceuserPojo.getAccountLocked() : false);
+		faceUser.setAccountExpired( ObjectNotNull(faceuserPojo.getAccountExpired() ) ? faceuserPojo.getAccountExpired() : false);
 		faceUser.setAccountCreated( ObjectNotNull(faceuserPojo.getAccountCreated() ) ? faceuserPojo.getAccountCreated() : null );
 
 

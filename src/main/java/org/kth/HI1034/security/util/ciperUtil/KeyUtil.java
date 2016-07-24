@@ -126,14 +126,16 @@ public class KeyUtil {
 	 * @throws NoSuchAlgorithmException
 	 */
 	public static KeyPair generateKeyPair() {
-		KeyPairGenerator keyGen;
+
 		try {
-			keyGen = KeyPairGenerator.getInstance(RSA_ALGORITHM);
+			KeyPairGenerator keyGen = KeyPairGenerator.getInstance(RSA_ALGORITHM);
 			keyGen.initialize(1024);
 			return keyGen.generateKeyPair();
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
+
 		}
+
 		return null;
 	}
 

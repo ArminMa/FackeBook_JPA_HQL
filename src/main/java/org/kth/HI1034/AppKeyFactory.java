@@ -1,14 +1,15 @@
-package org.kth.HI1034.security;
+package org.kth.HI1034;
 
 
-import com.google.gson.Gson;
 import org.jose4j.jwk.EllipticCurveJsonWebKey;
 import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.jwk.PublicJsonWebKey;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.lang.JoseException;
+import org.kth.HI1034.security.AppKey;
 import org.kth.HI1034.security.util.ciperUtil.JsonWebKeyUtil;
 import org.kth.HI1034.security.util.ciperUtil.KeyUtil;
+import org.kth.HI1034.util.GsonX;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
@@ -17,7 +18,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.UUID;
 
-public class ApiKeyFactory {
+public class AppKeyFactory {
 
 	//todo varje användare ska få en ny App nyckel; appen själv kan få ha kvar sin nyckel som är definerad i
 	//konfig fillen.
@@ -28,43 +29,46 @@ public class ApiKeyFactory {
 //	private static final PrivateKey privateKey = keyPair.getPrivate();
 //	private static final PublicKey publicKey = keyPair.getPublic();
 	private static RsaJsonWebKey rsaWebKey ;
+	private static String publicRsaWebKeyAsJson;
 	private static SecretKey symmetricKey ;
 	private static EllipticCurveJsonWebKey ellipticJsonWebKey;
-	private Gson gson = new Gson();
+	private static String publicEllipticWebKeyAsJson;
 
-	public  ApiKeyFactory()  {
+	public AppKeyFactory()  {
 		keyPair = KeyUtil.generateKeyPair();
 		rsaWebKey = getJwkPair(keyPair);
+		publicRsaWebKeyAsJson = rsaWebKey.toJson(JsonWebKey.OutputControlLevel.PUBLIC_ONLY);
+
 		symmetricKey =  KeyUtil.generateSymmetricKey();
 		ellipticJsonWebKey = JsonWebKeyUtil.generateEllipticWebKey();
+		publicEllipticWebKeyAsJson = ellipticJsonWebKey.toJson(JsonWebKey.OutputControlLevel.PUBLIC_ONLY);
+
 	}
 
 
-	public static EllipticCurveJsonWebKey getEllipticJsonWebKey() {
-		return ellipticJsonWebKey;
-	}
 
 
 
-	public AppKey getpublicKeyAsPojo( ){
+
+	public AppKey getpublicKeyAsAppKeyPojo( ){
 		return getjsonWebKeyPojo(rsaWebKey.toJson(JsonWebKey.OutputControlLevel.PUBLIC_ONLY));
 	}
 
-	public AppKey getPrivateKeyAsPojo( ){
+	public AppKey getPrivateKeyAsAppKeyPojo( ){
 		return getjsonWebKeyPojo(rsaWebKey.toJson(JsonWebKey.OutputControlLevel.INCLUDE_PRIVATE));
 	}
 
-	public AppKey getSymmetricKeyAsPojo(){
+	public AppKey getSymmetricKeyAsAppKeyPojo(){
 		return getjsonWebKeyPojo(rsaWebKey.toJson(JsonWebKey.OutputControlLevel.INCLUDE_SYMMETRIC));
 	}
 
 
 
 	public AppKey getjsonWebKeyPojo(String jsonWebKey){
-		return gson.fromJson(jsonWebKey, AppKey.class);
+		return GsonX.gson.fromJson(jsonWebKey, AppKey.class);
 	}
 
-	public RsaJsonWebKey getJsonWebKey(){
+	public static RsaJsonWebKey getRsaWebKey(){
 
 		rsaWebKey.setAlgorithm("RSA");
 //			sign_jwk.setUse("sig");
@@ -73,17 +77,29 @@ public class ApiKeyFactory {
 		return rsaWebKey;
 	}
 
-	public PrivateKey getPrivateKey() {
+	public static EllipticCurveJsonWebKey getEllipticWebKey() {
+		return ellipticJsonWebKey;
+	}
+
+	public static String getpublicRsaWebKeyAsJson(){
+		return publicRsaWebKeyAsJson;
+	}
+
+	public static String getpublicEllipticWebKeyAsJson(){
+		return publicEllipticWebKeyAsJson;
+	}
+
+	public static PrivateKey getPrivateKey() {
 		return keyPair.getPrivate();
 	}
 
-	public PublicKey getPublicKey() {
+	public static PublicKey getPublicKey() {
 
 		return keyPair.getPublic();
 	}
 
 
-	public Key getSymmetricKey() {
+	public static Key getSymmetricKey() {
 		return symmetricKey;
 	}
 
@@ -108,7 +124,7 @@ public class ApiKeyFactory {
 
 	}
 
-	public static RsaJsonWebKey getPublicJwk(PublicKey publicKey) throws JoseException {
+	public static RsaJsonWebKey getPublicRsaJwk(PublicKey publicKey) throws JoseException {
 
 
 			RsaJsonWebKey rsaJwk = (RsaJsonWebKey) PublicJsonWebKey.Factory.newPublicJwk(publicKey);

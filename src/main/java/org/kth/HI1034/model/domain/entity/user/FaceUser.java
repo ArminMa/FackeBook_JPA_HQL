@@ -411,17 +411,17 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 	@Override
 	public int hashCode() {
 		int result = id != null ? id.hashCode() : 0;
-		result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
-		result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
-		result = 31 * result + (email != null ? email.hashCode() : 0);
-		result = 31 * result + (password != null ? password.hashCode() : 0);
-		result = 31 * result + (username != null ? username.hashCode() : 0);
-		result = 31 * result + (accountExpired ? 1 : 0);
-		result = 31 * result + (accountLocked ? 1 : 0);
-		result = 31 * result + (credentialsExpired ? 1 : 0);
-		result = 31 * result + (enabled != null ? enabled.hashCode() : 0);
-		result = 31 * result + (accountCreated != null ? accountCreated.hashCode() : 0);
-		result = 31 * result + (accountUpdated != null ? accountUpdated.hashCode() : 0);
+		result = 7 * result + (firstName != null ? firstName.hashCode() : 0);
+		result = 7 * result + (lastName != null ? lastName.hashCode() : 0);
+		result = 7 * result + (email != null ? email.hashCode() : 0);
+		result = 7 * result + (password != null ? password.hashCode() : 0);
+		result = 7 * result + (username != null ? username.hashCode() : 0);
+		result = 7 * result + (accountExpired ? 1 : 0);
+		result = 7 * result + (accountLocked ? 1 : 0);
+		result = 7 * result + (credentialsExpired ? 1 : 0);
+		result = 7 * result + (enabled != null ? 1 : 0);
+		result = 7 * result + (accountCreated != null ? accountCreated.hashCode() : 0);
+		result = 7 * result + (accountUpdated != null ? accountUpdated.hashCode() : 0);
 		return result;
 	}
 

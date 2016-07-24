@@ -2,9 +2,10 @@ package org.kth.HI1034.controller;
 
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.lang.JoseException;
+import org.kth.HI1034.AppPublicKeys;
 import org.kth.HI1034.controller.util.MediaTypes;
-import org.kth.HI1034.security.ApiKeyFactory;
-import org.kth.HI1034.security.util.ciperUtil.JsonWebKeyUtil;
+import org.kth.HI1034.service.KeyService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,16 +23,19 @@ public class apiKeyController {
 //	@Value("${Jose4J.jwt.public.Server.Key}")
 //	public String publicKey;
 
-	private static final ApiKeyFactory apiKeyFactory = new ApiKeyFactory();
+	@Autowired
+	private KeyService keyService;
+
 
 	@RequestMapping( produces = {MediaType.APPLICATION_JSON_UTF8_VALUE}, method = RequestMethod.GET)
 	public @ResponseBody
 	ResponseEntity<?> getPublicAppKey(HttpServletRequest request, HttpServletResponse response) throws JoseException, InvalidJwtException {
 
+		AppPublicKeys appPublicKeys = keyService.getAppPublicKeys();
 
 		return ResponseEntity.ok()
 				.contentType(MediaTypes.JsonUtf8)
-				.body(JsonWebKeyUtil.getPublicEcllipticWebKeyAsJson(apiKeyFactory.getEllipticJsonWebKey()));
+				.body(keyService.getAppPublicKeys().toString());
 
 	}
 
