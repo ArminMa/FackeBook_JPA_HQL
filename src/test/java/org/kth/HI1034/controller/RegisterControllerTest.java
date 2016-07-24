@@ -90,9 +90,16 @@ public class RegisterControllerTest {
 		tokenPojo.setSubject("register");
 
 
+		String JWT = TokenUtils.EllipticJWT.ProduceJWT(
+				tokenPojo.getIssuer(),
+				tokenPojo.getAudience(),
+				tokenPojo.getSubject(),
+				JsonWebKeyUtil.getPrivateEcllipticWebKeyAsJson(jsonWebKey),
+				serverPublicJWK,
+				faceuserPojo.toString()
+		);
 
-		tokenPojo = TokenUtils.ProduceJWT(tokenPojo, faceuserPojo.toString());
-		tokenPojo = TokenUtils.securJWT(tokenPojo);
+		tokenPojo.setToken(JWT);
 
 		//encypt senders PublicKey with receivers public key
 //		String encyptedPublicKey = CipherUtils.encryptWithPublicKey(JsonWebKeyUtil.getPublicEcllipticWebKeyAsJson(jsonWebKey), serverPublicEllipticJWK.getPublicKey());

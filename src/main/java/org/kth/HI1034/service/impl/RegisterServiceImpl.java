@@ -39,15 +39,23 @@ public class RegisterServiceImpl implements RegisterService {
 
 		tokenPojo.setReceiverJwk(JsonWebKeyUtil.getPrivateEcllipticWebKeyAsJson(ellipticJsonWebKey));
 
-		System.out.println("\n\n\n------------- RegisterServiceImpl? 39 -----------------" +
-				"\n" + tokenPojo.getSubject() +
-				"\n\n-------------RegisterServiceImpl?-----------------\n\n\n");
+		if(tokenPojo.getToken() == null){
+			System.out.println("\n\n\n------------- RegisterServiceImpl? 43 -----------------" +
+					"\n" + "token is null?" +
+					"\n\n-------------RegisterServiceImpl?-----------------\n\n\n");
+		}
 
-		String token = TokenUtils.getPayloadCurveJWK(tokenPojo);
+		String token = TokenUtils.EllipticJWT.getPayloadCurveJWK(
+				tokenPojo.getIssuer(),
+				tokenPojo.getAudience(),
+				tokenPojo.getSenderJwk(),
+				tokenPojo.getReceiverJwk(),
+				tokenPojo.getToken()
+		);
 
 
-		System.out.println("\n\n\n------------- RegisterServiceImpl? 46 -----------------" +
-				"\n" + tokenPojo.getSubject() +
+		System.out.println("\n\n\n------------- RegisterServiceImpl? 57 -----------------" +
+				"\n" + token +
 				"\n\n-------------RegisterServiceImpl?-----------------\n\n\n");
 
 		return tokenPojo;
