@@ -34,6 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PingControllerTest {
 
+
+
 	@Autowired
 	private WebApplicationContext context;
 
@@ -97,31 +99,31 @@ public class PingControllerTest {
 	public void ping4() throws Exception {
 
 		Ping pingReturnd = gson.fromJson(
-				this.mockMvc.perform(get("/ping4/Armin").header("jwt","my token should be here").accept(applicationJsonMediaType))
+				this.mockMvc.perform(get("/ping4/Armin").header("keyUserServer","my token should be here").accept(applicationJsonMediaType))
 						.andExpect(status().isOk())
 						.andExpect(content().contentType(applicationJsonMediaType))
 						.andReturn().getResponse().getContentAsString()
 				, Ping.class);
 		assertThat(pingReturnd).isNotNull();
-		Ping ping = new Ping("Ping Armin", "ignore me", "jwt = my token should be here");
+		Ping ping = new Ping("Ping Armin", "ignore me", "keyUserServer = my token should be here");
 		assertThat(pingReturnd.equals(ping));
 	}
 
 	@Test
 	public void ping5() throws Exception {
 
-		Ping ping = new Ping("Ping Armin", "ignore me", "jwt = my token should be here");
+		Ping ping = new Ping("Ping Armin", "ignore me", "keyUserServer = my token should be here");
 		Ping pingReturnd = gson.fromJson(
 				this.mockMvc.perform
 						(
 								post("/ping5/Armin")
 										.contentType(MediaTypes.JsonUtf8)
 										.content(gson.toJson(ping))
-										.header("jwt","my token should be here")
+										.header("keyUserServer","my token should be here")
 						)
 						.andExpect(status().isOk())
 						.andExpect(content().contentType(MediaTypes.JsonUtf8))
-						.andExpect(header().string("jwt","some random token"))
+						.andExpect(header().string("keyUserServer","some random token"))
 						.andExpect(header().string("info", "mor header info"))
 						.andReturn().getResponse().getContentAsString()
 				, Ping.class);
@@ -138,6 +140,31 @@ public class PingControllerTest {
 				"------------------------------------------------------------------------\n\n\n\n\n");
 				*/
 	}
+
+//	@Autowired
+//	private AuthorityRepository authorityRepo;
+//	@After
+//	public void clean() throws Exception{
+//
+//		Authority authority = authorityRepo.findOne(1L);
+//		if(authority != null){
+//			authorityRepo.delete(1L);
+//			authorityRepo.flush();
+//		}
+//
+//		authority = authorityRepo.findOne(2L);
+//		if(authority != null){
+//			authorityRepo.delete(2L);
+//			authorityRepo.flush();
+//		}
+//
+//		authority = authorityRepo.findOne(3L);
+//		if(authority != null){
+//			authorityRepo.delete(3L);
+//			authorityRepo.flush();
+//		}
+//
+//	}
 
 
 

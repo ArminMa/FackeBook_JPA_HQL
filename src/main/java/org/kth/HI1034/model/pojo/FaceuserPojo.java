@@ -2,18 +2,16 @@ package org.kth.HI1034.model.pojo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.gson.Gson;
-import org.kth.HI1034.model.domain.entity.Authority;
-import org.kth.HI1034.model.domain.entity.UserFriend;
-import org.kth.HI1034.model.domain.jwt.UserServerKeyPojo;
+import org.kth.HI1034.model.domain.entity.UserFriends.UserFriend;
+import org.kth.HI1034.model.domain.entity.authority.AuthorityPojo;
+import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
+import org.kth.HI1034.util.GsonX;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 @XmlRootElement
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -39,13 +37,13 @@ public class FaceuserPojo implements Serializable, Comparable<FaceuserPojo> {
 
 	private UserServerKeyPojo userServerKeyPojo;
 
-
+	private List<FaceMailPojo> sentMail = new ArrayList<>();
 
 	private List<FaceuserPojo> sentFriendRequests = new ArrayList<>();
 	private List<FaceuserPojo> receivedFriendRequests = new ArrayList<>();
 	private List<UserFriend> friends = new ArrayList<>();
 
-	private SortedSet<Authority> authorities = new TreeSet<>();
+	private List<AuthorityPojo> authorities = new ArrayList<>();
 
 	public FaceuserPojo() {
 	}
@@ -58,9 +56,14 @@ public class FaceuserPojo implements Serializable, Comparable<FaceuserPojo> {
 		this.accountCreated = createdDate;
 		this.firstName = firstName0;
 		this.lastName = lastName0;
-		this.authorities.add(new Authority("user"));
+//		this.authorities.add(new AuthorityPojo(Role.ROLE_USER));
 
 
+	}
+
+	public FaceuserPojo(String email, String password) {
+		this.email = email;
+		this.password = password;
 	}
 
 	public List<FaceuserPojo> getSentFriendRequests() {
@@ -95,11 +98,11 @@ public class FaceuserPojo implements Serializable, Comparable<FaceuserPojo> {
 		this.userServerKeyPojo = userServerKeyPojo;
 	}
 
-	public SortedSet<Authority> getAuthorities() {
+	public List<AuthorityPojo> getAuthorities() {
 		return authorities;
 	}
 
-	public void setAuthorities(SortedSet<Authority> authorities) {
+	public void setAuthorities(List<AuthorityPojo> authorities) {
 		this.authorities = authorities;
 	}
 
@@ -113,7 +116,7 @@ public class FaceuserPojo implements Serializable, Comparable<FaceuserPojo> {
 
 
 
-	private List<FaceMailPojo> sentMail = new ArrayList<>();
+
 
 	public Long getId() {
 		return id;
@@ -258,7 +261,7 @@ public class FaceuserPojo implements Serializable, Comparable<FaceuserPojo> {
 
 	@Override
 	public String toString() {
-		Gson gson = new Gson();
+
 
 		if(this.sentFriendRequests.isEmpty()){
 			sentFriendRequests = null;
@@ -270,7 +273,7 @@ public class FaceuserPojo implements Serializable, Comparable<FaceuserPojo> {
 			this.friends = null;
 		}
 
-		String thisJsonString = gson.toJson(this);
+		String thisJsonString = GsonX.gson.toJson(this);
 
 
 

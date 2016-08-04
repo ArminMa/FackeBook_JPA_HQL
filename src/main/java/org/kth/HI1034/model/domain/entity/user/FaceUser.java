@@ -2,17 +2,15 @@ package org.kth.HI1034.model.domain.entity.user;
 
 import com.google.common.base.MoreObjects;
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.kth.HI1034.model.domain.entity.Authority;
 import org.kth.HI1034.model.domain.entity.FriendRequest;
-import org.kth.HI1034.model.domain.entity.UserFriend;
+import org.kth.HI1034.model.domain.entity.UserFriends.UserFriend;
 import org.kth.HI1034.model.domain.entity.UserReceivedMail;
+import org.kth.HI1034.model.domain.entity.authority.UserAuthority;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,7 +23,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -266,16 +263,16 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 
 //	CascadeType.REMOVE wants to remove the other side Entity if this is removed, that is not god hear.
 
-	private SortedSet<Authority> authorities = new TreeSet<>();
-	@ManyToMany(cascade = { CascadeType.DETACH  , CascadeType.MERGE , CascadeType.REFRESH, CascadeType.PERSIST },
-			fetch=FetchType.LAZY , mappedBy = "usersAuthorities")
-	@Fetch(value = FetchMode.SUBSELECT)
+	private SortedSet<UserAuthority> authorities = new TreeSet<>();
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "pk.user")
+	@BatchSize(size=3)
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@SortNatural
-	public SortedSet<Authority> getAuthorities() {
+	public SortedSet<UserAuthority> getAuthorities() {
 		return authorities;
 	}
 
-	public void setAuthorities(SortedSet<Authority> authorities) {
+	public void setAuthorities(SortedSet<UserAuthority> authorities) {
 		this.authorities = authorities;
 	}
 

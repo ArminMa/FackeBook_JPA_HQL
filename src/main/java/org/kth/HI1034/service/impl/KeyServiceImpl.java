@@ -4,10 +4,10 @@ import org.kth.HI1034.AppKeyFactory;
 import org.kth.HI1034.AppPublicKeys;
 import org.kth.HI1034.exceptions.UserNameOrEmailExistExeption;
 import org.kth.HI1034.model.converters.Converter;
-import org.kth.HI1034.model.domain.repository.UserKeyRepository;
-import org.kth.HI1034.model.domain.jwt.UserServerKey;
-import org.kth.HI1034.model.domain.jwt.UserServerKeyPojo;
-import org.kth.HI1034.security.util.ciperUtil.CipherUtils;
+import org.kth.HI1034.model.domain.keyUserServer.UserServerKey;
+import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
+import org.kth.HI1034.model.domain.keyUserServer.UserKeyRepository;
+import org.kth.HI1034.security.util.KeyUtil;
 import org.kth.HI1034.service.KeyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -18,7 +18,10 @@ import org.springframework.util.Assert;
 public class KeyServiceImpl implements KeyService {
 
 
-	private static final AppPublicKeys appPublicKeys = new AppPublicKeys( AppKeyFactory.getpublicRsaWebKeyAsJson(), AppKeyFactory.getpublicEllipticWebKeyAsJson() );
+	private static final AppPublicKeys appPublicKeys = new AppPublicKeys(
+			AppKeyFactory.getpublicRsaWebKeyAsJson(),
+			AppKeyFactory.getpublicEllipticWebKeyAsJson(),
+			KeyUtil.getKeyAsString( AppKeyFactory.getPublicKey()) );
 
 
 	@Autowired
@@ -38,12 +41,12 @@ public class KeyServiceImpl implements KeyService {
 	}
 
 	@Override
-	public UserServerKeyPojo findUserServerKey(UserServerKeyPojo userServerKeyPojo) {
-		UserServerKey userServerKey = userServerKeyRepository.findByEmail(userServerKeyPojo.getEmail());
+	public UserServerKeyPojo findUserServerKey(String email) {
+		UserServerKey userServerKey = userServerKeyRepository.findByEmail(email);
 		if(userServerKey != null ){
 			return Converter.convert(userServerKey);
 		}
-		throw new ResourceNotFoundException("could not find the keys to user:-> " + userServerKeyPojo.getEmail());
+		throw new ResourceNotFoundException("could not find the keys to user:-> " + email);
 
 	}
 
@@ -59,28 +62,38 @@ public class KeyServiceImpl implements KeyService {
 		Assert.notNull(userServerKeyPojo.getEmail(), "\n\nthe sharedKey Email could not be parsed? what\n\n");
 		Assert.notNull(userServerKeyPojo.getSharedKey(), "\n\nthe encryptedSharedKey could not be parsed? what\n\n");
 
-		String decryptedSharedKey = null;
-		try {
-			decryptedSharedKey = CipherUtils.decryptWithPrivateKey(userServerKeyPojo.getSharedKey(), AppKeyFactory.getRsaWebKey().getPrivateKey());
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
-
-
-
-		Assert.notNull( decryptedSharedKey, "why is this not decrypted?" );
-
-		userServerKeyPojo.setSharedKey(decryptedSharedKey);
-
 		if(userExists(userServerKeyPojo) )
 			throw new UserNameOrEmailExistExeption("the email is already registered");
 
 
+
 		UserServerKey userServerKey = userServerKeyRepository.save(Converter.convert(userServerKeyPojo));
+
 		if(userServerKey != null) return Converter.convert(userServerKey);
 
 		throw new ResourceNotFoundException("could not save the key for user:-> " + userServerKeyPojo.getEmail());
+	}
+
+	@Override
+	public UserServerKeyPojo update(UserServerKeyPojo userServerKeyPojo) {
+		Assert.notNull(userServerKeyPojo, "\n\nthe sharedKey could not be parsed? what\n\n");
+		Assert.notNull(userServerKeyPojo.getEmail(), "\n\nthe sharedKey Email could not be parsed? what\n\n");
+		Assert.notNull(userServerKeyPojo.getSharedKey(), "\n\nthe encryptedSharedKey could not be parsed? what\n\n");
+		Assert.notNull(userServerKeyPojo.getTokenKey(), "\n\nthe encryptedTokenKey could not be parsed? what\n\n");
+
+		if(!userExists(userServerKeyPojo) )
+			throw new UserNameOrEmailExistExeption("the email is not registered");
+
+		System.out.println("\n\nKeyServiceImpl.68\n\n");
+
+		Integer rowsUpdated = userServerKeyRepository.update(userServerKeyPojo.getEmail(), userServerKeyPojo.getSharedKey(), userServerKeyPojo.getTokenKey());
+		UserServerKeyPojo userServerKeyPojoToReturn;
+		if(rowsUpdated != null && rowsUpdated == 1){
+			return findUserServerKey(userServerKeyPojo.getEmail());
+		}
+
+		throw new ResourceNotFoundException("could not save the key for user:-> " + userServerKeyPojo.getEmail());
+
 	}
 
 

@@ -73,6 +73,14 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.10</version>
+            <scope>provided</scope>
+        </dependency>
+
+
 
         <!-- Test environment -->
         <dependency>
@@ -91,16 +99,9 @@
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>3.4.1</version>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
 
-
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.6</version>
-        </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>
@@ -158,7 +159,7 @@
 
         <!--<dependency>-->
             <!--<groupId>com.nimbusds</groupId>-->
-            <!--<artifactId>nimbus-jose-jwt</artifactId>-->
+            <!--<artifactId>nimbus-jose-keyUserServer</artifactId>-->
             <!--<version>4.22</version>-->
         <!--</dependency>-->
 
@@ -167,6 +168,13 @@
             <groupId>org.bitbucket.b_c</groupId>
             <artifactId>jose4j</artifactId>
             <version>0.5.1</version>
+        </dependency>
+
+        <!-- simple keyUserServer implementation -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.6.0</version>
         </dependency>
 
         <dependency>

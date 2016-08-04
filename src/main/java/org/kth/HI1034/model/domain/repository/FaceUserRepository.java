@@ -10,11 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface FaceUserRepository extends JpaRepository<FaceUser, Long>, JpaSpecificationExecutor<FaceUser> {
 
-
+	@Query(value = "select U FROM FaceUser U WHERE U.email = :theEmail")
+	Optional<FaceUser> findByEmailLambda(@Param("theEmail") String username);
 
 	@Query(value = "select U FROM FaceUser U WHERE U.email = :theEmail")
 	FaceUser findByEmail(@Param("theEmail") String email);
@@ -65,7 +67,11 @@ public interface FaceUserRepository extends JpaRepository<FaceUser, Long>, JpaSp
 			@Param("username") String UserName,
 			@Param("eMail") String email);
 
-
+	@Query(value = "select distinct UF FROM FaceUser UF " +
+			"where UF.email = :eMmail and UF.password = :password" )
+	FaceUser findOneUserByEmailAndPassword(
+			@Param("eMmail") String email,
+			@Param("password") String passWord);
 
 
 //	@Query(value = "SELECT P FROM FacePost P " +

@@ -5,8 +5,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.kth.HI1034.ApplicationWar;
-import org.kth.HI1034.model.domain.entity.user.FaceUser;
 import org.kth.HI1034.model.domain.entity.post.FacePost;
+import org.kth.HI1034.model.domain.entity.user.FaceUser;
 import org.kth.HI1034.model.domain.entity.user.UserDetached;
 import org.kth.HI1034.model.domain.repository.post.PostRepository;
 import org.kth.HI1034.model.domain.repository.post.PostUserRepository;
@@ -146,4 +146,15 @@ public class UserPostRepoTest {
 
 		System.out.println("\n\n----------------- UserPostRepoTest.Z_tearDown-end ----------------------------\n\n");
 	}
+
+
+//	@Autowired
+//	private AuthorityRepository authorityRepo;
+//	@After
+//	public void clean() throws Exception{
+//		authorityRepo.delete(1L);
+//		authorityRepo.delete(2L);
+//		authorityRepo.delete(3L);
+//		authorityRepo.flush();
+//	}
 }

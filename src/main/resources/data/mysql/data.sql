@@ -1,79 +1,85 @@
-CREATE TABLE testdb.user_messages
-(
-	user_id BIGINT(20) NOT NULL,
-	message_id INT(11) NOT NULL,
-	CONSTRAINT `PRIMARY` PRIMARY KEY (user_id, message_id)
-);
-CREATE TABLE testdb.messages
-(
-	id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
-	message VARCHAR(255)
-);
-CREATE TABLE testdb.user
-(
-	id BIGINT(20) PRIMARY KEY NOT NULL AUTO_INCREMENT,
-	registration_date DATETIME,
-	email VARCHAR(255),
-	password VARCHAR(255)
-);
-
-CREATE TABLE testdb.roles
-(
-	id TINYINT(2) PRIMARY KEY NOT NULL AUTO_INCREMENT,
-	role VARCHAR(10)
-);
-
-CREATE TABLE testdb.user_roles
-(
-	user_id BIGINT(20) NOT NULL,
-	role_id TINYINT(2) NOT NULL,
-	CONSTRAINT `PRIMARY` PRIMARY KEY (user_id, role_id)
-);
 
 
+--INSERT INTO testdb.authorities ( is_locked, userRole) VALUES ( FALSE, 'ROLE_USE');
+--INSERT INTO testdb.authorities ( is_locked, userRole) VALUES ( FALSE, 'ROLE_ADMIN');
+--INSERT INTO testdb.authorities ( is_locked, userRole) VALUES ( FALSE, 'ROLE_SUPER_ADMIN');
 
-ALTER TABLE testdb.user_messages ADD FOREIGN KEY (user_id) REFERENCES testdb.user (id);
-ALTER TABLE testdb.user_messages ADD FOREIGN KEY (message_id) REFERENCES testdb.messages (id);
-CREATE INDEX FK_8wfgyxoweube8lhtt2xlcyctm ON testdb.user_messages (message_id);
-
-ALTER TABLE testdb.user_roles ADD FOREIGN KEY (user_id) REFERENCES testdb.user (id);
-ALTER TABLE testdb.user_roles ADD FOREIGN KEY (role_id) REFERENCES testdb.roles (id);
-CREATE INDEX FK_somForentkyJibrich ON testdb.user_roles (role_id);
-
-INSERT INTO testdb.user (email, password, registration_date) VALUES ('test1@kth.se', 'a', NOW());
-INSERT INTO testdb.user (email, password, registration_date) VALUES ('test2@kth.se', 'a', NOW());
-INSERT INTO testdb.user (email, password, registration_date) VALUES ('test3@kth.se', 'a', NOW());
-
-
-INSERT INTO testdb.roles (role) VALUES ('admin');
-INSERT INTO testdb.roles (role) VALUES ('user');
-
-INSERT INTO testdb.messages (message) VALUES ('this is the wrong type of message1');
-INSERT INTO testdb.messages (message) VALUES ('this is the wrong type of message2');
-INSERT INTO testdb.messages (message) VALUES ('this is the wrong type of message3');
-
-
-INSERT INTO testdb.user_messages (user_id, message_id) VALUES ((SELECT id FROM testdb.user
-WHERE email='test1@kth.se'), 1);
-
-INSERT INTO testdb.user_messages (user_id, message_id) VALUES ((SELECT id FROM testdb.user
-WHERE email='test2@kth.se'), 2);
-
-INSERT INTO testdb.user_messages (user_id, message_id) VALUES ((SELECT id FROM testdb.user
-WHERE email='test3@kth.se'), 3);
-
-
-INSERT INTO testdb.user_roles (role_id, user_id) VALUES (1, (SELECT id FROM testdb.user
-WHERE email='test1@kth.se'));
-
-INSERT INTO testdb.user_roles (role_id, user_id) VALUES (2, (SELECT id FROM testdb.user
-WHERE email='test1@kth.se'));
-
-INSERT INTO testdb.user_roles (role_id, user_id) VALUES (1, (SELECT id FROM testdb.user
-WHERE email='test2@kth.se'));
-
-INSERT INTO testdb.user_roles (role_id, user_id) VALUES (1, (SELECT id FROM testdb.user
-WHERE email='test3@kth.se'));
+--CREATE TABLE testdb.user_messages
+--(
+--	user_id BIGINT(20) NOT NULL,
+--	message_id INT(11) NOT NULL,
+--	CONSTRAINT `PRIMARY` PRIMARY KEY (user_id, message_id)
+--);
+--CREATE TABLE testdb.messages
+--(
+--	id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+--	message VARCHAR(255)
+--);
+--CREATE TABLE testdb.user
+--(
+--	id BIGINT(20) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+--	registration_date DATETIME,
+--	email VARCHAR(255),
+--	password VARCHAR(255)
+--);
+--
+--CREATE TABLE testdb.roles
+--(
+--	id TINYINT(2) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+--	userRole VARCHAR(10)
+--);
+--
+--CREATE TABLE testdb.user_roles
+--(
+--	user_id BIGINT(20) NOT NULL,
+--	role_id TINYINT(2) NOT NULL,
+--	CONSTRAINT `PRIMARY` PRIMARY KEY (user_id, role_id)
+--);
+--
+--
+--
+--ALTER TABLE testdb.user_messages ADD FOREIGN KEY (user_id) REFERENCES testdb.user (id);
+--ALTER TABLE testdb.user_messages ADD FOREIGN KEY (message_id) REFERENCES testdb.messages (id);
+--CREATE INDEX FK_8wfgyxoweube8lhtt2xlcyctm ON testdb.user_messages (message_id);
+--
+--ALTER TABLE testdb.user_roles ADD FOREIGN KEY (user_id) REFERENCES testdb.user (id);
+--ALTER TABLE testdb.user_roles ADD FOREIGN KEY (role_id) REFERENCES testdb.roles (id);
+--CREATE INDEX FK_somForentkyJibrich ON testdb.user_roles (role_id);
+--
+--INSERT INTO testdb.user (email, password, registration_date) VALUES ('test1@kth.se', 'a', NOW());
+--INSERT INTO testdb.user (email, password, registration_date) VALUES ('test2@kth.se', 'a', NOW());
+--INSERT INTO testdb.user (email, password, registration_date) VALUES ('test3@kth.se', 'a', NOW());
+--
+--
+--INSERT INTO testdb.roles (userRole) VALUES ('admin');
+--INSERT INTO testdb.roles (userRole) VALUES ('user');
+--
+--INSERT INTO testdb.messages (message) VALUES ('this is the wrong type of message1');
+--INSERT INTO testdb.messages (message) VALUES ('this is the wrong type of message2');
+--INSERT INTO testdb.messages (message) VALUES ('this is the wrong type of message3');
+--
+--
+--INSERT INTO testdb.user_messages (user_id, message_id) VALUES ((SELECT id FROM testdb.user
+--WHERE email='test1@kth.se'), 1);
+--
+--INSERT INTO testdb.user_messages (user_id, message_id) VALUES ((SELECT id FROM testdb.user
+--WHERE email='test2@kth.se'), 2);
+--
+--INSERT INTO testdb.user_messages (user_id, message_id) VALUES ((SELECT id FROM testdb.user
+--WHERE email='test3@kth.se'), 3);
+--
+--
+--INSERT INTO testdb.user_roles (role_id, user_id) VALUES (1, (SELECT id FROM testdb.user
+--WHERE email='test1@kth.se'));
+--
+--INSERT INTO testdb.user_roles (role_id, user_id) VALUES (2, (SELECT id FROM testdb.user
+--WHERE email='test1@kth.se'));
+--
+--INSERT INTO testdb.user_roles (role_id, user_id) VALUES (1, (SELECT id FROM testdb.user
+--WHERE email='test2@kth.se'));
+--
+--INSERT INTO testdb.user_roles (role_id, user_id) VALUES (1, (SELECT id FROM testdb.user
+--WHERE email='test3@kth.se'));
 
 
 /*

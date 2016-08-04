@@ -6,12 +6,11 @@ import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.jwk.PublicJsonWebKey;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.lang.JoseException;
-import org.kth.HI1034.security.AppKey;
-import org.kth.HI1034.security.util.ciperUtil.JsonWebKeyUtil;
-import org.kth.HI1034.security.util.ciperUtil.KeyUtil;
-import org.kth.HI1034.util.GsonX;
+import org.kth.HI1034.JWT.TokenJose4jUtils;
+import org.kth.HI1034.security.util.KeyUtil;
 
 import javax.crypto.SecretKey;
+import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.PrivateKey;
@@ -20,14 +19,7 @@ import java.util.UUID;
 
 public class AppKeyFactory {
 
-	//todo varje användare ska få en ny App nyckel; appen själv kan få ha kvar sin nyckel som är definerad i
-	//konfig fillen.
-
-
-
 	private static  KeyPair keyPair;
-//	private static final PrivateKey privateKey = keyPair.getPrivate();
-//	private static final PublicKey publicKey = keyPair.getPublic();
 	private static RsaJsonWebKey rsaWebKey ;
 	private static String publicRsaWebKeyAsJson;
 	private static SecretKey symmetricKey ;
@@ -35,38 +27,25 @@ public class AppKeyFactory {
 	private static String publicEllipticWebKeyAsJson;
 
 	public AppKeyFactory()  {
-		keyPair = KeyUtil.generateKeyPair();
-		rsaWebKey = getJwkPair(keyPair);
-		publicRsaWebKeyAsJson = rsaWebKey.toJson(JsonWebKey.OutputControlLevel.PUBLIC_ONLY);
+		try {
+			keyPair = KeyUtil.generateKeyPair();
+			ellipticJsonWebKey = TokenJose4jUtils.JsonWebKeyUtil.generateEllipticWebKey();
+			rsaWebKey = getJwkPair(keyPair);
+		} catch (GeneralSecurityException | JoseException e) {
+			e.printStackTrace();
+		}
 
-		symmetricKey =  KeyUtil.generateSymmetricKey();
-		ellipticJsonWebKey = JsonWebKeyUtil.generateEllipticWebKey();
+		symmetricKey =  KeyUtil.SymmetricKey.generateSecretAesKey(16);
+
+		assert rsaWebKey != null;
+		publicRsaWebKeyAsJson = rsaWebKey.toJson(JsonWebKey.OutputControlLevel.PUBLIC_ONLY);
 		publicEllipticWebKeyAsJson = ellipticJsonWebKey.toJson(JsonWebKey.OutputControlLevel.PUBLIC_ONLY);
 
+
+
+
 	}
 
-
-
-
-
-
-	public AppKey getpublicKeyAsAppKeyPojo( ){
-		return getjsonWebKeyPojo(rsaWebKey.toJson(JsonWebKey.OutputControlLevel.PUBLIC_ONLY));
-	}
-
-	public AppKey getPrivateKeyAsAppKeyPojo( ){
-		return getjsonWebKeyPojo(rsaWebKey.toJson(JsonWebKey.OutputControlLevel.INCLUDE_PRIVATE));
-	}
-
-	public AppKey getSymmetricKeyAsAppKeyPojo(){
-		return getjsonWebKeyPojo(rsaWebKey.toJson(JsonWebKey.OutputControlLevel.INCLUDE_SYMMETRIC));
-	}
-
-
-
-	public AppKey getjsonWebKeyPojo(String jsonWebKey){
-		return GsonX.gson.fromJson(jsonWebKey, AppKey.class);
-	}
 
 	public static RsaJsonWebKey getRsaWebKey(){
 
@@ -98,12 +77,16 @@ public class AppKeyFactory {
 		return keyPair.getPublic();
 	}
 
+	public static KeyPair getKeyPair(){
+		return keyPair;
+	}
+
 
 	public static Key getSymmetricKey() {
 		return symmetricKey;
 	}
 
-	public static RsaJsonWebKey getJwkPair(KeyPair keyPair)  {
+	public static RsaJsonWebKey getJwkPair(KeyPair keyPair) throws JoseException {
 		try {
 			RsaJsonWebKey rsaJwk = (RsaJsonWebKey) PublicJsonWebKey.Factory.newPublicJwk(keyPair.getPublic());
 			rsaJwk.setPrivateKey(keyPair.getPrivate());
@@ -118,15 +101,14 @@ public class AppKeyFactory {
 			return rsaJwk;
 		} catch (JoseException e) {
 			e.printStackTrace();
+			throw new JoseException(e.getMessage(), e.getCause());
 		}
 
-		return null;
+
 
 	}
 
 	public static RsaJsonWebKey getPublicRsaJwk(PublicKey publicKey) throws JoseException {
-
-
 			RsaJsonWebKey rsaJwk = (RsaJsonWebKey) PublicJsonWebKey.Factory.newPublicJwk(publicKey);
 			if(rsaJwk.getKeyId() != null || rsaJwk.getKeyId().isEmpty()){
 				rsaJwk.setKeyId(UUID.randomUUID().toString());

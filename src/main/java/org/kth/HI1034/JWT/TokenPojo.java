@@ -1,7 +1,7 @@
 package org.kth.HI1034.JWT;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.gson.Gson;
+import org.kth.HI1034.util.GsonX;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -11,12 +11,12 @@ import java.util.TreeMap;
 @XmlRootElement
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TokenPojo implements Serializable, Comparable<TokenPojo>  {
-	private String receiverJwk;
-	private String senderJwk;
+	private String receiverKey;
+	private String senderKey;
 	private long keyCreationTime;
 	private String subject;
 	private String audience;
-	private String Issuer;
+	private String issuer;
 	private Map<String, Object> extendedInformationMap;
 
 	private String token;
@@ -42,20 +42,21 @@ public class TokenPojo implements Serializable, Comparable<TokenPojo>  {
 		extendedInformationMap.put(subject,data);
 	}
 
-	public String getSenderJwk() {
-		return senderJwk;
+	public String getSenderKey() {
+		return senderKey;
 	}
 
-	public void setSenderJwk(String senderJwk) {
-		this.senderJwk = senderJwk;
+	public void setSenderKey(String theSenderKey) {
+		this.senderKey = theSenderKey;
 	}
+
 
 	public String getIssuer() {
-		return Issuer;
+		return issuer;
 	}
 
 	public void setIssuer(String issuer) {
-		Issuer = issuer;
+		this.issuer = issuer;
 	}
 
 	public String getAudience() {
@@ -66,12 +67,12 @@ public class TokenPojo implements Serializable, Comparable<TokenPojo>  {
 		this.audience = audience;
 	}
 
-	public String getReceiverJwk() {
-		return receiverJwk;
+	public String getReceiverKey() {
+		return receiverKey;
 	}
 
-	public void setReceiverJwk(String receiverJwk) {
-		this.receiverJwk = receiverJwk;
+	public void setReceiverKey(String receiverKey) {
+		this.receiverKey = receiverKey;
 	}
 
 	public String getSubject() {
@@ -111,25 +112,25 @@ public class TokenPojo implements Serializable, Comparable<TokenPojo>  {
 		TokenPojo tokenPojo = (TokenPojo) o;
 
 		if (keyCreationTime != tokenPojo.keyCreationTime) return false;
-		if (receiverJwk != null ? !receiverJwk.equals(tokenPojo.receiverJwk) : tokenPojo.receiverJwk != null)
+		if (receiverKey != null ? !receiverKey.equals(tokenPojo.receiverKey) : tokenPojo.receiverKey != null)
 			return false;
-		if (senderJwk != null ? !senderJwk.equals(tokenPojo.senderJwk) : tokenPojo.senderJwk != null)
+		if (senderKey != null ? !senderKey.equals(tokenPojo.senderKey) : tokenPojo.senderKey != null)
 			return false;
 		if (subject != null ? !subject.equals(tokenPojo.subject) : tokenPojo.subject != null) return false;
 		if (audience != null ? !audience.equals(tokenPojo.audience) : tokenPojo.audience != null) return false;
-		if (Issuer != null ? !Issuer.equals(tokenPojo.Issuer) : tokenPojo.Issuer != null) return false;
+		if (issuer != null ? !issuer.equals(tokenPojo.issuer) : tokenPojo.issuer != null) return false;
 		return token != null ? token.equals(tokenPojo.token) : tokenPojo.token == null;
 
 	}
 
 	@Override
 	public int hashCode() {
-		int result = receiverJwk != null ? receiverJwk.hashCode() : 0;
-		result = 31 * result + (senderJwk != null ? senderJwk.hashCode() : 0);
+		int result = receiverKey != null ? receiverKey.hashCode() : 0;
+		result = 31 * result + (senderKey != null ? senderKey.hashCode() : 0);
 		result = 31 * result + (int) (keyCreationTime ^ (keyCreationTime >>> 32));
 		result = 31 * result + (subject != null ? subject.hashCode() : 0);
 		result = 31 * result + (audience != null ? audience.hashCode() : 0);
-		result = 31 * result + (Issuer != null ? Issuer.hashCode() : 0);
+		result = 31 * result + (issuer != null ? issuer.hashCode() : 0);
 		result = 31 * result + (token != null ? token.hashCode() : 0);
 		return result;
 	}
@@ -143,16 +144,16 @@ public class TokenPojo implements Serializable, Comparable<TokenPojo>  {
 
 	@Override
 	public String toString() {
-		Gson gson = new Gson();
-		if( extendedInformationMap.isEmpty()){
+
+		if( extendedInformationMap != null && extendedInformationMap.isEmpty()){
 			extendedInformationMap = null;
-			String asJson = gson.toJson(this);
+			String asJson = GsonX.gson.toJson(this);
 			extendedInformationMap  = new TreeMap<String , Object>();
 
 			return asJson;
 		}
 
-		return gson.toJson(this);
+		return GsonX.gson.toJson(this);
 
 
 	}

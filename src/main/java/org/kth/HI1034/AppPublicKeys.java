@@ -11,6 +11,7 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppPublicKeys implements Serializable, Comparable<AppPublicKeys> {
 
+	private String publicKey;
 	private String publicRsaWebKeyAsJson;
 	private String publicEllipticWebKeyAsJson;
 
@@ -18,9 +19,14 @@ public class AppPublicKeys implements Serializable, Comparable<AppPublicKeys> {
 	 * @param rsaJsonWebKey String
 	 * @param ellipticCurveJsonWebKey String
 	 */
-	public AppPublicKeys(String rsaJsonWebKey, String ellipticCurveJsonWebKey) {
+	public AppPublicKeys(
+			String rsaJsonWebKey,
+			String ellipticCurveJsonWebKey,
+			String publicKey ) {
 		this.publicRsaWebKeyAsJson = rsaJsonWebKey;
 		this.publicEllipticWebKeyAsJson = ellipticCurveJsonWebKey;
+		this.publicKey = publicKey;
+
 	}
 
 	public String getPublicRsaWebKeyAsJson() {
@@ -39,23 +45,12 @@ public class AppPublicKeys implements Serializable, Comparable<AppPublicKeys> {
 		this.publicEllipticWebKeyAsJson = publicEllipticWebKeyAsJson;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-
-		AppPublicKeys that = (AppPublicKeys) o;
-
-		if (publicRsaWebKeyAsJson != null ? !publicRsaWebKeyAsJson.equals(that.publicRsaWebKeyAsJson) : that.publicRsaWebKeyAsJson != null) return false;
-		return publicEllipticWebKeyAsJson != null ? publicEllipticWebKeyAsJson.equals(that.publicEllipticWebKeyAsJson) : that.publicEllipticWebKeyAsJson == null;
-
+	public String getPublicKey() {
+		return publicKey;
 	}
 
-	@Override
-	public int hashCode() {
-		int result = publicRsaWebKeyAsJson != null ? publicRsaWebKeyAsJson.hashCode() : 0;
-		result = 31 * result + (publicEllipticWebKeyAsJson != null ? publicEllipticWebKeyAsJson.hashCode() : 0);
-		return result;
+	public void setPublicKey(String publicKey) {
+		this.publicKey = publicKey;
 	}
 
 	@Override

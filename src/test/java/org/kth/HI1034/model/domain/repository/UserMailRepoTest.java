@@ -235,8 +235,19 @@ public class UserMailRepoTest {
 		userRepo.delete(faceFaceUser4.getId());
 		userRepo.flush();
 
+
 		System.out.println("\n\n-----------------UserMailRepoTest.tearDown-end----------------------------\n\n");
 
 	}
+
+//	@Autowired
+//	private AuthorityRepository authorityRepo;
+//	@After
+//	public void clean() throws Exception{
+//		authorityRepo.delete(1L);
+//		authorityRepo.delete(2L);
+//		authorityRepo.delete(3L);
+//		authorityRepo.flush();
+//	}
 
 }

@@ -4,7 +4,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kth.HI1034.ApplicationWar;
 import org.kth.HI1034.model.domain.entity.FriendRequest;
-import org.kth.HI1034.model.domain.entity.UserFriend;
+import org.kth.HI1034.model.domain.entity.UserFriends.UserFriend;
+import org.kth.HI1034.model.domain.entity.UserFriends.UserFriendRepository;
 import org.kth.HI1034.model.domain.entity.user.FaceUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -199,4 +200,14 @@ public class UserFriendRepoTest {
 
 		System.out.println("\n\n-----------------UserFriendRepoTest.tearDown-End----------------------------\n\n");
 	}
+
+//	@Autowired
+//	private AuthorityRepository authorityRepo;
+//	@After
+//	public void clean() throws Exception{
+//		authorityRepo.delete(1L);
+//		authorityRepo.delete(2L);
+//		authorityRepo.delete(3L);
+//		authorityRepo.flush();
+//	}
 }
