@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.gson.Gson;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.kth.HI1034.util.GsonX;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,6 +20,19 @@ import java.io.Serializable;
 @Entity
 public class UserServerKey implements Serializable, Comparable<UserServerKey> {
 
+	public UserServerKey(String email, String sharedKey, String tokenKey) {
+		this.email = email;
+		this.sharedKey = sharedKey;
+		this.tokenKey = tokenKey;
+	}
+
+	public UserServerKey(String email, String sharedKey) {
+		this.email = email;
+		this.sharedKey = sharedKey;
+	}
+
+	public UserServerKey() {
+	}
 
 	private Long id;
 	@Id
@@ -98,8 +112,8 @@ public class UserServerKey implements Serializable, Comparable<UserServerKey> {
 
 	@Override
 	public String toString() {
-		Gson gson = new Gson();
-		return gson.toJson(this);
+
+		return GsonX.gson.toJson(this);
 	}
 
 }

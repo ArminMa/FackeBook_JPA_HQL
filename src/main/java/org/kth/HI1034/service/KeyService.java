@@ -1,6 +1,7 @@
 package org.kth.HI1034.service;
 
 import org.kth.HI1034.AppPublicKeys;
+import org.kth.HI1034.model.domain.keyUserServer.UserServerKey;
 import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
 
 
@@ -12,7 +13,7 @@ public interface KeyService {
 
     UserServerKeyPojo findUserServerKey(String email);
 
-    boolean userExists(UserServerKeyPojo userServerKeyPojo);
+    UserServerKey userExists(UserServerKeyPojo userServerKeyPojo);
 
     UserServerKeyPojo save(UserServerKeyPojo userServerKeyPojo);
 

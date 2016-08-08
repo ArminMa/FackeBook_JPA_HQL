@@ -5,18 +5,24 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.kth.HI1034.model.domain.user.FaceuserPojo;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mobile.device.Device;
 
+import java.io.Serializable;
 import java.security.Key;
 import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
  * Created by Sys on 2016-08-01.
  */
-public class TokenIoUtils {
+public class TokenIoUtils implements Serializable {
 
 
 	public static final long TOKEN_DURATION_SECONDS = 60 * 60 * 24 * 7; // 1 week
@@ -24,37 +30,27 @@ public class TokenIoUtils {
 	public static final String ISSUER_ID = "fackeBook.org";
 
 
-/*	public static String getSigndJwtHS256(String username, String[] roles, int version, Date expires, Key key, String jsonPayload) {
-		// Issue a token (can be a random String persisted to a database or a JWT token)
-		// The issued token must be associated to a user
-		// Return the issued token
-		if (username == null) {
-			throw new NullPointerException("null username is illegal");
-		}
-		if (roles == null) {
-			throw new NullPointerException("null roles are illegal");
-		}
-		if (expires == null) {
-			throw new NullPointerException("null expires is illegal");
-		}
-		if (key == null) {
-			throw new NullPointerException("null key is illegal");
-		}
+	private static final String CLAIM_KEY_USERNAME = "sub";
+	private static final String CLAIM_KEY_AUDIENCE = "audience";
+	private static final String CLAIM_KEY_CREATED = "created";
+
+	private static final String AUDIENCE_UNKNOWN = "unknown";
+	private static final String AUDIENCE_WEB = "web";
+	private static final String AUDIENCE_MOBILE = "mobile";
+	private static final String AUDIENCE_TABLET = "tablet";
 
 
-		String jwtString = Jwts
-				.builder()
-				.setIssuer("Jersey-Security-Basic")
-				.setSubject(username)
-				.setAudience(StringUtils.join(Arrays.asList(roles), ","))
-				.setExpiration(expires)
-				.setIssuedAt(new Date())
-				.setId(String.valueOf(version))
-				.setPayload(jsonPayload)
-				.signWith(SignatureAlgorithm.HS256, key)
-				.compact();
-		return jwtString;
-	}*/
+
+	@Value("${jwt.expiration}")
+	private Long expiration = TOKEN_DURATION_SECONDS;
+
+	@Value("${server.secretKey}")
+	public static String serverSecretKey;
+
+	@Value("${token.header}")
+	private static String tokenHeader;
+
+
 
 	public String createJwtHS512(String username, String secretKey) {
 		return Jwts.builder()
@@ -103,7 +99,7 @@ public class TokenIoUtils {
 					.parseClaimsJws(token)
 					.getBody();
 		} catch (Exception e) {
-			claims = null;
+			return null;
 		}
 
 		return (String) claims.get("payload");
@@ -118,12 +114,13 @@ public class TokenIoUtils {
 					.parseClaimsJws(token)
 					.getBody();
 		} catch (Exception e) {
-			claims = null;
+			return null;
 		}
 
 		return (String) claims.get("payload");
 
 	}
+
 
 
 	private static Claims getClaimsFromToken(String token, Key key) {
@@ -142,7 +139,8 @@ public class TokenIoUtils {
 
 	public static boolean isValid(String token, Key key) {
 		try {
-			Jwts.parser().setSigningKey(key).parseClaimsJws(token.trim());
+//			Jwts.parser().setSigningKey(key).parseClaimsJws(token.trim());
+			Jwts.parser().setSigningKey(key).parseClaimsJws(token);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -175,6 +173,142 @@ public class TokenIoUtils {
 	}
 
 
+
+	public String getUsernameFromToken(String token) {
+		String username;
+		try {
+			final Claims claims = getClaimsFromToken(token);
+			username = claims.getSubject();
+		} catch (Exception e) {
+			username = null;
+		}
+		return username;
+	}
+
+	public String getUserEmailFromToken(String token) {
+		String username;
+		try {
+			final Claims claims = getClaimsFromToken(token);
+			username = claims.getSubject();
+		} catch (Exception e) {
+			username = null;
+		}
+		return username;
+	}
+
+	public Date getCreatedDateFromToken(String token) {
+		Date created;
+		try {
+			final Claims claims = getClaimsFromToken(token);
+			created = new Date((Long) claims.get(CLAIM_KEY_CREATED));
+		} catch (Exception e) {
+			created = null;
+		}
+		return created;
+	}
+
+	public static Date getExpirationDateFromToken(String token) {
+		Date expiration;
+		try {
+			final Claims claims = getClaimsFromToken(token);
+			expiration = claims.getExpiration();
+		} catch (Exception e) {
+			expiration = null;
+		}
+		return expiration;
+	}
+
+	public static String getAudienceFromToken(String token) {
+		String audience;
+		try {
+			final Claims claims = getClaimsFromToken(token);
+			audience = (String) claims.get(CLAIM_KEY_AUDIENCE);
+		} catch (Exception e) {
+			audience = null;
+		}
+		return audience;
+	}
+
+	private static Claims getClaimsFromToken(String token) {
+		Claims claims;
+		try {
+			claims = Jwts.parser()
+					.setSigningKey(serverSecretKey)
+					.parseClaimsJws(token)
+					.getBody();
+		} catch (Exception e) {
+			claims = null;
+		}
+		return claims;
+	}
+
+	private Date generateExpirationDate() {
+		return new Date(System.currentTimeMillis() + expiration * 1000);
+	}
+
+	private static Boolean isTokenExpired(String token) {
+		final Date expiration = getExpirationDateFromToken(token);
+		return expiration.before(new Date());
+	}
+
+	private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
+		return (lastPasswordReset != null && created.before(lastPasswordReset));
+	}
+
+	private String generateAudience(Device device) {
+		String audience = AUDIENCE_UNKNOWN;
+		if (device.isNormal()) {
+			audience = AUDIENCE_WEB;
+		} else if (device.isTablet()) {
+			audience = AUDIENCE_TABLET;
+		} else if (device.isMobile()) {
+			audience = AUDIENCE_MOBILE;
+		}
+		return audience;
+	}
+
+	private Boolean ignoreTokenExpiration(String token) {
+		String audience = getAudienceFromToken(token);
+		return (AUDIENCE_TABLET.equals(audience) || AUDIENCE_MOBILE.equals(audience));
+	}
+
+	public String generateToken(FaceuserPojo userDetails, Device device) {
+		Map<String, Object> claims = new HashMap<>();
+		claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
+		claims.put(CLAIM_KEY_AUDIENCE, generateAudience(device));
+		claims.put(CLAIM_KEY_CREATED, new Date());
+		return generateToken(claims);
+	}
+
+	private String generateToken(Map<String, Object> claims) {
+		return Jwts.builder()
+				.setClaims(claims)
+				.setExpiration(generateExpirationDate())
+				.signWith(SignatureAlgorithm.HS512, serverSecretKey)
+				.compact();
+	}
+
+	public Boolean canTokenBeRefreshed(String token, Date lastPasswordReset) {
+		final Date created = getCreatedDateFromToken(token);
+		return !isCreatedBeforeLastPasswordReset(created, lastPasswordReset)
+				&& (!isTokenExpired(token) || ignoreTokenExpiration(token));
+	}
+
+	public String refreshToken(String token) {
+		String refreshedToken;
+		try {
+			final Claims claims = getClaimsFromToken(token);
+			claims.put(CLAIM_KEY_CREATED, new Date());
+			refreshedToken = generateToken(claims);
+		} catch (Exception e) {
+			refreshedToken = null;
+		}
+		return refreshedToken;
+	}
+
+	public static Boolean validateToken(String token, FaceuserPojo userDetails) {
+		return  !isTokenExpired(token) && getAudienceFromToken(token).equals(userDetails.getEmail());
+	}
 
 
 	/*

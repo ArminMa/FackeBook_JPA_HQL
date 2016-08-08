@@ -1,6 +1,7 @@
 package org.kth.HI1034.security.util;
 
 import org.apache.commons.codec.binary.Base64;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -13,6 +14,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.Provider;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.spec.EncodedKeySpec;
@@ -26,11 +28,23 @@ public class KeyUtil {
 
 	protected static final String RSA_ALGORITHM = "RSA";
 	protected static final String AES_ALGORITHM = "AES";
+	public final static Provider provider = new BouncyCastleProvider();
+	public static SignatureKeyAlgorithm sigKeyAlgo = new SignatureKeyAlgorithm();
 //	protected static final String HMACSHA1 = "HmacSHA1";
 
 //	SecureRandom secureRandom = JCAUtil.getSecureRandom();
 
+	public KeyUtil() {
+		init();
+	}
 
+	/**
+	 * Init java security to add BouncyCastle as an RSA provider
+	 */
+	private static void init() {
+
+		SignatureKeyAlgorithm.enableBouncyCastle();
+	}
 
 	// ---------||||||||||||||||| generate Key util |||||||||||||||||---------
 
@@ -50,8 +64,9 @@ public class KeyUtil {
 		 *  Bytes where 16 Bytes is (16bytes*8bits) = 128bits, 32 Bytes = 256 bits
 		 * @return SecretKey instance
 		 */
-		public static SecretKey generateSecretHmacSHA256Key()   {
-			return new SecretKeySpec(SecureRandom.getSeed(32), "HmacSHA256");
+		public static SecretKey generateSecretKey(int byteSize, SignatureKeyAlgorithm.Algo algo)   {
+			return new SecretKeySpec(SecureRandom.getSeed(byteSize), algo.getJcaName());
+
 		}
 
 		/**

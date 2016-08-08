@@ -5,9 +5,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kth.HI1034.ApplicationWar;
-import org.kth.HI1034.model.domain.entity.FaceMail;
-import org.kth.HI1034.model.domain.entity.UserReceivedMail;
-import org.kth.HI1034.model.domain.entity.user.FaceUser;
+import org.kth.HI1034.model.domain.faceMail.FaceMail;
+import org.kth.HI1034.model.domain.faceMail.FaceMailRepository;
+import org.kth.HI1034.model.domain.faceMail.userReceivedMail.UserReceivedMail;
+import org.kth.HI1034.model.domain.user.FaceUser;
+import org.kth.HI1034.model.domain.user.FaceUserRepository;
+import org.kth.HI1034.model.domain.faceMail.userReceivedMail.UserReceivedMailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -61,7 +64,7 @@ public class UserMailRepoTest {
 
 	@Before
 	public void setUp() throws Exception {
-		System.out.println("\n\n-----------------UserMailRepoTest.setUp-start----------------------------\n\n");
+		System.out.println("\n\n-----------------UserMailRepoTest.setUpUserControllerTest-start----------------------------\n\n");
 
 
 		//------------ creating Users -----------
@@ -141,7 +144,7 @@ public class UserMailRepoTest {
 		assertNotNull(userReceivedMail);
 
 
-		System.out.println("\n\n-----------------UserMailRepoTest.setUp-end----------------------------\n\n");
+		System.out.println("\n\n-----------------UserMailRepoTest.setUpUserControllerTest-end----------------------------\n\n");
 
 	}
 

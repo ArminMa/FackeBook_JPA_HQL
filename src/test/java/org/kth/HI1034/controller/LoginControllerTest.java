@@ -11,7 +11,7 @@
 //import org.kth.HI1034.JWT.TokenPojo;
 //import org.kth.HI1034.JWT.TokenUtils;
 //import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
-//import org.kth.HI1034.model.pojo.FaceuserPojo;
+//import org.kth.HI1034.model.domain.user.FaceuserPojo;
 //import org.kth.HI1034.security.util.ciperUtil.CipherUtils;
 //import org.kth.HI1034.security.util.ciperUtil.JsonWebKeyUtil;
 //import org.kth.HI1034.util.GsonX;
@@ -47,7 +47,7 @@
 //	private RsaJsonWebKey serverRsaJsonWebKey ;
 //
 //	@Before
-//	public void setUp() throws Exception {
+//	public void setUpUserControllerTest() throws Exception {
 //		this.mockMvc = SetUp.mockMvc(context);
 //		appPublicKeys = SetUp.getAppPublicKey(mockMvc);
 //		serverRsaJsonWebKey = JsonWebKeyUtil.getPublicRSAJwkFromJson(appPublicKeys.getPublicRsaWebKeyAsJson());

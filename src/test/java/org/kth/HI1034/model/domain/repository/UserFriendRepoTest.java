@@ -3,10 +3,12 @@ package org.kth.HI1034.model.domain.repository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kth.HI1034.ApplicationWar;
-import org.kth.HI1034.model.domain.entity.FriendRequest;
-import org.kth.HI1034.model.domain.entity.UserFriends.UserFriend;
-import org.kth.HI1034.model.domain.entity.UserFriends.UserFriendRepository;
-import org.kth.HI1034.model.domain.entity.user.FaceUser;
+import org.kth.HI1034.model.domain.frienRequest.FriendRequest;
+import org.kth.HI1034.model.domain.UserFriends.UserFriend;
+import org.kth.HI1034.model.domain.UserFriends.UserFriendRepository;
+import org.kth.HI1034.model.domain.frienRequest.FriendRequestRepository;
+import org.kth.HI1034.model.domain.user.FaceUser;
+import org.kth.HI1034.model.domain.user.FaceUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -40,7 +42,7 @@ public class UserFriendRepoTest {
 
 	@Test
 	public void test() throws Exception {
-		System.out.println("\n\n-----------------UserFriendRepoTest.setUp-start----------------------------\n\n");
+		System.out.println("\n\n-----------------UserFriendRepoTest.setUpUserControllerTest-start----------------------------\n\n");
 
 		//------------ creating Users -----------
 		userList.add(new FaceUser("UserFriendRepoTest0@gmail.com", "FaceUser0", "password", "firstName0", "lastName0", new Date()));
@@ -95,7 +97,7 @@ public class UserFriendRepoTest {
 
 
 
-		System.out.println("\n\n-----------------UserFriendRepoTest.setUp-End----------------------------\n\n");
+		System.out.println("\n\n-----------------UserFriendRepoTest.setUpUserControllerTest-End----------------------------\n\n");
 
 
 

@@ -16,6 +16,9 @@ public class UserServerKeyPojo  implements Serializable, Comparable<UserServerKe
 	private String email;
 	private String sharedKey;
 	private String tokenKey;
+	private Long id;
+
+
 
 
 
@@ -24,6 +27,12 @@ public class UserServerKeyPojo  implements Serializable, Comparable<UserServerKe
 		this.sharedKey = sharedKey;
 	}
 
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getEmail() {
 		return email;

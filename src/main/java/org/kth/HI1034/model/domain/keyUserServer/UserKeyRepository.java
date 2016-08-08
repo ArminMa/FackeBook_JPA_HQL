@@ -14,7 +14,7 @@ public interface UserKeyRepository 	extends
 
 
 	@Query(value = "select UK FROM UserServerKey UK WHERE UK.email = :theEmail")
-	UserServerKey findByEmail(@Param("theEmail") String email);
+	UserServerKey findByEmail(@Param("theEmail") String userEmail);
 
 	@Modifying/*(clearAutomatically = true)*/
 	@Transactional

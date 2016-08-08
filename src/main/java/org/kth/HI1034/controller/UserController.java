@@ -5,16 +5,14 @@ import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.lang.JoseException;
 import org.kth.HI1034.JWT.TokenPojo;
 import org.kth.HI1034.controller.util.MediaTypes;
-import org.kth.HI1034.model.domain.entity.user.FaceUser;
-import org.kth.HI1034.model.domain.repository.FaceUserRepository;
-import org.kth.HI1034.model.pojo.Ping;
+import org.kth.HI1034.model.domain.user.FaceUser;
+import org.kth.HI1034.model.domain.user.FaceUserRepository;
 import org.kth.HI1034.service.LoginService;
 import org.kth.HI1034.service.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,6 +38,7 @@ public class UserController {
 
 	@Autowired
 	private LoginService loginService;
+
 
 
 	@RequestMapping("/getAll")
@@ -87,27 +86,8 @@ public class UserController {
 	}
 
 
-	@RequestMapping(value = "/api/getPosts/{email}",
-			method = RequestMethod.GET,
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@ResponseStatus(HttpStatus.ACCEPTED)
-	public @ResponseBody
-	ResponseEntity<?> authCheck(@PathVariable("email") String userEmail,
-
-			HttpServletRequest request,
-			HttpServletResponse response)   {
 
 
 
-		return ResponseEntity.ok(50);
-	}
 
-
-	@RequestMapping(value="/ping2/{name}", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
-	public @ResponseBody
-	Ping ping2(@PathVariable("name") String name){
-		Ping ping = new Ping("Ping " + name, "ignore me", "not Ignored");
-		return ping;
-	}
 }

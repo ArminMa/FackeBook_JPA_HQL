@@ -2,13 +2,13 @@ package org.kth.HI1034.model.converters;
 
 
 import com.google.gson.Gson;
-import org.kth.HI1034.model.domain.entity.authority.Authority;
-import org.kth.HI1034.model.domain.entity.authority.AuthorityPojo;
-import org.kth.HI1034.model.domain.entity.authority.UserAuthority;
-import org.kth.HI1034.model.domain.entity.user.FaceUser;
+import org.kth.HI1034.model.domain.authority.Authority;
+import org.kth.HI1034.model.domain.authority.AuthorityPojo;
+import org.kth.HI1034.model.domain.authority.UserAuthority;
+import org.kth.HI1034.model.domain.user.FaceUser;
 import org.kth.HI1034.model.domain.keyUserServer.UserServerKey;
 import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
-import org.kth.HI1034.model.pojo.FaceuserPojo;
+import org.kth.HI1034.model.domain.user.FaceuserPojo;
 import org.kth.HI1034.util.GsonX;
 
 import java.util.ArrayList;
@@ -112,18 +112,22 @@ public class Converter {
 
 
 	public static UserServerKeyPojo convert(UserServerKey userServerKey){
+		if( userServerKey == null ) return null;
 		return gson.fromJson(userServerKey.toString(), UserServerKeyPojo.class );
 	}
 
 	public static UserServerKey convert(UserServerKeyPojo userServerKeyPojo){
+		if( userServerKeyPojo == null ) return null;
 		return gson.fromJson(userServerKeyPojo.toString(), UserServerKey.class );
 	}
 
 	public static AuthorityPojo convert (Authority authority){
+		if( authority == null ) return null;
 		return GsonX.gson.fromJson(authority.toString(), AuthorityPojo.class );
 	}
 
 	public static Authority convert (AuthorityPojo authorityPojo){
+		if( authorityPojo == null ) return null;
 		return GsonX.gson.fromJson(authorityPojo.toString(), Authority.class );
 	}
 

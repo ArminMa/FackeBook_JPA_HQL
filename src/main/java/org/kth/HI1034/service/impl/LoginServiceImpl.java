@@ -10,16 +10,17 @@ import org.kth.HI1034.JWT.TokenPojo;
 import org.kth.HI1034.controller.util.MediaTypes;
 import org.kth.HI1034.exceptions.ResourceNotFoundException;
 import org.kth.HI1034.model.converters.Converter;
-import org.kth.HI1034.model.domain.entity.authority.Authority;
-import org.kth.HI1034.model.domain.entity.authority.AuthorityPojo;
-import org.kth.HI1034.model.domain.entity.authority.UserAuthorityRepository;
-import org.kth.HI1034.model.domain.entity.user.FaceUser;
+import org.kth.HI1034.model.domain.authority.Authority;
+import org.kth.HI1034.model.domain.authority.AuthorityPojo;
+import org.kth.HI1034.model.domain.authority.UserAuthorityRepository;
+import org.kth.HI1034.model.domain.user.FaceUser;
 import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
-import org.kth.HI1034.model.domain.repository.FaceUserRepository;
-import org.kth.HI1034.model.pojo.FaceuserPojo;
+import org.kth.HI1034.model.domain.user.FaceUserRepository;
+import org.kth.HI1034.model.domain.user.FaceuserPojo;
 import org.kth.HI1034.security.util.PasswordSaltUtil;
 import org.kth.HI1034.security.util.CipherUtils;
 import org.kth.HI1034.security.util.KeyUtil;
+import org.kth.HI1034.security.util.SignatureKeyAlgorithm;
 import org.kth.HI1034.service.KeyService;
 import org.kth.HI1034.service.LoginService;
 import org.kth.HI1034.util.GsonX;
@@ -96,11 +97,6 @@ public class LoginServiceImpl implements LoginService {
 		String password = PasswordSaltUtil.generateHmacSHA256Signature( faceuserPojo.getPassword(), serverSecretKey );
 
 
-		System.out.println("\n\n" +
-				"\n\n----------------------------------- LoginServiceImpl.97 -------------------------------------" +
-				"\n\npassword = \n" + password +
-				"\n\nfaceuserPojo.get = \n" + faceuserPojo.getPassword() +
-				"\n\n------------------------------------------------------------------------\n\n\n\n\n");
 		faceuserPojo.setPassword(password);
 		FaceUser F = userRepository.findOneUserByEmailAndPassword(faceuserPojo.getEmail(), faceuserPojo.getPassword());
 		FaceuserPojo loggedInUser = Converter.convert( F  );
@@ -114,11 +110,22 @@ public class LoginServiceImpl implements LoginService {
 		UserServerKeyPojo userServerKeyPojo = keyService.findUserServerKey(faceuserPojo.getEmail());
 		Assert.notNull(userServerKeyPojo, "LoginServiceImpl.userServerKeyPojo:  is the user registered?");
 		userServerKeyPojo.setSharedKey(usersEncodedStringSecretKey);
-		SecretKey secretTokenKey = KeyUtil.SymmetricKey.generateSecretHmacSHA256Key(); //needed a (32*8) 256 bit SecretKey
+		SecretKey secretTokenKey = KeyUtil.SymmetricKey.generateSecretKey( 32, SignatureKeyAlgorithm.Algo.HS256); //needed a (32*8) 256 bit SecretKey
 		userServerKeyPojo.setTokenKey(KeyUtil.SymmetricKey.getKeyAsString(secretTokenKey));
+
+		System.out.println("\n\n----------------- LoginServiceImpl.loginUser().116 ----------------------------" +
+				"\nuserServerKeyPojo = " + userServerKeyPojo.toString() + "\n\n");
+
 		userServerKeyPojo = keyService.update(userServerKeyPojo);
 		// put the token userServerKeyPojo in loggedInUser but without the secretTokenKey that is used for Authentication
+
+		System.out.println("\n\n----------------- LoginServiceImpl.loginUser().122 ----------------------------" +
+				"\nuserServerKeyPojo = " + userServerKeyPojo.toString() + "\n\n");
+
+
+
 		userServerKeyPojo.setTokenKey(null);
+
 		loggedInUser.setUserServerKeyPojo(userServerKeyPojo);
 		Assert.notNull(userServerKeyPojo, "LoginServiceImpl.loginUser: could not save SecretKey in keyService?");
 
@@ -133,7 +140,12 @@ public class LoginServiceImpl implements LoginService {
 		roles.addAll(loggedInUser.getAuthorities().stream().map(AuthorityPojo::getUserRole).collect(Collectors.toList()));
 		// the token is created with the io.jsonwebtoken library
 		faceuserPojo.setUserServerKeyPojo(userServerKeyPojo);
-		String httpTokenHeader = TokenIoUtils.createAuthJwt("faceBook.org", faceuserPojo.getEmail(),"Authentication", roles, faceuserPojo.toString(), secretTokenKey );
+		String httpTokenHeader = TokenIoUtils.createAuthJwt(
+				"faceBook.org",
+				faceuserPojo.getEmail(),
+				"Authentication", roles,
+				faceuserPojo.toString(),
+				secretTokenKey );
 
 
 		/** 6 create a response body with user info an send it with userServerKeyPojo sharedKey */

@@ -7,14 +7,14 @@ import org.kth.HI1034.AppKeyFactory;
 import org.kth.HI1034.JWT.TokenJose4jUtils;
 import org.kth.HI1034.JWT.TokenPojo;
 import org.kth.HI1034.model.converters.Converter;
-import org.kth.HI1034.model.domain.entity.authority.Authority;
-import org.kth.HI1034.model.domain.entity.authority.AuthorityPojo;
-import org.kth.HI1034.model.domain.entity.authority.UserAuthority;
-import org.kth.HI1034.model.domain.entity.authority.UserAuthorityRepository;
-import org.kth.HI1034.model.domain.entity.user.FaceUser;
+import org.kth.HI1034.model.domain.authority.Authority;
+import org.kth.HI1034.model.domain.authority.AuthorityPojo;
+import org.kth.HI1034.model.domain.authority.UserAuthority;
+import org.kth.HI1034.model.domain.authority.UserAuthorityRepository;
+import org.kth.HI1034.model.domain.user.FaceUser;
 import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
-import org.kth.HI1034.model.domain.repository.FaceUserRepository;
-import org.kth.HI1034.model.pojo.FaceuserPojo;
+import org.kth.HI1034.model.domain.user.FaceUserRepository;
+import org.kth.HI1034.model.domain.user.FaceuserPojo;
 import org.kth.HI1034.security.util.PasswordSaltUtil;
 import org.kth.HI1034.security.util.CipherUtils;
 import org.kth.HI1034.security.util.KeyUtil;
@@ -53,6 +53,7 @@ public class RegisterServiceImpl implements RegisterService {
 
 	@Override
 	public TokenPojo registerNewUser(TokenPojo tokenPojo) throws GeneralSecurityException, JoseException {
+
 
 		Assert.notNull(tokenPojo, "RegisterServiceImpl.registerNewUser the TokenPojo is null");
 		EllipticCurveJsonWebKey ellipticJsonWebKey = AppKeyFactory.getEllipticWebKey();
@@ -97,7 +98,7 @@ public class RegisterServiceImpl implements RegisterService {
 		UserServerKeyPojo userServerKeyPojo = keyService.save(faceuserPojo.getUserServerKeyPojo());
 
 		FaceUser faceUserEntity =  userRepository.save( Converter.convert(faceuserPojo) );
-
+		userRepository.flush();
 		faceuserPojo = Converter.convert(faceUserEntity);
 
 		AuthorityPojo authorityPojo = new AuthorityPojo(Role.ROLE_USER);
@@ -112,6 +113,8 @@ public class RegisterServiceImpl implements RegisterService {
 			userAuthorities.add(new UserAuthority(faceUserEntity, A));
 		}
 		userAuthorities = userAuthorityRepo.save(userAuthorities);
+		userAuthorityRepo.flush();
+
 		Assert.notNull(userAuthorities, "could not save faceUserEntity.getAuthorities() == null?");
 		Assert.notEmpty(userAuthorities, "could not save faceUserEntity.getAuthorities() is Empty?");
 
@@ -142,12 +145,6 @@ public class RegisterServiceImpl implements RegisterService {
 
 		tokenPojo.setToken(JWT);
 
-
-		System.out.println("\n\n" +
-				"\n\n----------------------------------- RegisterServiceImpl.146 -------------------------------------" +
-				"\n\nfaceUserEntity = \n" + faceUserEntity.getId() +
-				"\n\nfaceuserPojo = \n" + faceuserPojo.getId() +
-				"\n\n------------------------------------------------------------------------\n\n\n\n\n");
 
 		return tokenPojo;
 

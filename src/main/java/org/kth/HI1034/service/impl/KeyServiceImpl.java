@@ -4,15 +4,19 @@ import org.kth.HI1034.AppKeyFactory;
 import org.kth.HI1034.AppPublicKeys;
 import org.kth.HI1034.exceptions.UserNameOrEmailExistExeption;
 import org.kth.HI1034.model.converters.Converter;
+import org.kth.HI1034.model.domain.keyUserServer.UserKeyRepository;
 import org.kth.HI1034.model.domain.keyUserServer.UserServerKey;
 import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
-import org.kth.HI1034.model.domain.keyUserServer.UserKeyRepository;
 import org.kth.HI1034.security.util.KeyUtil;
+import org.kth.HI1034.security.util.SignatureKeyAlgorithm;
 import org.kth.HI1034.service.KeyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
+import javax.crypto.SecretKey;
+import java.util.List;
 
 @Service
 public class KeyServiceImpl implements KeyService {
@@ -42,17 +46,36 @@ public class KeyServiceImpl implements KeyService {
 
 	@Override
 	public UserServerKeyPojo findUserServerKey(String email) {
+
+		System.out.println("\n\n----------------- KeyServiceImpl.findUserServerKey().49 ----------------------------" +
+				"\nemail = " + email + "\n\n");
+
 		UserServerKey userServerKey = userServerKeyRepository.findByEmail(email);
+
+		List<UserServerKey> userServerKeyList = userServerKeyRepository.findAll();
+
+
+		for(UserServerKey USK: userServerKeyList){
+			System.out.println("\n\n----------------- KeyServiceImpl.findUserServerKey().59 ----------------------------" +
+					"\nUSK.getEmail() = " + USK.getEmail() + "\n\n");
+			System.out.println("\n\n----------------- KeyServiceImpl.findUserServerKey().61 ----------------------------" +
+					"\nUSK.getEmail() = " + userServerKey + "\n\n");
+		}
+
 		if(userServerKey != null ){
 			return Converter.convert(userServerKey);
 		}
+
+		System.out.println("\n\n----------------- KeyServiceImpl.findUserServerKey().67 ----------------------------" +
+				"\nemail = " + email + "\n\n");
+
 		throw new ResourceNotFoundException("could not find the keys to user:-> " + email);
 
 	}
 
 	@Override
-	public boolean userExists(UserServerKeyPojo userServerKeyPojo) {
-		return userServerKeyRepository.findByEmail(userServerKeyPojo.getEmail()) != null;
+	public UserServerKey userExists(UserServerKeyPojo userServerKeyPojo) {
+		return userServerKeyRepository.findByEmail(userServerKeyPojo.getEmail());
 	}
 
 	@Override
@@ -62,13 +85,14 @@ public class KeyServiceImpl implements KeyService {
 		Assert.notNull(userServerKeyPojo.getEmail(), "\n\nthe sharedKey Email could not be parsed? what\n\n");
 		Assert.notNull(userServerKeyPojo.getSharedKey(), "\n\nthe encryptedSharedKey could not be parsed? what\n\n");
 
-		if(userExists(userServerKeyPojo) )
+		if(userExists(userServerKeyPojo) != null )
 			throw new UserNameOrEmailExistExeption("the email is already registered");
 
-
+		SecretKey secretTokenKey = KeyUtil.SymmetricKey.generateSecretKey( 32, SignatureKeyAlgorithm.Algo.HS256); //needed a (32*8) 256 bit SecretKey
+		userServerKeyPojo.setTokenKey(KeyUtil.SymmetricKey.getKeyAsString(secretTokenKey));
 
 		UserServerKey userServerKey = userServerKeyRepository.save(Converter.convert(userServerKeyPojo));
-
+		userServerKeyRepository.flush();
 		if(userServerKey != null) return Converter.convert(userServerKey);
 
 		throw new ResourceNotFoundException("could not save the key for user:-> " + userServerKeyPojo.getEmail());
@@ -81,19 +105,39 @@ public class KeyServiceImpl implements KeyService {
 		Assert.notNull(userServerKeyPojo.getSharedKey(), "\n\nthe encryptedSharedKey could not be parsed? what\n\n");
 		Assert.notNull(userServerKeyPojo.getTokenKey(), "\n\nthe encryptedTokenKey could not be parsed? what\n\n");
 
-		if(!userExists(userServerKeyPojo) )
-			throw new UserNameOrEmailExistExeption("the email is not registered");
+		UserServerKey userServerKey = userExists(userServerKeyPojo);
 
-		System.out.println("\n\nKeyServiceImpl.68\n\n");
+		Assert.notNull(userServerKey, "the email is not registered");
 
-		Integer rowsUpdated = userServerKeyRepository.update(userServerKeyPojo.getEmail(), userServerKeyPojo.getSharedKey(), userServerKeyPojo.getTokenKey());
+		System.out.println("\n\n----------------- KeyServiceImpl.update().103 ----------------------------" +
+				"\nuserServerKey = " + userServerKey.toString() + "\n\n");
+
+		Integer rowsUpdated = updateRepo( userServerKeyPojo );
+
 		UserServerKeyPojo userServerKeyPojoToReturn;
+
+		System.out.println("\n\n----------------- KeyServiceImpl.update().106 ----------------------------" +
+				"\nrowsUpdated = " + rowsUpdated.toString() + "\n\n");
+
 		if(rowsUpdated != null && rowsUpdated == 1){
-			return findUserServerKey(userServerKeyPojo.getEmail());
+
+
+			UserServerKeyPojo userServerKeyPojo1 = findUserServerKey(userServerKeyPojo.getEmail());
+
+			System.out.println("\n\n----------------- KeyServiceImpl.update().114 ----------------------------" +
+					"\nuserServerKeyPojo1 = " + userServerKeyPojo1 + "\n\n");
+
+			return userServerKeyPojo1;
 		}
 
 		throw new ResourceNotFoundException("could not save the key for user:-> " + userServerKeyPojo.getEmail());
 
+	}
+
+	private Integer updateRepo(UserServerKeyPojo userServerKeyPojo){
+		Integer updated = userServerKeyRepository.update(userServerKeyPojo.getEmail(), userServerKeyPojo.getSharedKey(), userServerKeyPojo.getTokenKey());
+		userServerKeyRepository.flush();
+		return updated;
 	}
 
 

@@ -1,12 +1,17 @@
 package org.kth.HI1034;
 
 
-import org.kth.HI1034.model.domain.entity.authority.Authority;
-import org.kth.HI1034.model.domain.entity.authority.AuthorityRepository;
-import org.kth.HI1034.util.enums.Role;
+import org.kth.HI1034.security.FilterTest.JwtFilter;
+import org.kth.HI1034.security.util.CipherUtils;
+import org.kth.HI1034.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
 
 //import org.springframework.boot.web.support.SpringBootServletInitializer;
@@ -15,18 +20,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Sample WAR application
  */
 @SpringBootApplication
-/*	@ComponentScan
-	@EnableAutoConfiguration
-	@EnableTransactionManagement
-	@Configuration*/
+@ComponentScan
+@EnableAutoConfiguration
+//	@EnableTransactionManagement
+
 public class ApplicationWar /*extends SpringBootServletInitializer*/ {
 
-
-
-
-
-
 	private static final AppKeyFactory apiKeyFactory = new AppKeyFactory();
+	private static final CipherUtils cipherUtil = new CipherUtils();
+
+
+
 
 	public static void main(String[] args) throws Exception{
 
@@ -35,12 +39,21 @@ public class ApplicationWar /*extends SpringBootServletInitializer*/ {
 	}
 
 
+
+
+
+
+
+
+
+/*
+
 	@Autowired
 	private AuthorityRepository authorityRepo;
 
 
 
-	public void jpaConfiguration() throws Exception{
+	public void jpaConfiguration() {
 
 		Authority authority = authorityRepo.findOne(1L);
 		if(authority == null){
@@ -65,6 +78,7 @@ public class ApplicationWar /*extends SpringBootServletInitializer*/ {
 
 	}
 
+*/
 
 
 }

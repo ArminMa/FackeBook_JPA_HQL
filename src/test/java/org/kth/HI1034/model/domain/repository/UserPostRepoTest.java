@@ -5,11 +5,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.kth.HI1034.ApplicationWar;
-import org.kth.HI1034.model.domain.entity.post.FacePost;
-import org.kth.HI1034.model.domain.entity.user.FaceUser;
-import org.kth.HI1034.model.domain.entity.user.UserDetached;
-import org.kth.HI1034.model.domain.repository.post.PostRepository;
-import org.kth.HI1034.model.domain.repository.post.PostUserRepository;
+import org.kth.HI1034.model.domain.post.FacePost;
+import org.kth.HI1034.model.domain.user.FaceUser;
+import org.kth.HI1034.model.domain.user.FaceUserRepository;
+import org.kth.HI1034.model.domain.user.UserDetached;
+import org.kth.HI1034.model.domain.post.PostRepository;
+import org.kth.HI1034.model.domain.post.PostUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -45,11 +46,11 @@ public class UserPostRepoTest {
 		System.out.println("\n\n-----------------UserPostRepoTest.A_setUp-start----------------------------\n\n");
 
 		//------------ creating Users -----------
-		userList.add(new FaceUser("UserFriendRepoTest0@gmail.com", "FaceUser0", "password", "firstName0", "lastName0", new Date()));
-		userList.add(new FaceUser("UserFriendRepoTest1@gmail.com", "FaceUser1", "password", "firstName1", "lastName1", new Date()));
-		userList.add( new FaceUser("UserFriendRepoTes2t@gmail.com", "FaceUser2", "password", "firstName2", "lastName2", new Date()));
-		userList.add(new FaceUser("UserFriendRepoTest3@gmail.com", "FaceUser3", "password", "firstName3", "lastName3", new Date()));
-		userList.add(new FaceUser("UserFriendRepoTest4@gmail.com", "FaceUser4", "password", "firstName4", "lastName4", new Date()));
+		userList.add(new FaceUser("PostUserRepository0@gmail.com", "FaceUser0", "password", "firstName0", "lastName0", new Date()));
+		userList.add(new FaceUser("PostUserRepository1@gmail.com", "FaceUser1", "password", "firstName1", "lastName1", new Date()));
+		userList.add(new FaceUser("PostUserRepository2@gmail.com", "FaceUser2", "password", "firstName2", "lastName2", new Date()));
+		userList.add(new FaceUser("PostUserRepository3@gmail.com", "FaceUser3", "password", "firstName3", "lastName3", new Date()));
+		userList.add(new FaceUser("PostUserRepository4@gmail.com", "FaceUser4", "password", "firstName4", "lastName4", new Date()));
 		//if the this return set or SortedSet dow cast to ArrayList while fix this problem
 		userList = userRepo.save( userList);
 		userRepo.flush();
@@ -60,11 +61,11 @@ public class UserPostRepoTest {
 
 		// each entry is tightly linked to an email and username.
 		// a user may be deleted from the system and this will not affect the sent and mail to other users.
-		userDetachedList.add(new UserDetached("UserFriendRepoTest0@gmail.com", "FaceUser0"));
-		userDetachedList.add(new UserDetached("UserFriendRepoTest1@gmail.com", "FaceUser1"));
-		userDetachedList.add(new UserDetached("UserFriendRepoTest2@gmail.com", "FaceUser2"));
-		userDetachedList.add(new UserDetached("UserFriendRepoTest3@gmail.com", "FaceUser3"));
-		userDetachedList.add(new UserDetached("UserFriendRepoTest4@gmail.com", "FaceUser4"));
+		userDetachedList.add(new UserDetached("PostUserRepository0@gmail.com", "FaceUser0"));
+		userDetachedList.add(new UserDetached("PostUserRepository1@gmail.com", "FaceUser1"));
+		userDetachedList.add(new UserDetached("PostUserRepository2@gmail.com", "FaceUser2"));
+		userDetachedList.add(new UserDetached("PostUserRepository3@gmail.com", "FaceUser3"));
+		userDetachedList.add(new UserDetached("PostUserRepository4@gmail.com", "FaceUser4"));
 		userDetachedList = postUserRepo.save(userDetachedList);
 		postUserRepo.flush();
 		assertThat(userDetachedList).isNotNull();

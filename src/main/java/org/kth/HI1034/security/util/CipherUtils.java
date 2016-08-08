@@ -10,12 +10,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.Key;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.Provider;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
@@ -31,10 +30,11 @@ import java.security.SignatureException;
  */
 public class CipherUtils {
 
-	public final static Provider provider = new BouncyCastleProvider();
+
+	public static final KeyUtil keyUtil = new KeyUtil();
 
 	public CipherUtils() {
-		init();
+
 	}
 
 	/**
@@ -45,28 +45,22 @@ public class CipherUtils {
 
 	}
 
-	public String sighnData(PrivateKey privateKey, String dataToSign) throws InvalidKeyException, SignatureException, NoSuchAlgorithmException {
+	public String sighnData(PrivateKey privateKey, String dataToSign, SignatureKeyAlgorithm.Algo algo) throws GeneralSecurityException {
 
-		Signature signer = Signature.getInstance("SHA1withRSA", provider);
-		signer.initSign(privateKey); // PKCS#8 is preferred
-		signer.update(Base64.decodeBase64(dataToSign) );
-		return Base64.encodeBase64String( signer.sign() ) ;
+		Signature signer = null;
+		try {
+			signer = Signature.getInstance(algo.getJcaName(), KeyUtil.provider);
+			signer.initSign(privateKey);
+			signer.update(Base64.decodeBase64(dataToSign) );
+			return Base64.encodeBase64String( signer.sign() ) ;
+		} catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
+			e.printStackTrace();
+			throw new GeneralSecurityException("CipherUtils.sighnData", e.getCause());
+		}
+
+
 
 	}
-
-	public boolean verifieSigndData(PublicKey publicKey, String data, String signedData) throws NoSuchAlgorithmException {
-		byte[] decodedSighnData = Base64.decodeBase64(signedData);
-
-		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256", provider);
-		messageDigest.update(decodedSighnData);
-
-		return false;
-	}
-
-
-
-
-
 
 	/**
 	 * Encrypt a text using public key.
