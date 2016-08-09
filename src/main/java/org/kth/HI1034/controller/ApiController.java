@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import org.kth.HI1034.controller.util.MediaTypes;
 import org.kth.HI1034.model.domain.user.FaceuserPojo;
 import org.kth.HI1034.service.AuthService;
+import org.kth.HI1034.service.FaceUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,6 +32,9 @@ public class ApiController {
 	@Autowired
 	private AuthService authService;
 
+	@Autowired
+	private FaceUserService faceUserService;
+
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "role/{role}", method = RequestMethod.GET)
 	public Boolean login(@PathVariable final String role,
@@ -41,7 +45,7 @@ public class ApiController {
 	}
 
 	@PreFilter("authenticated")
-	@RequestMapping(value = "/getPosts/{email:.+}",
+	@RequestMapping(value = "/authCheck/{email:.+}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseStatus(HttpStatus.ACCEPTED)
@@ -61,11 +65,30 @@ public class ApiController {
 
 
 		return ResponseEntity.badRequest().build();
+	}
+
+	@PreFilter("authenticated")
+	@RequestMapping(value = "/getPosts/{email:.+}",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseStatus(HttpStatus.ACCEPTED)
+
+	public @ResponseBody ResponseEntity<?> getPosts(@RequestHeader(value= "AuthToken" ) String authToken,
+	                                                @RequestHeader(value= "UserToken" ) String userToken,
+	                                                 @PathVariable("email") String userEmail,
+	                                                 HttpServletRequest request,
+	                                                 HttpServletResponse response)   {
+
+		System.out.println("----------- ApiController.authCheck /api/getPosts/{email} invoke -----------");
+		FaceuserPojo faceuserPojo;
+		if( (faceuserPojo = authService.getAuthentication(request, userEmail)) != null ){
+
+			return faceUserService.getUserReceivdPosts(userEmail, authToken );
+
+		}
 
 
-
-
-
+		return ResponseEntity.badRequest().build();
 	}
 
 //	@RequestMapping(value = "/getPosts2/{email}",

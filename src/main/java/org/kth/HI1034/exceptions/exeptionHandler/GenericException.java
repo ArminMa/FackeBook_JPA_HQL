@@ -12,6 +12,10 @@ public class GenericException extends RuntimeException {
 		super(message);
 	}
 
+	public GenericException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
 	public GenericException(String message, Errors errors) {
 		super(message);
 		this.errors = errors;

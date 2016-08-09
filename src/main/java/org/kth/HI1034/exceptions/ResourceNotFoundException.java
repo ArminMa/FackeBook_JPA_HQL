@@ -9,8 +9,4 @@ public class ResourceNotFoundException extends GenericException {
         super(System.currentTimeMillis() + ": " + msg);
     }
 
-
-
-
-
 }

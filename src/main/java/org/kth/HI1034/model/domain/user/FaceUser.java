@@ -219,8 +219,8 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 	}
 
 	private Date accountCreated;
-	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "yyyy.MM.dd hh.mm.ss.SSS")
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern = "yyyy-MM-dd.hh:mm:ss:SSS")
 //	@NotNull
 
 	@CreatedDate
@@ -237,8 +237,8 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 	}
 
 	private Date accountUpdated;
-	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "yyyy.MM.dd hh.mm.ss.SSS")
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern = "yyyy-MM-dd.hh:mm:ss.SSS")
 
 	@CreatedDate
 	@Column(name = "acount_updated_date",

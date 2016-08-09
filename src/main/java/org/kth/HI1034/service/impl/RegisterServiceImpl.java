@@ -11,6 +11,8 @@ import org.kth.HI1034.model.domain.authority.Authority;
 import org.kth.HI1034.model.domain.authority.AuthorityPojo;
 import org.kth.HI1034.model.domain.authority.UserAuthority;
 import org.kth.HI1034.model.domain.authority.UserAuthorityRepository;
+import org.kth.HI1034.model.domain.post.UserDetachedRepository;
+import org.kth.HI1034.model.domain.post.UserDetached;
 import org.kth.HI1034.model.domain.user.FaceUser;
 import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
 import org.kth.HI1034.model.domain.user.FaceUserRepository;
@@ -44,6 +46,9 @@ public class RegisterServiceImpl implements RegisterService {
 
 	@Autowired
 	private UserAuthorityRepository userAuthorityRepo;
+
+	@Autowired
+	UserDetachedRepository postUserRepo;
 
 	@Autowired
 	private KeyService keyService;
@@ -99,6 +104,10 @@ public class RegisterServiceImpl implements RegisterService {
 
 		FaceUser faceUserEntity =  userRepository.save( Converter.convert(faceuserPojo) );
 		userRepository.flush();
+
+		postUserRepo.save(new UserDetached(faceuserPojo.getEmail(), faceuserPojo.getUsername()));
+		postUserRepo.flush();
+
 		faceuserPojo = Converter.convert(faceUserEntity);
 
 		AuthorityPojo authorityPojo = new AuthorityPojo(Role.ROLE_USER);

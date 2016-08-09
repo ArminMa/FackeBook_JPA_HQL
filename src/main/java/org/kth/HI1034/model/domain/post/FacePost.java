@@ -1,12 +1,12 @@
 package org.kth.HI1034.model.domain.post;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.validator.constraints.Length;
 import org.kth.HI1034.model.domain.user.FaceUser;
-import org.kth.HI1034.model.domain.user.UserDetached;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -24,16 +24,25 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+@XmlRootElement
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "face_post")
 public class FacePost implements Serializable ,Comparable<FacePost>{
 
 	private static final int MAX_LENGTH_POST = 500;
+
+	private Long id;
+	private UserDetached author;
+	private SortedSet<UserDetached> receivers = new TreeSet<>();
+	private String postText;
+	private Date sentDate;
 
 
 	public FacePost() {
@@ -55,7 +64,15 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 
 	}
 
-	private Long id;
+	public FacePost(String postText, Date sentDate, UserDetached author, UserDetached receiver) {
+		this.postText = postText;
+		this.sentDate = sentDate;
+		this.author = author;
+		this.receivers.add( receiver );
+
+	}
+
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id", insertable = false, updatable = false, unique = true, nullable = false)
@@ -67,7 +84,7 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 	}
 
 
-	private UserDetached author;
+
 	@ManyToOne(fetch= FetchType.EAGER )
 	@JoinTable(name = "post_author",
 			joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"),
@@ -80,7 +97,7 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 		this.author = author;
 	}
 
-	private SortedSet<UserDetached> receivers = new TreeSet<>();
+
 	@ManyToMany( fetch = FetchType.EAGER)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@SortNatural
@@ -98,7 +115,6 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 
 
 
-	private String postText;
 	@Length(max=MAX_LENGTH_POST)
 	@Column(name = "post_text" , length = MAX_LENGTH_POST)
 	public String getPostText() {
@@ -109,9 +125,9 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 	}
 
 
-	private Date sentDate;
-	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "yyyy.MM.dd.hh.mm.ss.SSS")
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern = "yyyy-MM-dd.hh:mm:ss:SSS")
 	@NotNull
 	@CreatedDate
 	@Column(name = "sent_date",
@@ -179,4 +195,6 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 		long anotherEntity = o.hashCode();
 		return (thisTime<anotherEntity ? -1 : (thisTime==anotherEntity ? 0 : 1));
 	}
+
+
 }

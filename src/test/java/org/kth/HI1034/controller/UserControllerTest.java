@@ -1,5 +1,6 @@
 package org.kth.HI1034.controller;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -16,7 +17,7 @@ import org.kth.HI1034.model.domain.faceMail.userReceivedMail.UserReceivedMailRep
 import org.kth.HI1034.model.domain.frienRequest.FriendRequestRepository;
 import org.kth.HI1034.model.domain.keyUserServer.UserKeyRepository;
 import org.kth.HI1034.model.domain.post.PostRepository;
-import org.kth.HI1034.model.domain.post.PostUserRepository;
+import org.kth.HI1034.model.domain.post.UserDetachedRepository;
 import org.kth.HI1034.model.domain.user.FaceUserRepository;
 import org.kth.HI1034.model.domain.user.FaceuserPojo;
 import org.kth.HI1034.security.util.CipherUtils;
@@ -74,7 +75,7 @@ public class UserControllerTest {
 	public FaceMailRepository mailRepo;
 
 	@Autowired
-	public PostUserRepository postUserRepo;
+	public UserDetachedRepository postUserRepo;
 
 	@Autowired
 	public UserReceivedMailRepository userReceivedMailRepo;
@@ -87,6 +88,8 @@ public class UserControllerTest {
 
 	@Autowired
 	public FriendRequestRepository friendRequestRepo;
+
+
 
 	@Before
 	public void setUp() throws Exception {
@@ -110,22 +113,22 @@ public class UserControllerTest {
 				friendRequestRepo);
 //		preTest.setUpUserControllerTest();
 
-		preTest.setUserPojoList(faceuserPojoList);
-		preTest.setUpTestUserControllerTest();
+
+		preTest.setUpTestUserControllerTest(faceuserPojoList);
 
 		System.out.println("\n\n----------------- UserControllerTest.setUpUserControllerTest-end ----------------------------\n\n");
 
 	}
 
-//	@After
-//	public void tearDown() throws Exception {
-//
-//		System.out.println("\n\n----------------- UserControllerTest.tearDown-start ----------------------------\n\n");
-//
-//		preTest.tearDownUserControllerTest();
-//
-//		System.out.println("\n\n----------------- UserControllerTest.tearDown-end ----------------------------\n\n");
-//	}
+	@After
+	public void tearDown() throws Exception {
+
+		System.out.println("\n\n----------------- UserControllerTest.tearDown-start ----------------------------\n\n");
+
+		preTest.tearDownUserControllerTest();
+
+		System.out.println("\n\n----------------- UserControllerTest.tearDown-end ----------------------------\n\n");
+	}
 
 
 	@Test
@@ -202,74 +205,110 @@ public class UserControllerTest {
 
 		/** 6 get the HTTP response and check header and body */
 		String tokenHeader = theResponse.getHeader("AuthToken");
+		String UserInfotokenHeader = theResponse.getHeader("UserToken");
 		assertThat(tokenHeader).isNotNull();
+		assertThat(UserInfotokenHeader).isNotNull();
 
 		TokenPojo receivedTokenPojo = GsonX.gson.fromJson(theResponse.getContentAsString(), TokenPojo.class);
 		assertThat(receivedTokenPojo).isNotNull();
 
-		List<String> payloadListToToGetFromToken = new ArrayList<>();
-		payloadListToToGetFromToken.add("payload");
-		Map<String, String> mapedPayload = new HashMap<>();
-		mapedPayload = TokenJose4jUtils.SymmetricJWT.getJwtPayloadList(
+		String payloadKeyToGetFromToken = "payload";
+
+
+		String facePojoJson = TokenJose4jUtils.SymmetricJWT.getJwtPayload(
 				sendersSecretKey,
 				receivedTokenPojo.getIssuer(),
 				receivedTokenPojo.getAudience(),
 				receivedTokenPojo.getSubject(),
-				payloadListToToGetFromToken,
+				payloadKeyToGetFromToken,
 				receivedTokenPojo.getToken()
 		);
-		FaceuserPojo faceuserPojoPayload = GsonX.gson.fromJson(mapedPayload.get("payload"), FaceuserPojo.class);
+
+		assertThat(facePojoJson).isNotNull();
+
+		System.out.println("\n\n----------------- UserControllerTest.A_Login().232 ----------------------------" +
+				"\nmapedPayload.get(\"payload\") = " + facePojoJson + "\n\n");
+
+		System.out.println("\n\n----------------- UserControllerTest.A_Login().235 ----------------------------" +
+				"\nmapedPayload.get(\"payload\") = " + preTest.getUserPojoList().get(0).toString() + "\n\n");
+
+
+
+		FaceuserPojo faceuserPojoPayload = GsonX.gson.fromJson(facePojoJson, FaceuserPojo.class);
 		assertThat(faceuserPojoPayload).isNotNull();
 		assertThat(faceuserPojoPayload.getEmail()).isEqualTo(faceuserPojoToSend.getEmail());
 
 
 		/** 7 use the header to call a uri where you can test that are Authenticated and Authorized to do something. */
 
-		MockHttpServletResponse theResponse2 =
+		MockHttpServletResponse servletResponse1 =
 				this.preTest.mockMvc.perform
 						(
-								get("/api/getPosts/"+preTest.getUserPojoList().get(0).getEmail())
+								get("/api/authCheck/"+preTest.getUserPojoList().get(0).getEmail())
 										.header("AuthToken", tokenHeader)
+										.header("UserToken", UserInfotokenHeader)
 						)
 						.andExpect(status().isOk())
 						.andExpect(content().contentType(MediaTypes.JsonUtf8))
 						.andReturn().getResponse();
 
 
-		assertThat(theResponse2).isNotNull();
-
-		String response2Body = theResponse2.getContentAsString();
-
+		assertThat(servletResponse1).isNotNull();
+		String response2Body = servletResponse1.getContentAsString();
 		assertThat(response2Body).isNotNull();
 
+		faceuserPojoPayload = GsonX.gson.fromJson(response2Body, FaceuserPojo.class);
+
+		assertThat(faceuserPojoPayload).isNotNull();
+
 		System.out.println("\n\n\n\n" +
-				"----------------------------------- LoginControllerTest.399 -------------------------------------" +
-				"\n\nresponse2Body = " + response2Body +
+				"----------------------------------- LoginControllerTest.256 -------------------------------------" +
+				"\n\nfacePostPojoJson = " + faceuserPojoPayload +
 				"\n\n" +
 				"------------------------------------------------------------------------\n\n\n\n\n");
 
 
+
+//		MockHttpServletResponse servletResponse2 =
+//				this.preTest.mockMvc.perform
+//						(
+//								get("/api/getPosts/"+preTest.getUserPojoList().get(0).getEmail())
+//										.header("AuthToken", tokenHeader)
+//						)
+//						.andExpect(status().isOk())
+//						.andExpect(content().contentType(MediaTypes.JsonUtf8))
+//						.andReturn().getResponse();
+//
+//
+//		assertThat(servletResponse2).isNotNull();
+//		String facePostPojoJson = servletResponse2.getContentAsString();
+//		assertThat(facePostPojoJson).isNotNull();
+//
+//		List<FacePostPojo> facePostPojos = new ArrayList<>();
+//
+//		Type listType = new TypeToken<ArrayList<FacePostPojo>>(){}.getType();
+//
+//		facePostPojos = GsonX.gson.fromJson(response2Body, listType);
+
+//		List<FacePostPojo> facePostPojos = new ArrayList<>();
+//
+//		Type listType = new TypeToken<ArrayList<FacePostPojo>>(){}.getType();
+//
+//		facePostPojos = GsonX.gson.fromJson(response2Body, listType);
+
+//		System.out.println("\n\n\n\n" +
+//				"----------------------------------- LoginControllerTest.269 -------------------------------------" +
+//				"\n\nfacePostPojoJson = " + facePostPojoJson +
+//				"\n\n" +
+//				"------------------------------------------------------------------------\n\n\n\n\n");
+
+
+
+
 		System.out.println("\n\n----------------- UserControllerTest.A_Login-end ----------------------------\n\n");
 
-		preTest.tearDownUserControllerTest();
 	}
 
-//	@Test
-//	public void B_Login() throws Exception {
-//
-//
-//
-//		System.out.println("\n\n----------------- UserControllerTest.B_Login-start ----------------------------\n\n");
-//
-//			this.preTest.mockMvc.perform
-//					(
-//							get("/api/getPosts/registerTest@gmail.com")
-//									.header("AuthToken", "df1asd65gsadf")
-//					)
-//					.andExpect(status().isBadRequest());
-//
-//		System.out.println("\n\n----------------- UserControllerTest.B_Login-end ----------------------------\n\n");
-//	}
 
 
 }

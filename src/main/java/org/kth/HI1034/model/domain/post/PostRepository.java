@@ -18,5 +18,5 @@ public interface PostRepository extends JpaRepository<FacePost, Long>, JpaSpecif
 	@Query(value = "SELECT P FROM FacePost P " +
 			"where :receiver_email = (select PU.email from P.receivers PU WHERE PU.email  = :receiver_email) ")
 //	@Query(value = "SELECT U FROM FaceUser U, IN(U.sentFriendRequests) SFR WHERE SFR.pk.requestFrom.id = :userId" )
-	List<FacePost> findAllReceiverToUserByUserId(@Param("receiver_email") String receiverEmail);
+	List<FacePost> findAllReceivedPostsToUserByUserEmail(@Param("receiver_email") String receiverEmail);
 }

@@ -49,15 +49,11 @@ public class AuthServiceImpl implements AuthService {
 						"\ntoken = " + token +
 				"\ntokenHeader = " + tokenHeader +
 				"\nuserEmail = " + userEmail +
-
 				"\n\n");
 
 		UserServerKeyPojo userServerKeyPojo =  keyService.findUserServerKey(userEmail) ;
 
 		if( userServerKeyPojo   != null ){
-
-			System.out.println("\n\n----------------- AuthServiceImpl.getAuthentication().58 ----------------------------" +
-					"\nuserServerKeyPojo = " + userServerKeyPojo.toString() + "\n\n");
 
 			SecretKey secretTokenKey =   KeyUtil.getSecretKeyFromString(userServerKeyPojo.getTokenKey() );
 

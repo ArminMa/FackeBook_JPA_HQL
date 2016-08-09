@@ -1,8 +1,10 @@
-package org.kth.HI1034.model.domain.user;
+package org.kth.HI1034.model.domain.post;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -22,9 +24,20 @@ public class UserDetached implements java.io.Serializable, Comparable<UserDetach
 	}
 
 
+	private Long id;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id", insertable = false, updatable = false, unique = true, nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	private String email;
-	@Id
 	@Column(name = "email", insertable = true, updatable = true, unique = true, nullable = false)
 	public String getEmail() {
 		return email;

@@ -8,9 +8,9 @@ import org.kth.HI1034.ApplicationWar;
 import org.kth.HI1034.model.domain.post.FacePost;
 import org.kth.HI1034.model.domain.user.FaceUser;
 import org.kth.HI1034.model.domain.user.FaceUserRepository;
-import org.kth.HI1034.model.domain.user.UserDetached;
+import org.kth.HI1034.model.domain.post.UserDetached;
 import org.kth.HI1034.model.domain.post.PostRepository;
-import org.kth.HI1034.model.domain.post.PostUserRepository;
+import org.kth.HI1034.model.domain.post.UserDetachedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -38,7 +38,7 @@ public class UserPostRepoTest {
 	private List<FacePost> postList = new ArrayList<>();
 
 	@Autowired
-	private PostUserRepository postUserRepo;
+	private UserDetachedRepository postUserRepo;
 	private List<UserDetached> userDetachedList = new ArrayList<>();
 
 	@Test
@@ -71,8 +71,8 @@ public class UserPostRepoTest {
 		assertThat(userDetachedList).isNotNull();
 		assertThat(userDetachedList.size()).isEqualTo(5);
 
-		postList.add( new FacePost("Post 0", new Date(), userList.get(0), userList.get(0))  ) ;
-		postList.add( new FacePost("Post 1", new Date(), userList.get(0) , userList.get(1)) );
+		postList.add( new FacePost("Post 0", new Date(), userDetachedList.get(0), userDetachedList.get(0))  ) ;
+		postList.add( new FacePost("Post 1", new Date(), userDetachedList.get(0) , userDetachedList.get(1)) );
 		postList = postRepo.save( postList);
 		postRepo.flush();
 		assertThat(postList).isNotNull();
@@ -96,7 +96,7 @@ public class UserPostRepoTest {
 		assertThat(sentPostListForUser0).isNotEmpty();
 		assertThat(sentPostListForUser0).hasSize(2);
 
-		List<FacePost> receivedPostListForUser0 = postRepo.findAllReceiverToUserByUserId(userList.get(0).getEmail());
+		List<FacePost> receivedPostListForUser0 = postRepo.findAllReceivedPostsToUserByUserEmail(userList.get(0).getEmail());
 		assertThat(receivedPostListForUser0).isNotNull();
 		assertThat(receivedPostListForUser0).isNotEmpty();
 		assertThat(receivedPostListForUser0).hasSize(1);
@@ -111,7 +111,7 @@ public class UserPostRepoTest {
 		assertThat(sentPostListForUser1).isEmpty();
 		assertThat(sentPostListForUser1).hasSize(0);
 
-		List<FacePost> receivedPostListForUser1 = postRepo.findAllReceiverToUserByUserId(userList.get(1).getEmail());
+		List<FacePost> receivedPostListForUser1 = postRepo.findAllReceivedPostsToUserByUserEmail(userList.get(1).getEmail());
 		assertThat(receivedPostListForUser1).isNotNull();
 		assertThat(receivedPostListForUser1).isNotEmpty();
 		assertThat(receivedPostListForUser1).hasSize(1);
@@ -121,7 +121,7 @@ public class UserPostRepoTest {
 		postRepo.flush();
 
 		// the list should contain 0 posts
-		receivedPostListForUser1 = postRepo.findAllReceiverToUserByUserId(userList.get(1).getEmail());
+		receivedPostListForUser1 = postRepo.findAllReceivedPostsToUserByUserEmail(userList.get(1).getEmail());
 		assertThat(receivedPostListForUser1).isNotNull();
 		assertThat(receivedPostListForUser1).isEmpty();
 		assertThat(receivedPostListForUser1).hasSize(0);

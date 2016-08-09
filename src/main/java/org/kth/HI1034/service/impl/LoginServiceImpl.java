@@ -57,6 +57,10 @@ public class LoginServiceImpl implements LoginService {
 	@Value("${token.header}")
 	private String tokenHeader;
 
+
+	@Value("${user.token.header}")
+	private String userTokenHeader;
+
 	@Override
 	public ResponseEntity<?> loginUser(TokenPojo tokenPojo) throws JoseException, MalformedClaimException, InvalidJwtException, GeneralSecurityException, IOException {
 
@@ -66,9 +70,10 @@ public class LoginServiceImpl implements LoginService {
 		// 2 Decrypt the Users SecretKey to use later
 		// 3 Get the payload from the token to check if the user has correct email and password
 		// 4 Use the created shared secretKey from the user and create a new secretTokenKey and save i in keyRepository
-		// 5 Create the Authentication token for the HTTP header with a 256 bit SecretKey created for a the user in question.
-		// 6 create a response body with user info an send it with userServerKeyPojo sharedKey
+		// 5 create a response body with user info an send it with userServerKeyPojo sharedKey
+		// 6 Create the Authentication token for the HTTP header with a 256 bit SecretKey created for a the user in question.
 		// 7 send the ResponseEntity with Authtoken in the HTTP header and tokenPojo in the HTTP body
+		// 8 send the ResponseEntity with UserToken (User Info token) without secretKeyKey in the HTTP header
 
 		/** 1 get a token from user where a secretKey is encrypted with server private key */
 		Assert.notNull(tokenPojo, "LoginServiceImpl tokenPojo is null?");
@@ -113,15 +118,15 @@ public class LoginServiceImpl implements LoginService {
 		SecretKey secretTokenKey = KeyUtil.SymmetricKey.generateSecretKey( 32, SignatureKeyAlgorithm.Algo.HS256); //needed a (32*8) 256 bit SecretKey
 		userServerKeyPojo.setTokenKey(KeyUtil.SymmetricKey.getKeyAsString(secretTokenKey));
 
-		System.out.println("\n\n----------------- LoginServiceImpl.loginUser().116 ----------------------------" +
-				"\nuserServerKeyPojo = " + userServerKeyPojo.toString() + "\n\n");
+
 
 		userServerKeyPojo = keyService.update(userServerKeyPojo);
 		// put the token userServerKeyPojo in loggedInUser but without the secretTokenKey that is used for Authentication
 
-		System.out.println("\n\n----------------- LoginServiceImpl.loginUser().122 ----------------------------" +
-				"\nuserServerKeyPojo = " + userServerKeyPojo.toString() + "\n\n");
 
+
+		System.out.println("\n\n----------------- LoginServiceImpl.loginUser().128 ----------------------------" +
+				"\nloggedInUser = " + loggedInUser + "\n\n");
 
 
 		userServerKeyPojo.setTokenKey(null);
@@ -132,6 +137,17 @@ public class LoginServiceImpl implements LoginService {
 
 
 		/** 5 Create the Authentication token */
+
+		loggedInUser.getUserServerKeyPojo().setSharedKey(null);
+		loggedInUser.getUserServerKeyPojo().setTokenKey(null);
+		loggedInUser.setFriends(null);
+		loggedInUser.setReceivedFriendRequests(null);
+		loggedInUser.setSentFriendRequests(null);
+		loggedInUser.setSentMails(null);
+
+
+		String userAsJsonPayload =  loggedInUser.toString();
+
 		@SuppressWarnings("unchecked")
 		List<Authority> authority = (List<Authority>) Converter.convert( userAuthorityRepo.findAuthorityByUserId(loggedInUser.getId()) );
 		Assert.notNull( authority , "\n\n LoginServiceImpl.loginUser: could not retrieve authority for user "+ loggedInUser.getEmail());
@@ -140,12 +156,13 @@ public class LoginServiceImpl implements LoginService {
 		roles.addAll(loggedInUser.getAuthorities().stream().map(AuthorityPojo::getUserRole).collect(Collectors.toList()));
 		// the token is created with the io.jsonwebtoken library
 		faceuserPojo.setUserServerKeyPojo(userServerKeyPojo);
-		String httpTokenHeader = TokenIoUtils.createAuthJwt(
+		String httpTokenHeader = TokenIoUtils.createJwtAuth(
 				"faceBook.org",
 				faceuserPojo.getEmail(),
 				"Authentication", roles,
-				faceuserPojo.toString(),
+				userAsJsonPayload,
 				secretTokenKey );
+
 
 
 		/** 6 create a response body with user info an send it with userServerKeyPojo sharedKey */
@@ -154,7 +171,7 @@ public class LoginServiceImpl implements LoginService {
 		tokenPojo.setAudience("registerTest@gmail.com");
 		tokenPojo.setSubject("Authentication");
 		Map<String , String> sendPayload = new HashMap<>( );
-		sendPayload.put("payload", faceuserPojo.toString());
+		sendPayload.put("payload", userAsJsonPayload);
 
 		String token = TokenJose4jUtils.SymmetricJWT.generateJWT(
 				sendersSecretKey,
@@ -165,10 +182,38 @@ public class LoginServiceImpl implements LoginService {
 				20);
 		tokenPojo.setToken( token );
 
+
+
 		/** 7 send the ResponseEntity with Authtoken in the HTTP header and tokenPojo in the HTTP body */
+
+		loggedInUser.getUserServerKeyPojo().setSharedKey(null);
+		loggedInUser.getUserServerKeyPojo().setTokenKey(null);
+		loggedInUser.setPassword(null);
+		loggedInUser.setAuthorities(null);
+		loggedInUser.setAuthorities(null);
+		loggedInUser.setFriends(null);
+
+		loggedInUser.setReceivedFriendRequests(null);
+		loggedInUser.setSentFriendRequests(null);
+		loggedInUser.setSentMails(null);
+		loggedInUser.setAuthorities(null);
+
+		/** 8 send the ResponseEntity with User Info token without secretKeyKey in the HTTP header  */
+
+		String httpUserTokenHeader = TokenIoUtils.createJwt(
+				"faceBook.org",
+				faceuserPojo.getEmail(),
+				"Authentication", roles,
+				loggedInUser.toString()
+		);
+
+		System.out.println("\n\n----------------- LoginServiceImpl.loginUser().208 ----------------------------" +
+				"\nuserServerKeyPojo = " + userServerKeyPojo.toString() + "\n\n");
+
 		return ResponseEntity.ok()
 				.contentType(MediaTypes.JsonUtf8)
 				.header(tokenHeader, httpTokenHeader)
+				.header(userTokenHeader, httpUserTokenHeader)
 				.body(tokenPojo.toString());
 	}
 

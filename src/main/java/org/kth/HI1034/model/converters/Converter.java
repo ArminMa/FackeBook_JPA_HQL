@@ -5,14 +5,16 @@ import com.google.gson.Gson;
 import org.kth.HI1034.model.domain.authority.Authority;
 import org.kth.HI1034.model.domain.authority.AuthorityPojo;
 import org.kth.HI1034.model.domain.authority.UserAuthority;
-import org.kth.HI1034.model.domain.user.FaceUser;
 import org.kth.HI1034.model.domain.keyUserServer.UserServerKey;
 import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
+import org.kth.HI1034.model.domain.post.FacePost;
+import org.kth.HI1034.model.domain.post.FacePostPojo;
+import org.kth.HI1034.model.domain.post.UserDetached;
+import org.kth.HI1034.model.domain.user.FaceUser;
 import org.kth.HI1034.model.domain.user.FaceuserPojo;
 import org.kth.HI1034.util.GsonX;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -78,7 +80,7 @@ public class Converter {
 		faceuserPojo.setEnabled( ObjectNotNull(faceUser.getEnabled() ) ?  faceUser.getEnabled() : true);
 		faceuserPojo.setAccountLocked( ObjectNotNull(faceUser.getAccountLocked() ) ?  faceUser.getAccountLocked() : false);
 		faceuserPojo.setAccountExpired( ObjectNotNull(faceUser.getAccountExpired() ) ? faceUser.getAccountExpired() : false);
-		faceuserPojo.setAccountCreated( ObjectNotNull(faceUser.getAccountCreated() ) ? faceUser.getAccountCreated() : new Date());
+		faceuserPojo.setAccountCreated( ObjectNotNull(faceUser.getAccountCreated() ) ? faceUser.getAccountCreated() : null);
 
 		List<AuthorityPojo> authorityPojos;
 
@@ -183,7 +185,69 @@ public class Converter {
 			return userServerKeys;
 		}
 
+		if(genericList.iterator().next() instanceof FacePost){
+			List<FacePostPojo> facePostPojos = new ArrayList<>();
+
+			for(FacePost FP : (List<FacePost>) genericList){
+
+				FacePostPojo facePostPojo = GsonX.gson.fromJson(FP.toString(), FacePostPojo.class);
+
+				FaceuserPojo authorFaceuserPojo = new FaceuserPojo();
+				authorFaceuserPojo.setEmail(FP.getAuthor().getEmail());
+				authorFaceuserPojo.setUsername(FP.getAuthor().getUsername());
+
+				facePostPojo.setFaceUserAuthor(authorFaceuserPojo);
+				facePostPojos.add(facePostPojo);
+			}
+			return facePostPojos;
+		}
+
+		if(genericList.iterator().next() instanceof FacePostPojo){
+			List<FacePost> facePosts = new ArrayList<>();
+
+			for(FacePostPojo FP : (List<FacePostPojo>) genericList){
+
+				FacePost facePost = GsonX.gson.fromJson(FP.toString(), FacePost.class);
+
+				UserDetached userDetached = new UserDetached();
+				userDetached.setEmail(FP.getFaceUserAuthor().getEmail());
+				userDetached.setUsername(FP.getFaceUserAuthor().getUsername());
+
+				facePost.setAuthor(userDetached);
+				facePosts.add(facePost);
+			}
+			return facePosts;
+		}
+
 		return null;
 
 	}
+
+	public static FacePostPojo convert(FacePost facePost) {
+
+		FacePostPojo facePostPojo = GsonX.gson.fromJson(facePost.toString(), FacePostPojo.class);
+
+		FaceuserPojo authorFaceuserPojo = new FaceuserPojo();
+		authorFaceuserPojo.setEmail(facePost.getAuthor().getEmail());
+		authorFaceuserPojo.setEmail(facePost.getAuthor().getUsername());
+
+		facePostPojo.setFaceUserAuthor(authorFaceuserPojo);
+
+		return facePostPojo;
+	}
+
+	public static FacePost convert(FacePostPojo facePostPojo) {
+
+		FacePost facePost = GsonX.gson.fromJson(facePostPojo.toString(), FacePost.class);
+
+		UserDetached userDetached = new UserDetached();
+		userDetached.setEmail(facePostPojo.getFaceUserAuthor().getEmail());
+		userDetached.setEmail(facePostPojo.getFaceUserAuthor().getUsername());
+
+		facePost.setAuthor(userDetached);
+
+		return facePost;
+	}
+
+
 }

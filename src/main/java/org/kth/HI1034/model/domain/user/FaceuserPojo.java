@@ -19,16 +19,16 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FaceuserPojo implements Serializable,UserDetails, Comparable<FaceuserPojo> {
 	private Long id;
-	private Boolean accountExpired = true;
-	private Boolean accountLocked = true;
+	private Boolean accountExpired = false;
+	private Boolean accountLocked = false;
 	private Boolean enabled = true;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd hh.mm.ss.SSS")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd.hh:mm:ss:SSS")
 	private Date accountCreated;
 	//	@JsonFormat(shape=JsonFormat.Shape.STRING,with= JsonFormat.Feature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, pattern="yyyy.MM.dd hh.mm.ss.SSS")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd hh.mm.ss.SSS")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd.hh:mm:ss:SSS")
 	private Date credentials_expired;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd hh.mm.ss.SSS")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd.hh:mm:ss:SSS")
 	private Date lastTokenGenerated;
 	private String email;
 
@@ -39,7 +39,7 @@ public class FaceuserPojo implements Serializable,UserDetails, Comparable<Faceus
 
 	private UserServerKeyPojo userServerKeyPojo;
 
-	private List<FaceMailPojo> sentMail = new ArrayList<>();
+	private List<FaceMailPojo> sentMails = new ArrayList<>();
 
 	private List<FaceuserPojo> sentFriendRequests = new ArrayList<>();
 	private List<FaceuserPojo> receivedFriendRequests = new ArrayList<>();
@@ -136,12 +136,12 @@ public class FaceuserPojo implements Serializable,UserDetails, Comparable<Faceus
 		this.lastTokenGenerated = lastTokenGenerated;
 	}
 
-	public List<FaceMailPojo> getSentMail() {
-		return sentMail;
+	public List<FaceMailPojo> getSentMails() {
+		return sentMails;
 	}
 
-	public void setSentMail(List<FaceMailPojo> sentMail) {
-		this.sentMail = sentMail;
+	public void setSentMails(List<FaceMailPojo> sentMails) {
+		this.sentMails = sentMails;
 	}
 
 	public Boolean getAccountExpired() {
@@ -285,15 +285,21 @@ public class FaceuserPojo implements Serializable,UserDetails, Comparable<Faceus
 	public String toString() {
 
 
-		if(this.sentFriendRequests.isEmpty()){
+		if(this.sentFriendRequests != null && this.sentFriendRequests.isEmpty()){
 			sentFriendRequests = null;
 		}
-		if(this.receivedFriendRequests.isEmpty()){
+		if(this.receivedFriendRequests != null && this.receivedFriendRequests.isEmpty()){
 			this.receivedFriendRequests = null;
 		}
-		if(this.friends.isEmpty()){
+		if(this.friends != null && this.friends.isEmpty()){
 			this.friends = null;
 		}
+
+		if(this.sentMails != null && this.sentMails.isEmpty()){
+			this.sentMails = null;
+		}
+
+
 
 		String thisJsonString = GsonX.gson.toJson(this);
 
@@ -308,7 +314,9 @@ public class FaceuserPojo implements Serializable,UserDetails, Comparable<Faceus
 		if(this.friends== null){
 			this.friends = new ArrayList<>();
 		}
-
+		if(this.sentMails== null){
+			this.sentMails = new ArrayList<>();
+		}
 
 
 		return thisJsonString;

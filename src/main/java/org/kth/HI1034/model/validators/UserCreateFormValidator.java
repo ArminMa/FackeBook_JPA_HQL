@@ -1,7 +1,7 @@
 //package org.kth.HI1034.model.validators;
 //
 //import com.nixmash.springdata.jpa.dto.UserDTO;
-//import com.nixmash.springdata.jpa.service.UserService;
+//import com.nixmash.springdata.jpa.service.FaceUserService;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +13,10 @@
 //public class UserCreateFormValidator implements Validator {
 //
 //    private static final Logger logger = LoggerFactory.getLogger(UserCreateFormValidator.class);
-//    private final UserService userService;
+//    private final FaceUserService userService;
 //
 //    @Autowired
-//    public UserCreateFormValidator(UserService userService) {
+//    public UserCreateFormValidator(FaceUserService userService) {
 //        this.userService = userService;
 //    }
 //

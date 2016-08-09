@@ -81,7 +81,6 @@ public class UserController {
 			HttpServletRequest request,
 			HttpServletResponse response) throws JoseException, MalformedClaimException, InvalidJwtException, GeneralSecurityException, IOException {
 
-
 		return loginService.loginUser(tokenPojo);
 	}
 

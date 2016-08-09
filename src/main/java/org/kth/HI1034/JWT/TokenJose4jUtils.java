@@ -246,17 +246,20 @@ public class TokenJose4jUtils {
 						subject,
 						token
 				);
+
+				Map<String, String> listOfPayload = new HashMap<>();
+				for (String K : payloadKey) {
+					listOfPayload.put(K, (String) claims.getClaimValue(K));
+				}
+
+				return listOfPayload;
+
 			} catch (JoseException e) {
 				e.printStackTrace();
 				throw new JoseException(e.getMessage(), e.getCause());
 			}
 
-			Map<String, String> listOfPayload = new HashMap<>();
-			for (String S : payloadKey) {
-				listOfPayload.put(S, (String) claims.getClaimValue(S));
-			}
 
-			return listOfPayload;
 		}
 
 		public static String getJwtPayload(
@@ -276,13 +279,14 @@ public class TokenJose4jUtils {
 						subject,
 						token
 				);
+				return (String) claims.getClaimValue(payloadKey);
 			} catch (JoseException e) {
 				e.printStackTrace();
 				throw new JoseException(e.getMessage(), e.getCause());
 			}
 
 
-			return (String) claims.getClaimValue(payloadKey);
+
 		}
 
 
@@ -320,6 +324,8 @@ public class TokenJose4jUtils {
 					expirationTimeMinutesInTheFuture
 			);
 		}
+
+
 
 
 		/**
