@@ -9,9 +9,9 @@
     </parent>
 
     <artifactId>FackeBookJpaHQL</artifactId>
-
+    <groupId>kth</groupId>
     <name>FakeBook-Project</name>
-    <description>Spring Boot jar</description>
+    <description>Spring Boot JPA War</description>
     <version>0.0.2-SNAPSHOT</version>
     <packaging>war</packaging>
 
@@ -32,6 +32,7 @@
 
 
     <dependencies>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -39,6 +40,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-rest</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -117,7 +124,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <scope>provided</scope>
+            <!--<scope>runtime</scope>-->
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -134,7 +141,6 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.7</version>
         </dependency>
 
         <dependency>
@@ -145,7 +151,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-dbcp2</artifactId>
-            <version>2.1.1</version>
         </dependency>
 
         <!-- JWT -->
@@ -160,6 +165,12 @@
             <groupId>org.mitre</groupId>
             <artifactId>json-web-key-generator</artifactId>
             <version>0.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.nimbusds/nimbus-jose-jwt -->
 
@@ -201,12 +212,10 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.6.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.6.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>

@@ -33,3 +33,5 @@ target/
 src/main/java/META-INF/
 src/main/resources/data/MongoDb/
 src/main/resources/data/hsqdb/
+*.log
+

@@ -2,8 +2,8 @@ package org.kth.HI1034.controller;
 
 import org.jose4j.jwk.EllipticCurveJsonWebKey;
 import org.kth.HI1034.AppPublicKeys;
-import org.kth.HI1034.JWT.TokenJose4jUtils;
-import org.kth.HI1034.JWT.TokenPojo;
+import org.kth.HI1034.security.JWT.TokenJose4jUtils;
+import org.kth.HI1034.security.JWT.TokenPojo;
 import org.kth.HI1034.model.converters.Converter;
 import org.kth.HI1034.model.domain.UserFriends.UserFriend;
 import org.kth.HI1034.model.domain.UserFriends.UserFriendRepository;

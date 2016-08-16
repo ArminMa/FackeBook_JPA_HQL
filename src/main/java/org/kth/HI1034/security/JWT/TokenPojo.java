@@ -1,4 +1,4 @@
-package org.kth.HI1034.JWT;
+package org.kth.HI1034.security.JWT;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.kth.HI1034.util.GsonX;

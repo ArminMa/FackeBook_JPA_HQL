@@ -9,7 +9,7 @@ import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
 import org.kth.HI1034.model.domain.user.FaceUser;
 import org.kth.HI1034.model.domain.user.FaceUserRepository;
 import org.kth.HI1034.model.domain.user.FaceuserPojo;
-import org.kth.HI1034.security.TokenIoUtils;
+import org.kth.HI1034.security.JWT.TokenIoUtils;
 import org.kth.HI1034.security.util.KeyUtil;
 import org.kth.HI1034.util.GsonX;
 import org.slf4j.Logger;

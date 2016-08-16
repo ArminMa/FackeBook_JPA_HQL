@@ -1,4 +1,4 @@
-package org.kth.HI1034.security;
+package org.kth.HI1034.security.JWT;
 
 
 import io.jsonwebtoken.Claims;

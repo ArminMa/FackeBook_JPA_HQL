@@ -1,16 +1,10 @@
 package org.kth.HI1034;
 
 
-import org.kth.HI1034.security.FilterTest.JwtFilter;
 import org.kth.HI1034.security.util.CipherUtils;
-import org.kth.HI1034.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.embedded.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
 
@@ -20,8 +14,8 @@ import org.springframework.context.annotation.ComponentScan;
  * Sample WAR application
  */
 @SpringBootApplication
-@ComponentScan
-@EnableAutoConfiguration
+//@ComponentScan(basePackages = "org")
+//@EnableAutoConfiguration
 //	@EnableTransactionManagement
 
 public class ApplicationWar /*extends SpringBootServletInitializer*/ {

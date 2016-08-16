@@ -83,7 +83,7 @@ public class AuthorityPojo implements Serializable, GrantedAuthority,Authenticat
 
 	@Override
 	public String getName() {
-		return null;
+		return userRole;
 	}
 
 	@Override

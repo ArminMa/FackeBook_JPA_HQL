@@ -5,7 +5,7 @@ import org.kth.HI1034.model.domain.authority.UserAuthorityRepository;
 import org.kth.HI1034.model.domain.user.FaceuserPojo;
 import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
 import org.kth.HI1034.model.domain.user.FaceUserRepository;
-import org.kth.HI1034.security.TokenIoUtils;
+import org.kth.HI1034.security.JWT.TokenIoUtils;
 import org.kth.HI1034.security.util.KeyUtil;
 import org.kth.HI1034.service.AuthService;
 import org.kth.HI1034.service.KeyService;

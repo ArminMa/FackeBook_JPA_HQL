@@ -1,4 +1,4 @@
-package org.kth.HI1034.JWT;
+package org.kth.HI1034.security.JWT;
 
 
 import org.jose4j.base64url.Base64;

@@ -3,9 +3,11 @@ package org.kth.HI1034.model.domain.user;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.kth.HI1034.model.domain.UserFriends.UserFriend;
+import org.kth.HI1034.model.domain.UserFriends.UserFriendPojo;
 import org.kth.HI1034.model.domain.authority.AuthorityPojo;
 import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
 import org.kth.HI1034.model.domain.faceMail.FaceMailPojo;
+import org.kth.HI1034.model.domain.post.FacePostPojo;
 import org.kth.HI1034.util.GsonX;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -47,6 +49,10 @@ public class FaceuserPojo implements Serializable,UserDetails, Comparable<Faceus
 
 	private List<AuthorityPojo> authorities = new ArrayList<>();
 
+	private List<FacePostPojo> myPost = new ArrayList<>();
+
+	private List<UserFriendPojo> myFriends = new ArrayList<>();
+
 	public FaceuserPojo() {
 	}
 
@@ -66,6 +72,14 @@ public class FaceuserPojo implements Serializable,UserDetails, Comparable<Faceus
 	public FaceuserPojo(String email, String password) {
 		this.email = email;
 		this.password = password;
+	}
+
+	public List<FacePostPojo> getMyPost() {
+		return myPost;
+	}
+
+	public void setMyPost(List<FacePostPojo> myPost) {
+		this.myPost = myPost;
 	}
 
 	public List<FaceuserPojo> getSentFriendRequests() {
@@ -116,11 +130,15 @@ public class FaceuserPojo implements Serializable,UserDetails, Comparable<Faceus
 		this.accountCreated = accountCreated;
 	}
 
+    public List<UserFriendPojo> getMyFriends() {
+        return myFriends;
+    }
 
+    public void setMyFriends(List<UserFriendPojo> myFriends) {
+        this.myFriends = myFriends;
+    }
 
-
-
-	public Long getId() {
+    public Long getId() {
 		return id;
 	}
 
@@ -276,9 +294,9 @@ public class FaceuserPojo implements Serializable,UserDetails, Comparable<Faceus
 
 	@Override
 	public int compareTo(FaceuserPojo o) {
-		int thisTime = this.hashCode();
+		int thisObject = this.hashCode();
 		long anotherEntity = o.hashCode();
-		return (thisTime < anotherEntity ? -1 : (thisTime == anotherEntity ? 0 : 1));
+		return (thisObject < anotherEntity ? -1 : (thisObject == anotherEntity ? 0 : 1));
 	}
 
 	@Override

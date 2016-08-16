@@ -6,7 +6,7 @@ import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.jwk.PublicJsonWebKey;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.lang.JoseException;
-import org.kth.HI1034.JWT.TokenJose4jUtils;
+import org.kth.HI1034.security.JWT.TokenJose4jUtils;
 import org.kth.HI1034.security.util.KeyUtil;
 
 import javax.crypto.SecretKey;

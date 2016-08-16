@@ -55,6 +55,17 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 	public static final int MIN_LENGTH_FIRST_NAME = 2;
 	public static final int MIN_LENGTH_LAST_NAME = 2;
 
+	private Long id;
+	private String firstName;
+	private String lastName;
+	private String email;
+	private String password;
+	private String username;
+
+
+
+
+
 	public FaceUser() {
 	}
 
@@ -85,7 +96,7 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 		this.accountUpdated = createdDate;
 	}
 
-	private Long id;
+
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -103,7 +114,7 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 		return (this.id == null);
 	}
 
-	private String firstName;
+
 
 	@Column(name = "first_name")
 	@NotEmpty
@@ -116,7 +127,7 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 		this.firstName = firstName;
 	}
 
-	private String lastName;
+
 
 	@Column(name = "last_name")
 	@NotEmpty
@@ -129,7 +140,7 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 		this.lastName = lastName;
 	}
 
-	private String email;
+
 
 	//	@Basic
 //	@ExtendedEmailValidator
@@ -145,7 +156,7 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 	}
 
 
-	private String password;
+
 
 	@Column
 	@NotEmpty
@@ -158,7 +169,7 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 		this.password = password;
 	}
 
-	private String username;
+
 
 	@Column(unique = true)
 	@NotEmpty
