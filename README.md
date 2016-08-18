@@ -4,12 +4,24 @@ Hibernate Spring Boot War
 # Codeship bage      
        [ ![Codeship Status for ArminMa/FackeBook_JPA_HQL](https://codeship.com/projects/a6c7c160-476b-0134-f687-2e27559a96c7/status?branch=master)](https://codeship.com/projects/169172)
 
-CodeShip Public Key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUqNCD9iyaVA59MCZxumtlXlFDjIcDfINrkiHGQYjXEee9CDINJubaQRZNIDwomAQZaD4sy9F69HSPWbrMdjFwV93RCqoT3+UHPTosX8fwGL6NV4W2y4g4MMC8hm7oK+yNTTeZq0o8JqV2rALXahSnPndIa/8BS1WHNAJ4rrLebImhnKpmjnGxYoh7NJMJYopu0b2JNmV8g2tFYViHXzJkaK3RJ59DclQMzNa82XNawicrQ07t6PU6EqnPleIu53M7RwYYbqOhN295s3D2rp24TA4psJ9FQVzZsl+4zSHRJZVSE8EMh7EubyoinsuaV9iYyA9jp5r48n2jY4xTO3kt Codeship/ArminMa/FackeBook_JPA_HQL
+[** env variables to run project **](https://codeship.com/documentation/languages/java-and-jvm-based-languages/) 
+**link 2016-08-18**
+jdk_switcher home oraclejdk8
+jdk_switcher use oraclejdk8
+echo $JAVA_HOME
+echo $JRE_HOME
+java -version
+
+**Test Commands**
+mvn -B test
+
+
+
 
 
 ####Run project as war in a tomcat
 mvn clean install -P tomMySQL
-java -jar target\tomcatRun.jar (-)(-)port 8080 target\ROOT.war
+java -jar target\tomcatRun.jar --port 8080 target\ROOT.war
 
 
 
@@ -22,6 +34,17 @@ DATABASE_SCHEMA = <schemaName>
 AWS_ACCESS_KEY_ID = <your AWS Access Key>
 
 AWS_SECRET_ACCESS_KEY = <your Secret AWS Access Key>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
