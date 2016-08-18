@@ -10,6 +10,7 @@ import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,7 +25,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.HttpMethod;
+
 import java.io.IOException;
 
 // todo fix so all this classes in folder FilterTest can filter the @RequestMapping("/api")
@@ -56,7 +57,7 @@ class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public FilterRegistrationBean jwtFilter() {
 		final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
 		registrationBean.setFilter(new JwtFilter( userServerKeyRepo, faceUserRepo,  tokenHeader, userTokenHeader));
-		registrationBean.addUrlPatterns("/api/*", "/api/**", "api/*", "api/**");
+		registrationBean.addUrlPatterns("/api/*", "/api/**");
 
 		return registrationBean;
 	}
@@ -90,10 +91,11 @@ class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/login").permitAll()
 				.antMatchers("/register").permitAll()
 				.antMatchers("/ping/*").permitAll()
+				.antMatchers("/getAppPublicKey", "/getAppPublicKey/*").permitAll()
 				.antMatchers("/restoration/abandon/**").hasRole("ADMIN")
-				.antMatchers(HttpMethod.GET, "api*//**", "api*//*", "/api*//*", "/api*//**").hasRole(Role.USER)
-				.antMatchers(HttpMethod.POST, "api*//**", "api*//*", "/api*//*", "/api*//**").hasAuthority(Role.USER)
-				.anyRequest().hasRole("USER");
+				.antMatchers(HttpMethod.GET, "/api*//*", "/api*//**").hasRole(Role.USER)
+				.antMatchers(HttpMethod.POST, "/api*//*", "/api*//**").hasAuthority(Role.USER);
+//				.anyRequest().hasRole("USER");
 	}
 
 

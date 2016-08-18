@@ -3,9 +3,10 @@ package org.kth.HI1034;
 
 import org.kth.HI1034.security.util.CipherUtils;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
 
 
 //import org.springframework.boot.web.support.SpringBootServletInitializer;
@@ -18,7 +19,7 @@ import org.springframework.context.annotation.ComponentScan;
 //@EnableAutoConfiguration
 //	@EnableTransactionManagement
 
-public class ApplicationWar /*extends SpringBootServletInitializer*/ {
+public class ApplicationWar extends SpringBootServletInitializer {
 
 	private static final AppKeyFactory apiKeyFactory = new AppKeyFactory();
 	private static final CipherUtils cipherUtil = new CipherUtils();
@@ -33,6 +34,10 @@ public class ApplicationWar /*extends SpringBootServletInitializer*/ {
 	}
 
 
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(ApplicationWar.class);
+	}
 
 
 

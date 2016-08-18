@@ -28,108 +28,118 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 public class MainController {
 
-    @RequestMapping(value = "/ping", method = RequestMethod.GET)
-    @ResponseBody
-    @Secured( Role.USER )
-    public String getHelloWorld() {
-        return "Hello  World";
-    }
+  @RequestMapping(value = "/ping", method = RequestMethod.GET)
+  @ResponseBody
+  @Secured(Role.USER)
+  public String getHelloWorld() {
+    return "Hello  World";
+  }
 
-    @RequestMapping(value = "/securedping", method = RequestMethod.GET)
-    @ResponseBody
-    @Secured(Role.USER)
-    public String getSecuredHelloWorld() {
-        return "Hello Secured World";
-    }
+  @RequestMapping(value = "/securedping", method = RequestMethod.GET)
+  @ResponseBody
+  @Secured(Role.USER)
+  public String getSecuredHelloWorld() {
+    return "Hello Secured World";
+  }
 
-    @RequestMapping(value = "/security", method = RequestMethod.GET)
-    @ResponseBody
-    public Object getAuthStatus() {
-        return SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-    }
-
-
-    @RequestMapping(value = "/ping1", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
-    public @ResponseBody
-    Ping ping1(
-            HttpServletRequest request,
-            HttpServletResponse response) {
-
-        Ping ping = new Ping("Ping ping1!", "ignore me", "not Ignored");
-        response.setStatus(HttpStatus.OK.value());
-        return ping;
-    }
-
-    @RequestMapping(value="/ping2/{name}", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
-    public @ResponseBody Ping ping2(@PathVariable("name") String name){
-        Ping ping = new Ping("Ping " + name, "ignore me", "not Ignored");
-        return ping;
-    }
-
-    @RequestMapping(value="/ping3", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
-    public @ResponseBody Ping ping3(@RequestParam("name") String name){
-        Ping ping = new Ping("Ping " + name, "ignore me", "not Ignored");
-        return ping;
-    }
+  @RequestMapping(value = "/security", method = RequestMethod.GET)
+  @ResponseBody
+  public Object getAuthStatus() {
+    return SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+  }
 
 
-    @RequestMapping
-            (
-                    value = "/ping4/{name}",
-                    method = RequestMethod.GET,
-                    produces = {MediaType.APPLICATION_JSON_VALUE}
-            )
-    public @ResponseBody
-    Ping ping4(
-            @RequestHeader(name="jwt",defaultValue="where is the Token?") String jwt,
-            @PathVariable("name") String name) {
-        Ping ping = new Ping("Ping " + name, "ignore me", "keyUserServer = " + jwt);
-        return ping;
-    }
+  @RequestMapping(value = "/ping1", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
+  public
+  @ResponseBody
+  Ping ping1(
+      HttpServletRequest request,
+      HttpServletResponse response) {
 
-    @RequestMapping
-            (
-                    value = "/ping5/{name}",
-                    produces = {MediaType.APPLICATION_JSON_UTF8_VALUE},
-                    consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE},
-                    method = RequestMethod.POST
-            )
+    Ping ping = new Ping("Ping ping1!", "ignore me", "not Ignored");
+    response.setStatus(HttpStatus.OK.value());
+    return ping;
+  }
 
-    public @ResponseBody Ping ping5(
-            @RequestHeader(name="jwt",defaultValue="where is the Token?") String jwt,
-            @PathVariable("name") String name,
-            @RequestBody Ping ping,
-            HttpServletRequest request,
-            HttpServletResponse response) {
+  @RequestMapping(value = "/ping2/{name}", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
+  public
+  @ResponseBody
+  Ping ping2(@PathVariable("name") String name) {
+    Ping ping = new Ping("Ping " + name, "ignore me", "not Ignored");
+    return ping;
+  }
 
-        response.addHeader("keyUserServer","some random token");
-        response.addHeader("info", "mor header info");
-        response.setStatus(HttpStatus.OK.value());
-        return ping;
-    }
+  @RequestMapping(value = "/ping3", produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET)
+  public
+  @ResponseBody
+  Ping ping3(@RequestParam("name") String name) {
+    Ping ping = new Ping("Ping " + name, "ignore me", "not Ignored");
+    return ping;
+  }
 
 
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+  @RequestMapping
+      (
+          value = "/ping4/{name}",
+          method = RequestMethod.GET,
+          produces = {MediaType.APPLICATION_JSON_VALUE}
+      )
+  public
+  @ResponseBody
+  Ping ping4(
+      @RequestHeader(name = "jwt", defaultValue = "where is the Token?") String jwt,
+      @PathVariable("name") String name) {
+    Ping ping = new Ping("Ping " + name, "ignore me", "keyUserServer = " + jwt);
+    return ping;
+  }
 
-    @ExceptionHandler
-    public @ResponseBody
-    ResponseEntity<?> handleDemoException(JoseException exception ,
-                                          HttpServletRequest req) {
-        logger.error("\nJoseException - " + exception.toString() + "\n");
+  @RequestMapping(
+      value = "/ping5/{name}",
+      produces = {MediaType.APPLICATION_JSON_UTF8_VALUE},
+      consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE},
+      method = RequestMethod.POST)
 
-        Gson gson = new Gson();
+  public
+  @ResponseBody
+  Ping ping5(
+      @RequestHeader(name = "jwt", defaultValue = "where is the Token?") String jwt,
+      @PathVariable("name") String name,
+      @RequestBody Ping ping,
+      HttpServletRequest request,
+      HttpServletResponse response) {
+
+    response.addHeader("keyUserServer", "some random token");
+    response.addHeader("info", "mor header info");
+    response.setStatus(HttpStatus.OK.value());
+    return ping;
+  }
 
 
-        // Because we are handling the error, the server thinks everything is
-        // OK, so the status is 200. So let's set it to something else.
-        req.setAttribute("javax.servlet.error.status_code", HttpStatus.INTERNAL_SERVER_ERROR.value());
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .contentType(MediaTypes.JsonUtf8)
-                .body(gson.toJson(exception.toString()));
+  protected Logger
+      logger = LoggerFactory.getLogger(getClass()
 
 
+  );
 
-    }
+  @ExceptionHandler
+  public
+  @ResponseBody
+  ResponseEntity<?> handleDemoException(JoseException exception,
+                                        HttpServletRequest req) {
+    logger.error("\nJoseException - " + exception.toString() + "\n");
+
+    Gson gson = new Gson();
+
+
+    // Because we are handling the error, the server thinks everything is
+    // OK, so the status is 200. So let's set it to something else.
+    req.setAttribute("javax.servlet.error.status_code", HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+        .contentType(MediaTypes.JsonUtf8)
+        .body(gson.toJson(exception.toString()));
+
+
+  }
 
 }

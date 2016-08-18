@@ -10,7 +10,7 @@
 
     <artifactId>FackeBookJpaHQL</artifactId>
     <groupId>kth</groupId>
-    <name>FakeBook-Project</name>
+    <name>xJpaFakeBookServer</name>
     <description>Spring Boot JPA War</description>
     <version>0.0.2-SNAPSHOT</version>
     <packaging>war</packaging>
@@ -22,6 +22,7 @@
 
 
     <properties>
+        <version>0.0.2-SNAPSHOT</version>
         <m2eclipse.wtp.contextRoot>/</m2eclipse.wtp.contextRoot>
         <start-class>org.kth.HI1034.ApplicationWar</start-class>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -33,6 +34,12 @@
 
     <dependencies>
 
+        <!-- Compile -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -40,12 +47,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-rest</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -54,12 +55,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -82,7 +77,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
         </dependency>
 
 
@@ -119,23 +113,18 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>runtime</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <!--<scope>runtime</scope>-->
+            <!--<scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
+            <scope>provided</scope>
         </dependency>
-
-
-
-
-
 
 
         <dependency>
@@ -153,32 +142,12 @@
             <artifactId>commons-dbcp2</artifactId>
         </dependency>
 
-        <!-- JWT -->
-        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
-        <!--<dependency>-->
-            <!--<groupId>io.jsonwebtoken</groupId>-->
-            <!--<artifactId>jjwt</artifactId>-->
-            <!--<version>0.6.0</version>-->
-        <!--</dependency>-->
         <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.mitre/json-web-symmetricKey-generator &ndash;&gt;-->
         <dependency>
             <groupId>org.mitre</groupId>
             <artifactId>json-web-key-generator</artifactId>
             <version>0.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.nimbusds/nimbus-jose-jwt -->
-
-        <!--<dependency>-->
-            <!--<groupId>com.nimbusds</groupId>-->
-            <!--<artifactId>nimbus-jose-keyUserServer</artifactId>-->
-            <!--<version>4.22</version>-->
-        <!--</dependency>-->
 
         <!-- https://mvnrepository.com/artifact/org.bitbucket.b_c/jose4j -->
         <dependency>
@@ -223,28 +192,146 @@
             <version>2.6.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+
 
     </dependencies>
 
+    <!--<build>-->
+
+        <!--<outputDirectory>target</outputDirectory>-->
+        <!--<finalName>xJpaFakeBookServer</finalName>-->
+
+        <!--&lt;!&ndash;<resources>&ndash;&gt;-->
+            <!--&lt;!&ndash;<resource>&ndash;&gt;-->
+                <!--&lt;!&ndash;<directory>../FackeBook_JPA_HQL/src/main/resources</directory>&ndash;&gt;-->
+                <!--&lt;!&ndash;<filtering>true</filtering>&ndash;&gt;-->
+            <!--&lt;!&ndash;</resource>&ndash;&gt;-->
+        <!--&lt;!&ndash;</resources>&ndash;&gt;-->
+
+        <!--<plugins>-->
+            <!--<plugin>-->
+                <!--<groupId>org.springframework.boot</groupId>-->
+                <!--<artifactId>spring-boot-maven-plugin</artifactId>-->
+            <!--</plugin>-->
+        <!--</plugins>-->
+    <!--</build>-->
+
+
+
+
     <build>
-
         <outputDirectory>target</outputDirectory>
-        <finalName>FakeBook</finalName>
-
-        <!--<resources>-->
-            <!--<resource>-->
-                <!--<directory>../FackeBook_JPA_HQL/src/main/resources</directory>-->
-                <!--<filtering>true</filtering>-->
-            <!--</resource>-->
-        <!--</resources>-->
+        <finalName>ROOT</finalName>
 
         <plugins>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
         </plugins>
     </build>
+
+
+
+
+
+
+
+    <!-- To build an executable war use one of the profiles below -->
+    <profiles>
+
+
+
+
+        <!-- mvn clean install -P tomMySQL -->
+        <!-- java -jar target\tomcatRun.jar target\ROOT.war -->
+
+        <profile>
+            <id>tomMySQL</id>
+
+            <build>
+
+                <!--<finalName>xJpaFakeBookServer</finalName>-->
+
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-artifact</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>com.github.jsimone</groupId>
+                                            <artifactId>webapp-runner</artifactId>
+                                            <version>8.0.30.2</version>
+                                            <destFileName>tomcatRun.jar</destFileName>
+                                            <outputDirectory>target</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+
+            <dependencies>
+
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                </dependency>
+
+            </dependencies>
+        </profile>
+        <profile>
+            <id>spring</id>
+            <build>
+
+                <!--<finalName>xJpaFakeBookServerSpring</finalName>-->
+
+                <plugins>
+
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>undertow</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-undertow</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
 </project>
 

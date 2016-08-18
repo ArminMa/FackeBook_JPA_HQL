@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
+import org.kth.HI1034.util.GsonX;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -92,7 +93,6 @@ public class Ping implements Serializable,Comparable<Ping>{
 
 	@Override
 	public String toString() {
-		Gson gson = new Gson();
-		return gson.toJson(this);
+		return GsonX.gson.toJson(this);
 	}
 }
