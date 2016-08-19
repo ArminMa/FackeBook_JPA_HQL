@@ -1,11 +1,13 @@
 ### Project FakeBook
 Hibernate Spring Boot War
 
-# Codeship bage      
-       [ ![Codeship Status for ArminMa/FackeBook_JPA_HQL](https://codeship.com/projects/a6c7c160-476b-0134-f687-2e27559a96c7/status?branch=master)](https://codeship.com/projects/169172)
 
-[** env variables to run project **](https://codeship.com/documentation/languages/java-and-jvm-based-languages/) 
-**link 2016-08-18**
+#####------------- Codeship start --------------
+
+Codeship bage 
+[ ![Codeship Status for ArminMa/FackeBook_JPA_HQL](https://codeship.com/projects/a6c7c160-476b-0134-f687-2e27559a96c7/status?branch=master)](https://codeship.com/projects/169172)
+
+[** env variables to run project **](https://codeship.com/documentation/languages/java-and-jvm-based-languages/) **link 2016-08-18**
 jdk_switcher home oraclejdk8
 jdk_switcher use oraclejdk8
 echo $JAVA_HOME
@@ -13,14 +15,30 @@ echo $JRE_HOME
 java -version
 
 **Test Commands**
-mvn -B test
+mvn -B test -P h2InMemoryDatabase
 
+mvn -B ---"build phases"--> (validate, compile, test, package, verify, install, deploy)
+mvn -P --- Profile      --> <id>Maven-Profile-Id</id>
+A Build Lifecycle is Made Up of Phases
 
+Each of these build lifecycles is defined by a different list of build phases, wherein a build phase represents a stage in the lifecycle.
+
+For example, the default lifecycle comprises of the following phases (for a complete list of the lifecycle phases, refer to the Lifecycle Reference):
+    validate - validate the project is correct and all necessary information is available
+    compile - compile the source code of the project
+    test - test the compiled source code using a suitable unit testing framework. These tests should not require the code be packaged or deployed
+    package - take the compiled code and package it in its distributable format, such as a JAR.
+    verify - run any checks on results of integration tests to ensure quality criteria are met
+    install - install the package into the local repository, for use as a dependency in other projects locally
+    deploy - done in the build environment, copies the final package to the remote repository for sharing with other developers and projects.
+
+#####------------- Codeship end --------------
 
 
 
 ####Run project as war in a tomcat
 mvn clean install -P tomMySQL
+mvn clean install -P h2InMemoryDatabase
 java -jar target\tomcatRun.jar --port 8080 target\ROOT.war
 
 

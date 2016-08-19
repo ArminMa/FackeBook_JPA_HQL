@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @ComponentScan(basePackages = "org.kth.HI1034")
 @EnableJpaRepositories(basePackages = "org.kth.HI1034")
-@PropertySource("classpath:/mysql.properties")
+//@PropertySource("classpath:/mysql.properties")
 public class ApplicationConfig {
 
     @Bean
