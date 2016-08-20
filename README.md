@@ -37,7 +37,7 @@ For example, the default lifecycle comprises of the following phases (for a comp
 
 
 ####Run project as war in a tomcat
-mvn clean install -P tomMySQL
+#mvn clean install -P tomMySQL
 mvn clean install -P h2InMemoryDatabase
 java -jar target\tomcatRun.jar --port 8080 target\ROOT.war
 
