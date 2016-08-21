@@ -1,27 +1,6 @@
 server:
     port: 8080
 
-# ===============================
-# = JPA / HIBERNATE
-# ===============================
-
-spring:
- datasource:
-  testWhileIdle: false
-  validationQuery: SELECT 1
-  max-active: 50
-  max-idle: 5
-  min-idle: 5
-  initial-size: 10
- http:
-  encoding:
-   charset: UTF-8
- jpa:
-  show-sql: false
-  hibernate:
-   naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
-   ddl-auto: update
-
 
 
 # ###########################################################
@@ -36,35 +15,55 @@ spring:
 #none, validate, update, create, create-drop
 
 
-
+#
 ---
 
 # ###########################################################
 # MySQL Database
 # ###########################################################
 
+#spring:
+#  profiles: tomMySQL
+#  jpa:
+#   database: MYSQL
+
+
+#spring:
+#  profiles: tomMySQL
+#  jpa:
+#   hibernate:
+#    ddl-auto: update
+#   hibernate:
+#    naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+#   properties:
+#    hibernate:
+#     dialect: org.hibernate.dialect.MySQL5Dialect
+#   database: mysql
+#   show-sql: true
+#  datasource:
+#   driver-class-name: com.mysql.jdbc.Driver
+#   url: jdbc:mysql://localhost:3306/testdb?verifyServerCertificate=false&useSSL=false&requireSSL=false
+#   username: root
+#   password: root
+#   max-active: 50
+#   max-idle: 5
+#   min-idle: 5
+#   initial-size: 10
+#   testWhileIdle: false
+#   validationQuery: SELECT 1
+#   platform: MYSQL
+#  http:
+#   encoding:
+#    charset: UTF-8
+
 
 spring:
- profiles: tomMySQL
- datasource:
-  platform: sql
-  driver-class-name: com.mysql.jdbc.Driver
-  url: jdbc:mysql://localhost:3306/testdb?verifyServerCertificate=false&useSSL=false&requireSSL=false
-  username: root
-  password: root
-  validation-query: select 1
- jpa:
-  database: MYSQL
-  show-sql: false
-  properties:
-   hibernate:
-    dialect: org.hibernate.dialect.MySQL5Dialect
-    ddl-auto: create
-
-
-logging:
- file: /Captains.log
-
+  profiles: tomMySQL
+#  datasource:
+#   driver-class-name: com.mysql.jdbc.Driver
+#   url: jdbc:mysql://localhost:3306/testdb?verifyServerCertificate=false&useSSL=false&requireSSL=false
+#   username: root
+#   password: root
 ---
 
 
@@ -95,7 +94,7 @@ spring:
        sql-dialect: org.hibernate.dialect.H2Dialect
 
 
----
+
 
 
 

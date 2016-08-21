@@ -2,13 +2,19 @@
 Hibernate Spring Boot War
 
 
-#####------------- Codeship start --------------
+#####------------- Codeship start ------------------------------------------
 
 Codeship bage 
 [ ![Codeship Status for ArminMa/FackeBook_JPA_HQL](https://codeship.com/projects/a6c7c160-476b-0134-f687-2e27559a96c7/status?branch=master)](https://codeship.com/projects/169172)
 
 [** env variables to run project **](https://codeship.com/documentation/languages/java-and-jvm-based-languages/) **link 2016-08-18**
+echo $JAVA_HOME
+echo $JRE_HOME
+java -version
 jdk_switcher home oraclejdk8
+echo $JAVA_HOME
+echo $JRE_HOME
+java -version
 jdk_switcher use oraclejdk8
 echo $JAVA_HOME
 echo $JRE_HOME
@@ -32,7 +38,7 @@ For example, the default lifecycle comprises of the following phases (for a comp
     install - install the package into the local repository, for use as a dependency in other projects locally
     deploy - done in the build environment, copies the final package to the remote repository for sharing with other developers and projects.
 
-#####------------- Codeship end --------------
+#####------------- Codeship end ------------------------------------------
 
 
 
