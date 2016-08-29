@@ -2,7 +2,7 @@ package org.kth.HI1034.service.impl;
 
 import org.kth.HI1034.model.converters.Converter;
 import org.kth.HI1034.model.domain.authority.UserAuthorityRepository;
-import org.kth.HI1034.model.domain.user.FaceuserPojo;
+import org.kth.HI1034.model.domain.user.FaceUserPojo;
 import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
 import org.kth.HI1034.model.domain.user.FaceUserRepository;
 import org.kth.HI1034.security.JWT.TokenIoUtils;
@@ -37,12 +37,12 @@ public class AuthServiceImpl implements AuthService {
 	private String tokenHeader;
 
 	@Override
-	public boolean authenticatUser(FaceuserPojo faceuserPojo) {
+	public boolean authenticatUser(FaceUserPojo faceUserPojo) {
 		return false;
 	}
 
 	@Override
-	public FaceuserPojo getAuthentication(HttpServletRequest httpRequest, String userEmail) {
+	public FaceUserPojo getAuthentication(HttpServletRequest httpRequest, String userEmail) {
 		String token = httpRequest.getHeader(tokenHeader);
 
 		System.out.println("\n\n----------------- AuthServiceImpl.getAuthentication() ----------------------------" +
@@ -60,8 +60,8 @@ public class AuthServiceImpl implements AuthService {
 			if ( TokenIoUtils.isValid(token, secretTokenKey) ){
 				String payload = TokenIoUtils.getPayloadFromJwt(token, secretTokenKey);
 				if(payload != null){
-					FaceuserPojo faceuserPojo = GsonX.gson.fromJson(payload, FaceuserPojo.class);
-					return faceuserPojo;
+					FaceUserPojo faceUserPojo = GsonX.gson.fromJson(payload, FaceUserPojo.class);
+					return faceUserPojo;
 				}
 
 			}
@@ -74,9 +74,9 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public FaceuserPojo loadUserFromRepository(FaceuserPojo faceuserPojo) {
+	public FaceUserPojo loadUserFromRepository(FaceUserPojo faceUserPojo) {
 		System.out.println("\n\n----------------- AuthServiceImpl.loadUserFromRepository-59 ----------------------------\n\n");
-		return Converter.convert(	faceUserRepository.findByEmail(faceuserPojo.getEmail()) );
+		return Converter.convert(	faceUserRepository.findByEmail(faceUserPojo.getEmail()) );
 
 	}
 }

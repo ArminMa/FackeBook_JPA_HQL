@@ -5,7 +5,7 @@ import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.lang.JoseException;
 import org.kth.HI1034.security.JWT.TokenPojo;
-import org.kth.HI1034.model.domain.user.FaceuserPojo;
+import org.kth.HI1034.model.domain.user.FaceUserPojo;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
@@ -15,6 +15,6 @@ public interface LoginService {
 
 	ResponseEntity<?> loginUser(TokenPojo tokenPojo) throws JoseException, MalformedClaimException, InvalidJwtException, GeneralSecurityException, IOException;
 
-	Boolean emailExist(FaceuserPojo faceuserPojo);
+	Boolean emailExist(FaceUserPojo faceUserPojo);
 
 }

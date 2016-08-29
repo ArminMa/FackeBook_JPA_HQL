@@ -59,8 +59,8 @@ public class FacePost implements Serializable ,Comparable<FacePost>{
 	public FacePost(String postText, Date sentDate, FaceUser author, FaceUser receiver) {
 		this.postText = postText;
 		this.sentDate = sentDate;
-		this.author = new UserDetached( author.getEmail(), author.getUsername());
-		this.receivers.add( new UserDetached( receiver.getEmail(), receiver.getUsername()) );
+		this.author = new UserDetached( author.getEmail());
+		this.receivers.add( new UserDetached( receiver.getEmail()) );
 
 	}
 

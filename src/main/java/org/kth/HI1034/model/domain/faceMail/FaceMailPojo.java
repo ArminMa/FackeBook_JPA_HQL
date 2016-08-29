@@ -1,22 +1,26 @@
 package org.kth.HI1034.model.domain.faceMail;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.MoreObjects;
+import org.kth.HI1034.util.GsonX;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
 @XmlRootElement
-public class FaceMailPojo {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class FaceMailPojo implements Serializable, Comparable<FaceMailPojo> {
   private Long id;
   private String header;
-  private String mail_text;
+  private String mailText;
 
 	public FaceMailPojo() {
 	}
 
-	public FaceMailPojo(Long id, String header, String mail_text) {
+	public FaceMailPojo(Long id, String header, String mailText) {
 		this.id = id;
 		this.header = header;
-		this.mail_text = mail_text;
+		this.mailText = mailText;
 	}
 
 	public Long getId() {
@@ -35,12 +39,12 @@ public class FaceMailPojo {
     this.header = header;
   }
 
-  public String getMail_text() {
-    return mail_text;
+  public String getMailText() {
+    return mailText;
   }
 
-  public void setMail_text(String mail_text) {
-    this.mail_text = mail_text;
+  public void setMailText(String mailText) {
+    this.mailText = mailText;
   }
 
 
@@ -53,7 +57,7 @@ public class FaceMailPojo {
 
     if (id != null ? !id.equals(faceMail.id) : faceMail.id != null) return false;
     if (header != null ? !header.equals(faceMail.header) : faceMail.header != null) return false;
-    return mail_text != null ? mail_text.equals(faceMail.mail_text) : faceMail.mail_text == null;
+    return mailText != null ? mailText.equals(faceMail.mailText) : faceMail.mailText == null;
 
   }
 
@@ -61,16 +65,24 @@ public class FaceMailPojo {
   public int hashCode() {
     int result = id != null ? id.hashCode() : 0;
     result = 31 * result + (header != null ? header.hashCode() : 0);
-    result = 31 * result + (mail_text != null ? mail_text.hashCode() : 0);
+    result = 31 * result + (mailText != null ? mailText.hashCode() : 0);
     return result;
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-            .add("id", id)
-            .add("header", header)
-            .add("mailText", mail_text)
-            .toString();
+    return GsonX.gson.toJson(this);
   }
+
+
+
+
+
+  @Override
+  public int compareTo(FaceMailPojo o) {
+    int thisObject = this.hashCode();
+    long anotherEntity = o.hashCode();
+    return (thisObject < anotherEntity ? -1 : (thisObject == anotherEntity ? 0 : 1));
+  }
+
 }

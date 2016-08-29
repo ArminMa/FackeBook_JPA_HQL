@@ -72,6 +72,17 @@ public interface FaceUserRepository extends JpaRepository<FaceUser, Long>, JpaSp
 			@Param("password") String passWord);
 
 
+	@Query(value = "select distinct UF FROM FaceUser UF " +
+			"where UF.email = :eMmail or UF.username = :userNName" )
+    FaceUser findOneUserByEmailOrUsername(
+		    @Param("eMmail") String email,
+		    @Param("userNName") String userName);
+
+    @Query(value = "select UF FROM FaceUser UF " +
+            "where UF.username LIKE :searchPattern or UF.email LIKE :searchPattern" )
+    List<FaceUser> findUserSimilarToThis(@Param("searchPattern") String searchValue);
+
+
 //	@Query(value = "SELECT P FROM FacePost P " +
 //			"where :receiver_email = (select PU.email from P.receivers PU WHERE PU.email  = :receiver_email) ")
 

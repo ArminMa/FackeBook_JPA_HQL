@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.SortedSet;
 
 
@@ -21,6 +22,10 @@ public interface UserReceivedMailRepository extends JpaRepository<UserReceivedMa
 
 	@Query(value = "select urm from UserReceivedMail urm where urm.pk.receivingUser.id = :userId")
 	SortedSet<UserReceivedMail> findAllReceivedMailByUserId(@Param("userId") Long userID);
+
+
+	@Query(value = "select urm from UserReceivedMail urm where urm.pk.receivingUser.email = :email")
+	List<UserReceivedMail> findReceivedMailToUser(@Param("email") String email);
 
 	@Modifying/*(clearAutomatically = true)*/
 	@Transactional

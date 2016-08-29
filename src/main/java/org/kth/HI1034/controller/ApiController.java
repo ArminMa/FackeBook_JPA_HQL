@@ -2,7 +2,7 @@ package org.kth.HI1034.controller;
 
 import io.jsonwebtoken.Claims;
 import org.kth.HI1034.controller.util.MediaTypes;
-import org.kth.HI1034.model.domain.user.FaceuserPojo;
+import org.kth.HI1034.model.domain.user.FaceUserPojo;
 import org.kth.HI1034.service.AuthService;
 import org.kth.HI1034.service.FaceUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,11 +56,11 @@ public class ApiController {
 	                                                 HttpServletResponse response)   {
 
 			System.out.println("----------- ApiController.authCheck /api/getPosts/{email} invoke -----------");
-		FaceuserPojo faceuserPojo;
-		if( (faceuserPojo = authService.getAuthentication(request, userEmail)) != null ){
+		FaceUserPojo faceUserPojo;
+		if( (faceUserPojo = authService.getAuthentication(request, userEmail)) != null ){
 			return ResponseEntity.ok()
 					.contentType(MediaTypes.JsonUtf8)
-					.body(faceuserPojo.toString());
+					.body(faceUserPojo.toString());
 		}
 
 
@@ -80,8 +80,8 @@ public class ApiController {
 	                                                 HttpServletResponse response)   {
 
 		System.out.println("----------- ApiController.authCheck /api/getPosts/{email} invoke -----------");
-		FaceuserPojo faceuserPojo;
-		if( (faceuserPojo = authService.getAuthentication(request, userEmail)) != null ){
+		FaceUserPojo faceUserPojo;
+		if( (faceUserPojo = authService.getAuthentication(request, userEmail)) != null ){
 
 			return faceUserService.getUserReceivdPosts(userEmail, authToken );
 

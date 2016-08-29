@@ -2,6 +2,7 @@ package org.kth.HI1034.controller;
 
 import org.jose4j.jwk.EllipticCurveJsonWebKey;
 import org.kth.HI1034.AppPublicKeys;
+import org.kth.HI1034.model.domain.user.FaceUserPojo;
 import org.kth.HI1034.security.JWT.TokenJose4jUtils;
 import org.kth.HI1034.security.JWT.TokenPojo;
 import org.kth.HI1034.model.converters.Converter;
@@ -24,7 +25,6 @@ import org.kth.HI1034.model.domain.post.PostRepository;
 import org.kth.HI1034.model.domain.post.UserDetachedRepository;
 import org.kth.HI1034.model.domain.user.FaceUser;
 import org.kth.HI1034.model.domain.user.FaceUserRepository;
-import org.kth.HI1034.model.domain.user.FaceuserPojo;
 import org.kth.HI1034.model.domain.post.UserDetached;
 import org.kth.HI1034.security.util.CipherUtils;
 import org.kth.HI1034.security.util.KeyUtil;
@@ -60,7 +60,7 @@ public class PreTest {
 	}
 
 
-	public List<FaceuserPojo> userPojoList = new ArrayList<>();
+	public List<FaceUserPojo> userPojoList = new ArrayList<>();
 	public List<FaceUser> faceUserList = new ArrayList<>();
 	public FaceUser user;
 
@@ -166,17 +166,17 @@ public class PreTest {
 
 
 
-		List<FaceuserPojo> userPojoListTemp = new ArrayList<>();
+		List<FaceUserPojo> userPojoListTemp = new ArrayList<>();
 
 		// save all the users
-		for (FaceuserPojo FP : userPojoList) {
+		for (FaceUserPojo FP : userPojoList) {
 			userPojoListTemp.add(registerUsers(FP));
 
 		}
 		userPojoList = userPojoListTemp;
 
 		// todo move to upper for loop and hope for the best
-		for (FaceuserPojo FP : userPojoList) {
+		for (FaceUserPojo FP : userPojoList) {
 			userServerKeyPojos.add(FP.getUserServerKeyPojo());
 			userServerKeys.add(Converter.convert(FP.getUserServerKeyPojo()));
 			faceUserList.add(Converter.convert(FP));
@@ -359,7 +359,7 @@ public class PreTest {
 		System.out.println("\n\n----------------- PreTest.tearDown-end ----------------------------\n\n");
 	}
 
-	public void setUpTestUserControllerTest(List<FaceuserPojo> faceuserPojoList) throws Exception {
+	public void setUpTestUserControllerTest(List<FaceUserPojo> faceUserPojoList) throws Exception {
 
 		System.out.println("\n\n----------------- PreTest.setUpUserControllerTest-start ----------------------------\n\n");
 
@@ -368,7 +368,7 @@ public class PreTest {
 			this.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
 		}
 
-		userPojoList = faceuserPojoList;
+		userPojoList = faceUserPojoList;
 		appPublicKeys = getAppPublicKey(this.mockMvc);
 		assertThat(appPublicKeys).isNotNull();
 		assertThat(appPublicKeys.getPublicEllipticWebKeyAsJson()).isNotNull();
@@ -379,9 +379,9 @@ public class PreTest {
 		//------------ creating Users -----------
 
 
-		List<FaceuserPojo> userPojoListTemp = new ArrayList<>();
+		List<FaceUserPojo> userPojoListTemp = new ArrayList<>();
 
-		for (FaceuserPojo FP : userPojoList) {
+		for (FaceUserPojo FP : userPojoList) {
 			userPojoListTemp.add(registerUsers(FP));
 			faceUserList.add(Converter.convert(FP));
 
@@ -416,17 +416,17 @@ public class PreTest {
 			assertThat(userPojoList).isNotNull();
 			List<UserDetached> userDetacheds = new ArrayList<>();
 
-			for (FaceuserPojo FU : userPojoList) {
+			for (FaceUserPojo FU : userPojoList) {
 				userAuthorityRepos.deleteUserAuthorityByUserID(FU.getId());
 				userAuthorityRepos.flush();
 				userServerKeyRepository.deleteByUserEmail(FU.getEmail());
 				userServerKeyRepository.flush();
 
-				FaceuserPojo faceuserPojoToPrintForTest = Converter.convert( userRepo.findOne(FU.getId()) );
+				FaceUserPojo faceUserPojoToPrintForTest = Converter.convert( userRepo.findOne(FU.getId()) );
 
 				System.out.println("\n\n\n\n" +
 						"----------------------------------- PreTest.tearDownUserControllerTest.428 -------------------------------------" +
-						"\n\nfaceuserPojoToPrintForTest = " + faceuserPojoToPrintForTest +
+						"\n\nfaceUserPojoToPrintForTest = " + faceUserPojoToPrintForTest +
 						"\n" +
 						"------------------------------------------------------------------------\n\n\n\n\n");
 
@@ -466,7 +466,7 @@ public class PreTest {
 
 
 
-	public FaceuserPojo registerUsers(FaceuserPojo faceuserPojo) throws Exception {
+	public FaceUserPojo registerUsers(FaceUserPojo faceUserPojo) throws Exception {
 
 		System.out.println("\n\n----------------- PreTest.registerUsers-start ----------------------------\n\n");
 
@@ -474,7 +474,7 @@ public class PreTest {
 		assertThat(jsonWebKey).isNotNull();
 		TokenPojo tokenPojo = new TokenPojo();
 
-		tokenPojo.setIssuer(faceuserPojo.getEmail());
+		tokenPojo.setIssuer(faceUserPojo.getEmail());
 		tokenPojo.setAudience("fackebook.se");
 		tokenPojo.setSenderKey(TokenJose4jUtils.JsonWebKeyUtil.getPrivateEcllipticWebKeyAsJson(jsonWebKey));
 		tokenPojo.setReceiverKey(appPublicKeys.getPublicEllipticWebKeyAsJson());
@@ -491,7 +491,7 @@ public class PreTest {
 		encryptedSharedKey = CipherUtils.encryptWithPublicKey(keyString, serverPublicKey);
 
 
-		faceuserPojo.setUserServerKeyPojo(new UserServerKeyPojo(faceuserPojo.getEmail(), encryptedSharedKey));
+		faceUserPojo.setUserServerKeyPojo(new UserServerKeyPojo(faceUserPojo.getEmail(), encryptedSharedKey));
 
 		String JWT = TokenJose4jUtils.EllipticJWT.ProduceJWTVerifyAndEncrypt(
 				tokenPojo.getIssuer(),
@@ -499,7 +499,7 @@ public class PreTest {
 				tokenPojo.getSubject(),
 				TokenJose4jUtils.JsonWebKeyUtil.getPrivateEcllipticWebKeyAsJson(jsonWebKey),
 				appPublicKeys.getPublicEllipticWebKeyAsJson(),
-				faceuserPojo.toString()
+				faceUserPojo.toString()
 		);
 
 		tokenPojo.setToken(JWT);
@@ -525,8 +525,8 @@ public class PreTest {
 		tokenPojo = GsonX.gson.fromJson(theTokenPoje, TokenPojo.class);
 
 		String payloadKey = "payload";
-		faceuserPojo = GsonX.gson.fromJson(theTokenPoje, FaceuserPojo.class);
-		assertThat(faceuserPojo).isNotNull();
+		faceUserPojo = GsonX.gson.fromJson(theTokenPoje, FaceUserPojo.class);
+		assertThat(faceUserPojo).isNotNull();
 
 		String jsonWebPayload = TokenJose4jUtils.SymmetricJWT.getJwtPayload(
 				secretKey,
@@ -537,13 +537,13 @@ public class PreTest {
 				tokenPojo.getToken()
 		);
 		assertThat(jsonWebPayload).isNotNull();
-		faceuserPojo = GsonX.gson.fromJson(jsonWebPayload, FaceuserPojo.class);
-		assertThat(faceuserPojo).isNotNull();
+		faceUserPojo = GsonX.gson.fromJson(jsonWebPayload, FaceUserPojo.class);
+		assertThat(faceUserPojo).isNotNull();
 
 
 		System.out.println("\n\n----------------- PreTest.registerUsers-end ----------------------------\n\n");
 
-		return faceuserPojo;
+		return faceUserPojo;
 
 	}
 
@@ -559,11 +559,11 @@ public class PreTest {
 		}
 	}
 
-	public List<FaceuserPojo> getUserPojoList() {
+	public List<FaceUserPojo> getUserPojoList() {
 		return userPojoList;
 	}
 
-	public void setUserPojoList(List<FaceuserPojo> userPojoList) {
+	public void setUserPojoList(List<FaceUserPojo> userPojoList) {
 		this.userPojoList = userPojoList;
 	}
 

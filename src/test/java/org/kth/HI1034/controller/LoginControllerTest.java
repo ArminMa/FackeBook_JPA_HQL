@@ -11,7 +11,7 @@
 //import org.kth.HI1034.security.JWT.TokenPojo;
 //import org.kth.HI1034.JWT.TokenUtils;
 //import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
-//import org.kth.HI1034.model.domain.user.FaceuserPojo;
+//import org.kth.HI1034.model.domain.user.FaceUserPojo;
 //import org.kth.HI1034.security.util.ciperUtil.CipherUtils;
 //import org.kth.HI1034.security.util.ciperUtil.JsonWebKeyUtil;
 //import org.kth.HI1034.util.GsonX;
@@ -54,7 +54,7 @@
 //		assertThat(appPublicKeys).isNotNull();
 //		assertThat(serverRsaJsonWebKey).isNotNull();
 //
-//		// register a user FaceuserPojo("registerTest@gmail.com", "password");
+//		// register a user FaceUserPojo("registerTest@gmail.com", "password");
 //		TokenPojo tokenPojo = SetUp.saveUser(mockMvc, appPublicKeys);
 //		assertThat(tokenPojo).isNotNull();
 //
@@ -71,7 +71,7 @@
 //		Key secretKey = JsonWebKeyUtil.SymmetricKey.generate128Bit_16ByteSecretAesKey();
 //		String secretKeyString = JsonWebKeyUtil.SymmetricKey.keyToString(secretKey.getEncoded());
 //
-//		FaceuserPojo faceuserPojo = new FaceuserPojo("registerTest@gmail.com", "password");
+//		FaceUserPojo faceuserPojo = new FaceUserPojo("registerTest@gmail.com", "password");
 //
 //		faceuserPojo.setUserServerKeyPojo( new UserServerKeyPojo( "registerTest@gmail.com", secretKeyString ) );
 //
@@ -116,13 +116,13 @@
 //				"\n\n" +
 //				"------------------------------------------------------------------------\n\n\n\n\n");
 //
-//		FaceuserPojo faceUserPojoLoggedIn = GsonX.gson.fromJson( TokenUtils.SymmetricJWT.getJwtPayloadList(
+//		FaceUserPojo faceUserPojoLoggedIn = GsonX.gson.fromJson( TokenUtils.SymmetricJWT.getJwtPayloadList(
 //				secretKey,
 //				tokenPojo.getIssuer(),
 //				tokenPojo.getAudience(),
 //				tokenPojo.getSubject(),
 //				faceuserPojo.toString()
-//		),  FaceuserPojo.class);
+//		),  FaceUserPojo.class);
 //
 //		faceUserPojoLoggedIn.setPassword(null);
 //

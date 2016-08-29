@@ -1,21 +1,12 @@
 package org.kth.HI1034.model.domain.UserFriends;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.kth.HI1034.model.domain.authority.AuthorityPojo;
-import org.kth.HI1034.model.domain.faceMail.FaceMailPojo;
-import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
 import org.kth.HI1034.model.domain.post.FacePostPojo;
-import org.kth.HI1034.model.domain.user.FaceuserPojo;
 import org.kth.HI1034.util.GsonX;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @XmlRootElement

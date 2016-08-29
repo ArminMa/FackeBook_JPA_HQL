@@ -37,7 +37,7 @@ WHERE NOT EXISTS
 --	`header` varchar(254) DEFAULT NULL,
 --	`message_read` bit(1) NOT NULL,
 --	`sent_date` date DEFAULT NULL,
---	`mail_text` varchar(254) DEFAULT NULL,
+--	`mailText` varchar(254) DEFAULT NULL,
 --	PRIMARY KEY (`id`)
 --) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 --

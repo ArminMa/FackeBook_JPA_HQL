@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.kth.HI1034.ApplicationWar;
+import org.kth.HI1034.model.domain.user.FaceUserPojo;
 import org.kth.HI1034.security.JWT.TokenJose4jUtils;
 import org.kth.HI1034.security.JWT.TokenPojo;
 import org.kth.HI1034.model.domain.UserFriends.UserFriendRepository;
@@ -19,7 +20,6 @@ import org.kth.HI1034.model.domain.keyUserServer.UserKeyRepository;
 import org.kth.HI1034.model.domain.post.PostRepository;
 import org.kth.HI1034.model.domain.post.UserDetachedRepository;
 import org.kth.HI1034.model.domain.user.FaceUserRepository;
-import org.kth.HI1034.model.domain.user.FaceuserPojo;
 import org.kth.HI1034.security.util.CipherUtils;
 import org.kth.HI1034.security.util.KeyUtil;
 import org.kth.HI1034.util.GsonX;
@@ -96,8 +96,8 @@ public class UserControllerTest {
 		System.out.println("\n\n----------------- UserControllerTest.setUpUserControllerTest-start ----------------------------\n\n");
 
 		//------------ creating Users -----------
-		List<FaceuserPojo> faceuserPojoList = new ArrayList<>();
-		faceuserPojoList.add(new FaceuserPojo("registerAndLoginTest@gmail.com", "myUserName", "password", "MyFirstName", "MyLastName", new Date()));
+		List<FaceUserPojo> faceUserPojoList = new ArrayList<>();
+		faceUserPojoList.add(new FaceUserPojo("registerAndLoginTest@gmail.com", "myUserName", "password", "MyFirstName", "MyLastName", new Date()));
 
 		preTest = new PreTest(
 				context,
@@ -114,7 +114,7 @@ public class UserControllerTest {
 //		preTest.setUpUserControllerTest();
 
 
-		preTest.setUpTestUserControllerTest(faceuserPojoList);
+		preTest.setUpTestUserControllerTest(faceUserPojoList);
 
 		System.out.println("\n\n----------------- UserControllerTest.setUpUserControllerTest-end ----------------------------\n\n");
 
@@ -162,7 +162,7 @@ public class UserControllerTest {
 
 
 		/** 2 create a user and salt the password */
-		FaceuserPojo faceuserPojoToSend = new FaceuserPojo(preTest.getUserPojoList().get(0).getEmail(), "password");
+		FaceUserPojo faceUserPojoToSend = new FaceUserPojo(preTest.getUserPojoList().get(0).getEmail(), "password");
 
 
 		/** 3 creat the tokenPojo and set TokenPojo.setSenderKey() with the encryptedKey (sendersEncryptedSecretKey) */
@@ -174,7 +174,7 @@ public class UserControllerTest {
 		createdTokenPojo.setSenderKey(sendersEncryptedSecretKey);
 
 		Map<String, String> mapPayload = new HashMap<>();
-		mapPayload.put("payload", faceuserPojoToSend.toString());
+		mapPayload.put("payload", faceUserPojoToSend.toString());
 
 
 		/** 4 create a token with sendersSecretKey created in from -> 1, set tokenPojo as payload */
@@ -234,9 +234,9 @@ public class UserControllerTest {
 
 
 
-		FaceuserPojo faceuserPojoPayload = GsonX.gson.fromJson(facePojoJson, FaceuserPojo.class);
-		assertThat(faceuserPojoPayload).isNotNull();
-		assertThat(faceuserPojoPayload.getEmail()).isEqualTo(faceuserPojoToSend.getEmail());
+		FaceUserPojo faceUserPojoPayload = GsonX.gson.fromJson(facePojoJson, FaceUserPojo.class);
+		assertThat(faceUserPojoPayload).isNotNull();
+		assertThat(faceUserPojoPayload.getEmail()).isEqualTo(faceUserPojoToSend.getEmail());
 
 
 		/** 7 use the header to call a uri where you can test that are Authenticated and Authorized to do something. */
@@ -257,13 +257,13 @@ public class UserControllerTest {
 		String response2Body = servletResponse1.getContentAsString();
 		assertThat(response2Body).isNotNull();
 
-		faceuserPojoPayload = GsonX.gson.fromJson(response2Body, FaceuserPojo.class);
+		faceUserPojoPayload = GsonX.gson.fromJson(response2Body, FaceUserPojo.class);
 
-		assertThat(faceuserPojoPayload).isNotNull();
+		assertThat(faceUserPojoPayload).isNotNull();
 
 		System.out.println("\n\n\n\n" +
 				"----------------------------------- LoginControllerTest.256 -------------------------------------" +
-				"\n\nfacePostPojoJson = " + faceuserPojoPayload +
+				"\n\nfacePostPojoJson = " + faceUserPojoPayload +
 				"\n\n" +
 				"------------------------------------------------------------------------\n\n\n\n\n");
 

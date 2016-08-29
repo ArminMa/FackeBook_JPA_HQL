@@ -1,7 +1,8 @@
 package org.kth.HI1034.service;
 
+import org.kth.HI1034.model.domain.user.FaceUserPojo;
 import org.kth.HI1034.security.JWT.TokenPojo;
-import org.kth.HI1034.model.domain.user.FaceuserPojo;
+import org.springframework.http.ResponseEntity;
 
 public interface RegisterService {
 
@@ -10,12 +11,12 @@ public interface RegisterService {
 	 *
 	 * @return true if the registration can start
 	 */
-	Boolean startRegistration(FaceuserPojo faceuserPojo);
+	Boolean startRegistration(FaceUserPojo faceUserPojo);
 
-	TokenPojo registerNewUser(TokenPojo tokenPojo) throws Exception;
+	ResponseEntity<?> registerNewUser(TokenPojo tokenPojo) throws Exception;
 
-	Boolean emailExist(FaceuserPojo faceuserPojo);
+	ResponseEntity<?> emailExist(FaceUserPojo faceUserPojo);
 
-	Boolean userNameExist(FaceuserPojo faceuserPojo);
+	Boolean userNameExist(FaceUserPojo faceUserPojo);
 
 }

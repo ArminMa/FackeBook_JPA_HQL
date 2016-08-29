@@ -1,15 +1,15 @@
 package org.kth.HI1034.service;
 
 
-import org.kth.HI1034.model.domain.user.FaceuserPojo;
+import org.kth.HI1034.model.domain.user.FaceUserPojo;
 
 import javax.servlet.http.HttpServletRequest;
 
 public interface AuthService {
 
-	boolean authenticatUser(FaceuserPojo faceuserPojo);
+	boolean authenticatUser(FaceUserPojo faceUserPojo);
 
-	FaceuserPojo getAuthentication(HttpServletRequest httpRequest, String email);
+	FaceUserPojo getAuthentication(HttpServletRequest httpRequest, String email);
 
-	FaceuserPojo loadUserFromRepository(FaceuserPojo faceuserPojo);
+	FaceUserPojo loadUserFromRepository(FaceUserPojo faceUserPojo);
 }

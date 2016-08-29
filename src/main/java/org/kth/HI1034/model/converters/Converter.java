@@ -10,8 +10,9 @@ import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
 import org.kth.HI1034.model.domain.post.FacePost;
 import org.kth.HI1034.model.domain.post.FacePostPojo;
 import org.kth.HI1034.model.domain.post.UserDetached;
+import org.kth.HI1034.model.domain.post.UserDetachedPojo;
 import org.kth.HI1034.model.domain.user.FaceUser;
-import org.kth.HI1034.model.domain.user.FaceuserPojo;
+import org.kth.HI1034.model.domain.user.FaceUserPojo;
 import org.kth.HI1034.util.GsonX;
 
 import java.util.ArrayList;
@@ -26,35 +27,35 @@ public class Converter {
 	public Converter() {
 	}
 
-	public static FaceUser convert(FaceuserPojo faceuserPojo){
-		if( faceuserPojo == null ) return null;
+	public static FaceUser convert(FaceUserPojo faceUserPojo){
+		if( faceUserPojo == null ) return null;
 
 		FaceUser faceUser = new FaceUser();
 
 
-		faceUser.setId( (faceuserPojo.getId() != null ? faceuserPojo.getId() : null) );
-		faceUser.setEmail(ObjectNotNull(faceuserPojo.getEmail() ) ? faceuserPojo.getEmail() : null);
-		faceUser.setPassword( ObjectNotNull(faceuserPojo.getPassword() ) ? faceuserPojo.getPassword() : null );
-		faceUser.setUsername(ObjectNotNull(faceuserPojo.getUsername() ) ? faceuserPojo.getUsername() : null);
-		faceUser.setFirstName(ObjectNotNull(faceuserPojo.getFirstName() ) ? faceuserPojo.getFirstName() : null);
-		faceUser.setLastName( ObjectNotNull(faceuserPojo.getLastName() ) ? faceuserPojo.getLastName() : null );
-		faceUser.setEnabled( ObjectNotNull(faceuserPojo.getEnabled() ) ?  faceuserPojo.getEnabled() : true);
-		faceUser.setAccountLocked( ObjectNotNull(faceuserPojo.getAccountLocked() ) ?  faceuserPojo.getAccountLocked() : false);
-		faceUser.setAccountExpired( ObjectNotNull(faceuserPojo.getAccountExpired() ) ? faceuserPojo.getAccountExpired() : false);
-		faceUser.setAccountCreated( ObjectNotNull(faceuserPojo.getAccountCreated() ) ? faceuserPojo.getAccountCreated() : null );
+		faceUser.setId( (faceUserPojo.getId() != null ? faceUserPojo.getId() : null) );
+		faceUser.setEmail(ObjectNotNull(faceUserPojo.getEmail() ) ? faceUserPojo.getEmail() : null);
+		faceUser.setPassword( ObjectNotNull(faceUserPojo.getPassword() ) ? faceUserPojo.getPassword() : null );
+		faceUser.setUsername(ObjectNotNull(faceUserPojo.getUsername() ) ? faceUserPojo.getUsername() : null);
+		faceUser.setFirstName(ObjectNotNull(faceUserPojo.getFirstName() ) ? faceUserPojo.getFirstName() : null);
+		faceUser.setLastName( ObjectNotNull(faceUserPojo.getLastName() ) ? faceUserPojo.getLastName() : null );
+		faceUser.setEnabled( ObjectNotNull(faceUserPojo.getEnabled() ) ?  faceUserPojo.getEnabled() : true);
+		faceUser.setAccountLocked( ObjectNotNull(faceUserPojo.getAccountLocked() ) ?  faceUserPojo.getAccountLocked() : false);
+		faceUser.setAccountExpired( ObjectNotNull(faceUserPojo.getAccountExpired() ) ? faceUserPojo.getAccountExpired() : false);
+		faceUser.setAccountCreated( ObjectNotNull(faceUserPojo.getAccountCreated() ) ? faceUserPojo.getAccountCreated() : null );
 
 
 		SortedSet<UserAuthority> userAuthorities;
 
 		if(
-				(faceuserPojo.getAuthorities() != null) &&
-						(faceuserPojo.getAuthorities().isEmpty() == false) &&
+				(faceUserPojo.getAuthorities() != null) &&
+						(faceUserPojo.getAuthorities().isEmpty() == false) &&
 						(faceUser.getId() != null))
 		{
 
 			userAuthorities = new TreeSet<>();
 
-			for (AuthorityPojo AP: faceuserPojo.getAuthorities()){
+			for (AuthorityPojo AP: faceUserPojo.getAuthorities()){
 				userAuthorities.add(new UserAuthority(faceUser, Converter.convert(AP) ));
 			}
 
@@ -65,22 +66,22 @@ public class Converter {
 
 	}
 
-	public static FaceuserPojo convert(FaceUser faceUser){
+	public static FaceUserPojo convert(FaceUser faceUser){
 		if( faceUser == null ) return null;
 
-		FaceuserPojo faceuserPojo = new FaceuserPojo();
+		FaceUserPojo faceUserPojo = new FaceUserPojo();
 
 
-		faceuserPojo.setId( (faceUser.getId() != null ? faceUser.getId() : null) );
-		faceuserPojo.setEmail(ObjectNotNull(faceUser.getEmail() ) ? faceUser.getEmail() : null);
-		faceuserPojo.setPassword( ObjectNotNull(faceUser.getPassword() ) ? faceUser.getPassword() : null );
-		faceuserPojo.setUsername(ObjectNotNull(faceUser.getUsername() ) ? faceUser.getUsername() : null);
-		faceuserPojo.setFirstName(ObjectNotNull(faceUser.getFirstName() ) ? faceUser.getFirstName() : null);
-		faceuserPojo.setLastName( ObjectNotNull(faceUser.getLastName() ) ? faceUser.getLastName() : null );
-		faceuserPojo.setEnabled( ObjectNotNull(faceUser.getEnabled() ) ?  faceUser.getEnabled() : true);
-		faceuserPojo.setAccountLocked( ObjectNotNull(faceUser.getAccountLocked() ) ?  faceUser.getAccountLocked() : false);
-		faceuserPojo.setAccountExpired( ObjectNotNull(faceUser.getAccountExpired() ) ? faceUser.getAccountExpired() : false);
-		faceuserPojo.setAccountCreated( ObjectNotNull(faceUser.getAccountCreated() ) ? faceUser.getAccountCreated() : null);
+		faceUserPojo.setId( (faceUser.getId() != null ? faceUser.getId() : null) );
+		faceUserPojo.setEmail(ObjectNotNull(faceUser.getEmail() ) ? faceUser.getEmail() : null);
+		faceUserPojo.setPassword( ObjectNotNull(faceUser.getPassword() ) ? faceUser.getPassword() : null );
+		faceUserPojo.setUsername(ObjectNotNull(faceUser.getUsername() ) ? faceUser.getUsername() : null);
+		faceUserPojo.setFirstName(ObjectNotNull(faceUser.getFirstName() ) ? faceUser.getFirstName() : null);
+		faceUserPojo.setLastName( ObjectNotNull(faceUser.getLastName() ) ? faceUser.getLastName() : null );
+		faceUserPojo.setEnabled( ObjectNotNull(faceUser.getEnabled() ) ?  faceUser.getEnabled() : true);
+		faceUserPojo.setAccountLocked( ObjectNotNull(faceUser.getAccountLocked() ) ?  faceUser.getAccountLocked() : false);
+		faceUserPojo.setAccountExpired( ObjectNotNull(faceUser.getAccountExpired() ) ? faceUser.getAccountExpired() : false);
+		faceUserPojo.setAccountCreated( ObjectNotNull(faceUser.getAccountCreated() ) ? faceUser.getAccountCreated() : null);
 
 		List<AuthorityPojo> authorityPojos;
 
@@ -99,10 +100,10 @@ public class Converter {
 
 			}
 
-			faceuserPojo.setAuthorities(authorityPojos);
+			faceUserPojo.setAuthorities(authorityPojos);
 		}
 
-		return faceuserPojo;
+		return faceUserPojo;
 
 	}
 
@@ -161,16 +162,16 @@ public class Converter {
 			return authorityPojos;
 		}
 
-		if(genericList.iterator().next() instanceof FaceuserPojo){
+		if(genericList.iterator().next() instanceof FaceUserPojo){
 			List<FaceUser> faceUsersList = new ArrayList<>();
-			genericList.forEach( S -> faceUsersList.add( convert( (FaceuserPojo) S) ) );
+			genericList.forEach( S -> faceUsersList.add( convert( (FaceUserPojo) S) ) );
 			return faceUsersList;
 		}
 
 		if(genericList.iterator().next() instanceof FaceUser){
-			List<FaceuserPojo> faceuserPojos = new ArrayList<>();
-			genericList.forEach( S -> faceuserPojos.add( convert( (FaceUser) S) ) );
-			return faceuserPojos;
+			List<FaceUserPojo> faceUserPojos = new ArrayList<>();
+			genericList.forEach( S -> faceUserPojos.add( convert( (FaceUser) S) ) );
+			return faceUserPojos;
 		}
 
 		if(genericList.iterator().next() instanceof UserServerKey){
@@ -189,16 +190,10 @@ public class Converter {
 			List<FacePostPojo> facePostPojos = new ArrayList<>();
 
 			for(FacePost FP : (List<FacePost>) genericList){
-
 				FacePostPojo facePostPojo = GsonX.gson.fromJson(FP.toString(), FacePostPojo.class);
-
-				FaceuserPojo authorFaceuserPojo = new FaceuserPojo();
-				authorFaceuserPojo.setEmail(FP.getAuthor().getEmail());
-				authorFaceuserPojo.setUsername(FP.getAuthor().getUsername());
-
-				facePostPojo.setFaceUserAuthor(authorFaceuserPojo);
 				facePostPojos.add(facePostPojo);
 			}
+
 			return facePostPojos;
 		}
 
@@ -207,14 +202,7 @@ public class Converter {
 
 			for(FacePostPojo FP : (List<FacePostPojo>) genericList){
 
-				FacePost facePost = GsonX.gson.fromJson(FP.toString(), FacePost.class);
-
-				UserDetached userDetached = new UserDetached();
-				userDetached.setEmail(FP.getFaceUserAuthor().getEmail());
-				userDetached.setUsername(FP.getFaceUserAuthor().getUsername());
-
-				facePost.setAuthor(userDetached);
-				facePosts.add(facePost);
+				facePosts.add( GsonX.gson.fromJson(FP.toString(), FacePost.class) );
 			}
 			return facePosts;
 		}
@@ -223,31 +211,21 @@ public class Converter {
 
 	}
 
+
 	public static FacePostPojo convert(FacePost facePost) {
-
-		FacePostPojo facePostPojo = GsonX.gson.fromJson(facePost.toString(), FacePostPojo.class);
-
-		FaceuserPojo authorFaceuserPojo = new FaceuserPojo();
-		authorFaceuserPojo.setEmail(facePost.getAuthor().getEmail());
-		authorFaceuserPojo.setEmail(facePost.getAuthor().getUsername());
-
-		facePostPojo.setFaceUserAuthor(authorFaceuserPojo);
-
-		return facePostPojo;
+		return GsonX.gson.fromJson(facePost.toString(), FacePostPojo.class);
 	}
+
 
 	public static FacePost convert(FacePostPojo facePostPojo) {
-
-		FacePost facePost = GsonX.gson.fromJson(facePostPojo.toString(), FacePost.class);
-
-		UserDetached userDetached = new UserDetached();
-		userDetached.setEmail(facePostPojo.getFaceUserAuthor().getEmail());
-		userDetached.setEmail(facePostPojo.getFaceUserAuthor().getUsername());
-
-		facePost.setAuthor(userDetached);
-
-		return facePost;
+		return GsonX.gson.fromJson(facePostPojo.toString(), FacePost.class);
 	}
 
+    private static UserDetached convert(UserDetachedPojo userDetachedPojo) {
+        return GsonX.gson.fromJson(userDetachedPojo.toString(), UserDetached.class);
+    }
+    private static UserDetachedPojo convert(UserDetached userDetached) {
+        return GsonX.gson.fromJson(userDetached.toString(), UserDetachedPojo.class);
+    }
 
 }

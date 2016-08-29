@@ -117,7 +117,7 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 
 
 	@Column(name = "first_name")
-	@NotEmpty
+//	@NotEmpty
 	@Length(max = MAX_LENGTH_FIRST_NAME)
 	public String getFirstName() {
 		return firstName;
@@ -130,7 +130,7 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 
 
 	@Column(name = "last_name")
-	@NotEmpty
+//	@NotEmpty
 	@Length(max = MAX_LENGTH_LAST_NAME)
 	public String getLastName() {
 		return lastName;
@@ -173,7 +173,7 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 
 	@Column(unique = true)
 	@NotEmpty
-	@Length(min = MIN_LENGTH_USERNAME, max = MAX_LENGTH_USERNAME)
+	@Length(min = 1, max = 20)
 	public String getUsername() {
 		return username;
 	}
@@ -378,7 +378,7 @@ public class FaceUser implements Serializable, Comparable<FaceUser> {
 				.add("firstName", firstName)
 				.add("lastName", lastName)
 				.add("password", password)
-				.add("userName", username)
+				.add("username", username)
 //				.add("\n\tSentMails", "\t\t" + sentFaceMails)
 //				.add("\n\tmyReceivedFaceMailFails", "\t\t" + receivedFaceMails)
 				.toString());

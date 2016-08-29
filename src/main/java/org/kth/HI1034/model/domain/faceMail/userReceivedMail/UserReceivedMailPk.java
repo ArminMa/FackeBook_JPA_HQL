@@ -11,6 +11,11 @@ import javax.persistence.ManyToOne;
 public class UserReceivedMailPk implements java.io.Serializable, Comparable<UserReceivedMailPk> {
 
 
+	private FaceMail receivedMail;
+	private FaceUser receivingUser;
+	private FaceUser author;
+
+
 
 
 
@@ -31,7 +36,7 @@ public class UserReceivedMailPk implements java.io.Serializable, Comparable<User
 	}
 
 
-	private FaceMail receivedMail;
+
 	@ManyToOne(fetch= FetchType.EAGER )
 	public FaceMail getReceivedMail() {
 		return receivedMail;
@@ -41,7 +46,7 @@ public class UserReceivedMailPk implements java.io.Serializable, Comparable<User
 	}
 
 
-	private FaceUser receivingUser;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	public FaceUser getReceivingUser() {
 		return receivingUser;
@@ -50,7 +55,7 @@ public class UserReceivedMailPk implements java.io.Serializable, Comparable<User
 		this.receivingUser = receivingUser;
 	}
 
-	private FaceUser author;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	public FaceUser getAuthor() {
 		return author;

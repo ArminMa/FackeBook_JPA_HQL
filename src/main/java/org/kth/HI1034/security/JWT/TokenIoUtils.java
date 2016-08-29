@@ -5,7 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.kth.HI1034.model.domain.user.FaceuserPojo;
+import org.kth.HI1034.model.domain.user.FaceUserPojo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mobile.device.Device;
 
@@ -358,7 +358,7 @@ public class TokenIoUtils implements Serializable {
 		return refreshedToken;
 	}
 
-	public static Boolean validateToken(String token, FaceuserPojo userDetails, Key key) {
+	public static Boolean validateToken(String token, FaceUserPojo userDetails, Key key) {
 		return  !isTokenExpired(token, key) && getAudienceFromToken(token, key).equals(userDetails.getEmail());
 	}
 

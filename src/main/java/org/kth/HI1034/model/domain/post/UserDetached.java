@@ -1,5 +1,7 @@
 package org.kth.HI1034.model.domain.post;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,23 +10,39 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.xml.bind.annotation.XmlRootElement;
 
+
+@XmlRootElement
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "user_detached", uniqueConstraints = {
-		@UniqueConstraint(columnNames = "username")})
+		@UniqueConstraint(columnNames = "email")})
 public class UserDetached implements java.io.Serializable, Comparable<UserDetached>{
+
+
+
+	private Long id;
+	private String email;
+	private Boolean accountRemoved = false;
+
+
+
+
+
 
 	public UserDetached() {
 	}
 
-	public UserDetached(String email, String username ) {
-		this.username = username;
+	public UserDetached(String email ) {
 		this.email = email;
 		this.accountRemoved = false;
 	}
 
 
-	private Long id;
+
+
+
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,7 +55,7 @@ public class UserDetached implements java.io.Serializable, Comparable<UserDetach
 		this.id = id;
 	}
 
-	private String email;
+
 	@Column(name = "email", insertable = true, updatable = true, unique = true, nullable = false)
 	public String getEmail() {
 		return email;
@@ -47,16 +65,6 @@ public class UserDetached implements java.io.Serializable, Comparable<UserDetach
 		this.email = email;
 	}
 
-
-	private String username;
-	@Column(name = "username", insertable = true, updatable = true, unique = true, nullable = false)
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
 
 
 
@@ -72,7 +80,7 @@ public class UserDetached implements java.io.Serializable, Comparable<UserDetach
 //		this.receivedPosts = receivedPosts;
 //	}
 
-	private Boolean accountRemoved = false;
+
 	@Column(name = "account_removed")
 	@Basic
 	public boolean getAccountRemoved() {
@@ -88,17 +96,19 @@ public class UserDetached implements java.io.Serializable, Comparable<UserDetach
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		UserDetached userDetached = (UserDetached) o;
+		UserDetached that = (UserDetached) o;
 
-		if (email != null ? !email.equals(userDetached.email) : userDetached.email != null) return false;
-		return username != null ? username.equals(userDetached.username) : userDetached.username == null;
+		if (id != null ? !id.equals(that.id) : that.id != null) return false;
+		if (email != null ? !email.equals(that.email) : that.email != null) return false;
+		return accountRemoved != null ? accountRemoved.equals(that.accountRemoved) : that.accountRemoved == null;
 
 	}
 
 	@Override
 	public int hashCode() {
-		int result = email != null ? email.hashCode() : 0;
-		result = 31 * result + (username != null ? username.hashCode() : 0);
+		int result = id != null ? id.hashCode() : 0;
+		result = 31 * result + (email != null ? email.hashCode() : 0);
+		result = 31 * result + (accountRemoved != null ? accountRemoved.hashCode() : 0);
 		return result;
 	}
 

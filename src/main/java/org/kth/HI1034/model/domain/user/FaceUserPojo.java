@@ -19,7 +19,7 @@ import java.util.List;
 
 @XmlRootElement
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FaceuserPojo implements Serializable,UserDetails, Comparable<FaceuserPojo> {
+public class FaceUserPojo implements Serializable,UserDetails, Comparable<FaceUserPojo> {
 	private Long id;
 	private Boolean accountExpired = false;
 	private Boolean accountLocked = false;
@@ -43,8 +43,8 @@ public class FaceuserPojo implements Serializable,UserDetails, Comparable<Faceus
 
 	private List<FaceMailPojo> sentMails = new ArrayList<>();
 
-	private List<FaceuserPojo> sentFriendRequests = new ArrayList<>();
-	private List<FaceuserPojo> receivedFriendRequests = new ArrayList<>();
+	private List<FaceUserPojo> sentFriendRequests = new ArrayList<>();
+	private List<FaceUserPojo> receivedFriendRequests = new ArrayList<>();
 	private List<UserFriend> friends = new ArrayList<>();
 
 	private List<AuthorityPojo> authorities = new ArrayList<>();
@@ -53,10 +53,10 @@ public class FaceuserPojo implements Serializable,UserDetails, Comparable<Faceus
 
 	private List<UserFriendPojo> myFriends = new ArrayList<>();
 
-	public FaceuserPojo() {
+	public FaceUserPojo() {
 	}
 
-	public FaceuserPojo(String email, String username, String password, String firstName0, String lastName0, Date createdDate) {
+	public FaceUserPojo(String email, String username, String password, String firstName0, String lastName0, Date createdDate) {
 
 		this.email = email;
 		this.username = username;
@@ -69,7 +69,7 @@ public class FaceuserPojo implements Serializable,UserDetails, Comparable<Faceus
 
 	}
 
-	public FaceuserPojo(String email, String password) {
+	public FaceUserPojo(String email, String password) {
 		this.email = email;
 		this.password = password;
 	}
@@ -82,19 +82,19 @@ public class FaceuserPojo implements Serializable,UserDetails, Comparable<Faceus
 		this.myPost = myPost;
 	}
 
-	public List<FaceuserPojo> getSentFriendRequests() {
+	public List<FaceUserPojo> getSentFriendRequests() {
 		return sentFriendRequests;
 	}
 
-	public void setSentFriendRequests(List<FaceuserPojo> sentFriendRequests) {
+	public void setSentFriendRequests(List<FaceUserPojo> sentFriendRequests) {
 		this.sentFriendRequests = sentFriendRequests;
 	}
 
-	public List<FaceuserPojo> getReceivedFriendRequests() {
+	public List<FaceUserPojo> getReceivedFriendRequests() {
 		return receivedFriendRequests;
 	}
 
-	public void setReceivedFriendRequests(List<FaceuserPojo> receivedFriendRequests) {
+	public void setReceivedFriendRequests(List<FaceUserPojo> receivedFriendRequests) {
 		this.receivedFriendRequests = receivedFriendRequests;
 	}
 
@@ -222,12 +222,20 @@ public class FaceuserPojo implements Serializable,UserDetails, Comparable<Faceus
 		return password;
 	}
 
-	public void setPassword(String password) {
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+
+    public void setPassword(String password) {
 		this.password = password;
 	}
 
-	public String getUsername() {
-		return username;
+
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	@Override
@@ -250,9 +258,7 @@ public class FaceuserPojo implements Serializable,UserDetails, Comparable<Faceus
 		return enabled;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+
 
 
 
@@ -261,7 +267,7 @@ public class FaceuserPojo implements Serializable,UserDetails, Comparable<Faceus
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		FaceuserPojo that = (FaceuserPojo) o;
+		FaceUserPojo that = (FaceUserPojo) o;
 
 		if (accountExpired != null ? !accountExpired.equals(that.accountExpired) : that.accountExpired != null)
 			return false;
@@ -293,7 +299,7 @@ public class FaceuserPojo implements Serializable,UserDetails, Comparable<Faceus
 	}
 
 	@Override
-	public int compareTo(FaceuserPojo o) {
+	public int compareTo(FaceUserPojo o) {
 		int thisObject = this.hashCode();
 		long anotherEntity = o.hashCode();
 		return (thisObject < anotherEntity ? -1 : (thisObject == anotherEntity ? 0 : 1));

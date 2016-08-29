@@ -63,11 +63,7 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.google.code.spring-crypto-utils</groupId>
-            <artifactId>spring-crypto-utils</artifactId>
-            <version>1.4.0</version>
-        </dependency>
+
 
 
 
@@ -165,13 +161,20 @@
         </dependency>
 
 
-        <!-- Crypto https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk16 -->
+        <!-- crypto-utils_Start -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk16</artifactId>
             <version>1.46</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.code.spring-crypto-utils</groupId>
+            <artifactId>spring-crypto-utils</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+
+        <!-- crypto-utils_End -->
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>

@@ -1,5 +1,6 @@
 package org.kth.HI1034.model.domain.faceMail;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.MoreObjects;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.validator.constraints.Length;
@@ -18,11 +19,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+
+@XmlRootElement
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "face_mail")
 public class FaceMail implements Serializable ,Comparable<FaceMail> {

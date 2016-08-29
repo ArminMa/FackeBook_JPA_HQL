@@ -51,7 +51,7 @@ public class AppKeyController {
 //
 //		String encypted = " A_Test ";
 //
-//		FaceuserPojo faceuserPojo = new FaceuserPojo();
+//		FaceUserPojo faceuserPojo = new FaceUserPojo();
 //		faceuserPojo.setEmail("armin@gmail.com");
 //		faceuserPojo.setFirstName("Armin");
 //
@@ -79,7 +79,7 @@ public class AppKeyController {
 //
 //		String encypted = " A_Test ";
 //
-//		FaceuserPojo faceuserPojo = new FaceuserPojo();
+//		FaceUserPojo faceuserPojo = new FaceUserPojo();
 //		faceuserPojo.setEmail("armin@gmail.com");
 //		faceuserPojo.setFirstName("Armin");
 //

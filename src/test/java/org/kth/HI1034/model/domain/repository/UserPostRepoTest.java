@@ -61,11 +61,11 @@ public class UserPostRepoTest {
 
 		// each entry is tightly linked to an email and username.
 		// a user may be deleted from the system and this will not affect the sent and mail to other users.
-		userDetachedList.add(new UserDetached("PostUserRepository0@gmail.com", "FaceUser0"));
-		userDetachedList.add(new UserDetached("PostUserRepository1@gmail.com", "FaceUser1"));
-		userDetachedList.add(new UserDetached("PostUserRepository2@gmail.com", "FaceUser2"));
-		userDetachedList.add(new UserDetached("PostUserRepository3@gmail.com", "FaceUser3"));
-		userDetachedList.add(new UserDetached("PostUserRepository4@gmail.com", "FaceUser4"));
+		userDetachedList.add(new UserDetached("PostUserRepository0@gmail.com"));
+		userDetachedList.add(new UserDetached("PostUserRepository1@gmail.com"));
+		userDetachedList.add(new UserDetached("PostUserRepository2@gmail.com"));
+		userDetachedList.add(new UserDetached("PostUserRepository3@gmail.com"));
+		userDetachedList.add(new UserDetached("PostUserRepository4@gmail.com"));
 		userDetachedList = postUserRepo.save(userDetachedList);
 		postUserRepo.flush();
 		assertThat(userDetachedList).isNotNull();

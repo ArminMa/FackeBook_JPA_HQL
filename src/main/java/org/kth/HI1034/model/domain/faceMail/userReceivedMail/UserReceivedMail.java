@@ -26,6 +26,9 @@ public class UserReceivedMail implements Serializable, Comparable<UserReceivedMa
 
 
 	private Long id;
+	private Boolean message_read = false;
+	private Date receivedDate;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id", insertable=false, updatable=false, unique=true, nullable=false)
@@ -49,7 +52,7 @@ public class UserReceivedMail implements Serializable, Comparable<UserReceivedMa
 
 
 
-	private Boolean message_read = false;
+
 	@NotNull
 	@Column(name = "message_read",
 			nullable = false,
@@ -62,7 +65,7 @@ public class UserReceivedMail implements Serializable, Comparable<UserReceivedMa
 		this.message_read = read;
 	}
 
-	private Date receivedDate;
+
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy.MM.dd hh.mm.ss.SSS")
 //	@NotNull

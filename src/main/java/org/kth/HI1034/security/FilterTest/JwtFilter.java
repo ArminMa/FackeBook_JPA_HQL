@@ -7,8 +7,8 @@ import org.kth.HI1034.model.domain.keyUserServer.UserKeyRepository;
 import org.kth.HI1034.model.domain.keyUserServer.UserServerKey;
 import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
 import org.kth.HI1034.model.domain.user.FaceUser;
+import org.kth.HI1034.model.domain.user.FaceUserPojo;
 import org.kth.HI1034.model.domain.user.FaceUserRepository;
-import org.kth.HI1034.model.domain.user.FaceuserPojo;
 import org.kth.HI1034.security.JWT.TokenIoUtils;
 import org.kth.HI1034.security.util.KeyUtil;
 import org.kth.HI1034.util.GsonX;
@@ -86,20 +86,20 @@ public class JwtFilter extends GenericFilterBean {
 				// extract JSON UserDetails from the token
 				String jsonUserDetails = TokenIoUtils.getPayloadFromJwt(userInfoTokenHeader);
 				logger.debug("Extracted JsonUserDetails from Token in Request: {}", jsonUserDetails);
-				FaceuserPojo faceuserPojo = getUserFromToken(jsonUserDetails, null);
-				if (faceuserPojo != null && faceuserPojo.getEmail() != null) {
+				FaceUserPojo faceUserPojo = getUserFromToken(jsonUserDetails, null);
+				if (faceUserPojo != null && faceUserPojo.getEmail() != null) {
 
-					UserServerKeyPojo userServerKeyPojo = findUserServerKey(faceuserPojo.getEmail());
+					UserServerKeyPojo userServerKeyPojo = findUserServerKey(faceUserPojo.getEmail());
 
 					if (userServerKeyPojo != null && userServerKeyPojo.getTokenKey() != null) {
-						logger.debug("\nfaceuserPojo: \n", faceuserPojo.toString());
+						logger.debug("\nfaceUserPojo: \n", faceUserPojo.toString());
 						SecretKey secretTokenKey = KeyUtil.getSecretKeyFromString(userServerKeyPojo.getTokenKey());
 						String jsonUserAuthDetails = TokenIoUtils.getPayloadFromJwt(authTokenHeader);
 
-						faceuserPojo = getUserFromToken(jsonUserDetails, secretTokenKey);
+						faceUserPojo = getUserFromToken(jsonUserDetails, secretTokenKey);
 
 
-						if(faceuserPojo != null && faceuserPojo.getEmail() != null){
+						if(faceUserPojo != null && faceUserPojo.getEmail() != null){
 							Date expirationDate = TokenIoUtils.getExpirationDateFromToken(authTokenHeader, secretTokenKey);
 							logger.debug("Token expirationDate: {}", expirationDate);
 
@@ -110,14 +110,14 @@ public class JwtFilter extends GenericFilterBean {
 
 								// if the token isn't expired, authenticate the user from the token for this request
 								// and add an updated token to the response so the client-side session will be refreshed
-								FaceUser faceUserEntity = faceUserRepos.findOne(faceuserPojo.getId());
+								FaceUser faceUserEntity = faceUserRepos.findOne(faceUserPojo.getId());
 								Authentication authentication;
 								if  (
-										faceUserEntity.getPassword().equals(faceuserPojo.getPassword()) &&
-												faceUserEntity.getEmail().equals(faceuserPojo.getEmail()) &&
-												!faceuserPojo.getAuthorities().isEmpty()
+										faceUserEntity.getPassword().equals(faceUserPojo.getPassword()) &&
+												faceUserEntity.getEmail().equals(faceUserPojo.getEmail()) &&
+												!faceUserPojo.getAuthorities().isEmpty()
 										) {
-									authentication = faceuserPojo.getAuthorities().get(0);
+									authentication = faceUserPojo.getAuthorities().get(0);
 									SecurityContextHolder.getContext().setAuthentication(authentication);
 								}
 
@@ -125,10 +125,10 @@ public class JwtFilter extends GenericFilterBean {
 								httpResponse.addHeader(userTokenHeaderKey, userInfoTokenHeader);
 
 
-								logger.debug("Authenticated user: {} ", faceuserPojo.toString());
+								logger.debug("Authenticated user: {} ", faceUserPojo.toString());
 							} else {
-								if(faceuserPojo.getEmail() != null){
-									logger.debug("User athentication expired: {}", faceuserPojo.getEmail());
+								if(faceUserPojo.getEmail() != null){
+									logger.debug("User athentication expired: {}", faceUserPojo.getEmail());
 								}else{
 									logger.debug("User athentication expired: {}");
 								}
@@ -154,7 +154,7 @@ public class JwtFilter extends GenericFilterBean {
 		}
 	}
 
-	private FaceuserPojo getUserFromToken(String token, Key key){
+	private FaceUserPojo getUserFromToken(String token, Key key){
 
 			// extract JSON UserDetails from the token
 			String jsonUserDetails;
@@ -167,12 +167,12 @@ public class JwtFilter extends GenericFilterBean {
 			logger.debug("Extracted JsonUserDetails from Token in Request: {}", jsonUserDetails);
 
 			if (jsonUserDetails != null) {
-				FaceuserPojo faceuserPojo = GsonX.gson.fromJson(jsonUserDetails, FaceuserPojo.class);
+				FaceUserPojo faceUserPojo = GsonX.gson.fromJson(jsonUserDetails, FaceUserPojo.class);
 
 
-				if (faceuserPojo != null) {
-					logger.debug("\nfaceuserPojo: \n", faceuserPojo.toString());
-					return faceuserPojo;
+				if (faceUserPojo != null) {
+					logger.debug("\nfaceUserPojo: \n", faceUserPojo.toString());
+					return faceUserPojo;
 				}
 			}
 		return null;

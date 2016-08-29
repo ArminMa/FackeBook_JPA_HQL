@@ -4,6 +4,7 @@ import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.lang.JoseException;
 import org.kth.HI1034.AppKeyFactory;
+import org.kth.HI1034.model.domain.user.FaceUserPojo;
 import org.kth.HI1034.security.JWT.TokenIoUtils;
 import org.kth.HI1034.security.JWT.TokenJose4jUtils;
 import org.kth.HI1034.security.JWT.TokenPojo;
@@ -16,7 +17,6 @@ import org.kth.HI1034.model.domain.authority.UserAuthorityRepository;
 import org.kth.HI1034.model.domain.user.FaceUser;
 import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
 import org.kth.HI1034.model.domain.user.FaceUserRepository;
-import org.kth.HI1034.model.domain.user.FaceuserPojo;
 import org.kth.HI1034.security.util.PasswordSaltUtil;
 import org.kth.HI1034.security.util.CipherUtils;
 import org.kth.HI1034.security.util.KeyUtil;
@@ -98,21 +98,21 @@ public class LoginServiceImpl implements LoginService {
 						payloadKey,
 						tokenPojo.getToken()
 				);
-		FaceuserPojo faceuserPojo = GsonX.gson.fromJson(receivedPayload, FaceuserPojo.class);
-		String password = PasswordSaltUtil.generateHmacSHA256Signature( faceuserPojo.getPassword(), serverSecretKey );
+		FaceUserPojo faceUserPojo = GsonX.gson.fromJson(receivedPayload, FaceUserPojo.class);
+		String password = PasswordSaltUtil.generateHmacSHA256Signature( faceUserPojo.getPassword(), serverSecretKey );
 
 
-		faceuserPojo.setPassword(password);
-		FaceUser F = userRepository.findOneUserByEmailAndPassword(faceuserPojo.getEmail(), faceuserPojo.getPassword());
-		FaceuserPojo loggedInUser = Converter.convert( F  );
+		faceUserPojo.setPassword(password);
+		FaceUser F = userRepository.findOneUserByEmailAndPassword(faceUserPojo.getEmail(), faceUserPojo.getPassword());
+		FaceUserPojo loggedInUser = Converter.convert( F  );
 		Assert.notNull(loggedInUser, "LoginServiceImpl.loginUser: loggedInUser is null?");
-		if( !tokenPojo.getIssuer().equals(faceuserPojo.getEmail()) )
+		if( !tokenPojo.getIssuer().equals(faceUserPojo.getEmail()) )
 			throw new ResourceNotFoundException("could not pars " +
 					"\ntokenPojo.getIssuer() = " + tokenPojo.getIssuer() +
-					"\nfaceuserPojo.getEmail() = " + faceuserPojo.getEmail());
+					"\nfaceUserPojo.getEmail() = " + faceUserPojo.getEmail());
 
 		/** 4 Use the created shared secretKey from the user and create a new secretTokenKey and save i in keyRepository */
-		UserServerKeyPojo userServerKeyPojo = keyService.findUserServerKey(faceuserPojo.getEmail());
+		UserServerKeyPojo userServerKeyPojo = keyService.findUserServerKey(faceUserPojo.getEmail());
 		Assert.notNull(userServerKeyPojo, "LoginServiceImpl.userServerKeyPojo:  is the user registered?");
 		userServerKeyPojo.setSharedKey(usersEncodedStringSecretKey);
 		SecretKey secretTokenKey = KeyUtil.SymmetricKey.generateSecretKey( 32, SignatureKeyAlgorithm.Algo.HS256); //needed a (32*8) 256 bit SecretKey
@@ -155,10 +155,10 @@ public class LoginServiceImpl implements LoginService {
 		Assert.notNull(loggedInUser.getAuthorities(), "LoginServiceImpl.loginUser: loggedInUser.getAuthorities() is null?");
 		roles.addAll(loggedInUser.getAuthorities().stream().map(AuthorityPojo::getUserRole).collect(Collectors.toList()));
 		// the token is created with the io.jsonwebtoken library
-		faceuserPojo.setUserServerKeyPojo(userServerKeyPojo);
+		faceUserPojo.setUserServerKeyPojo(userServerKeyPojo);
 		String httpTokenHeader = TokenIoUtils.createJwtAuth(
 				"faceBook.org",
-				faceuserPojo.getEmail(),
+				faceUserPojo.getEmail(),
 				"Authentication", roles,
 				userAsJsonPayload,
 				secretTokenKey );
@@ -202,7 +202,7 @@ public class LoginServiceImpl implements LoginService {
 
 		String httpUserTokenHeader = TokenIoUtils.createJwt(
 				"faceBook.org",
-				faceuserPojo.getEmail(),
+				faceUserPojo.getEmail(),
 				"Authentication", roles,
 				loggedInUser.toString()
 		);
@@ -218,10 +218,10 @@ public class LoginServiceImpl implements LoginService {
 	}
 
 	@Override
-	public Boolean emailExist(FaceuserPojo faceuserPojo) {
-		Assert.notNull(faceuserPojo, "user should not be null");
-		Assert.notNull(faceuserPojo.getEmail(), "email should not be null");
-		return userRepository.findByEmail(faceuserPojo.getEmail()) != null;
+	public Boolean emailExist(FaceUserPojo faceUserPojo) {
+		Assert.notNull(faceUserPojo, "user should not be null");
+		Assert.notNull(faceUserPojo.getEmail(), "email should not be null");
+		return userRepository.findByEmail(faceUserPojo.getEmail()) != null;
 	}
 
 

@@ -4,6 +4,8 @@ package org.kth.HI1034.service.impl;
 import org.jose4j.jwk.EllipticCurveJsonWebKey;
 import org.jose4j.lang.JoseException;
 import org.kth.HI1034.AppKeyFactory;
+import org.kth.HI1034.controller.util.MediaTypes;
+import org.kth.HI1034.model.domain.user.FaceUserPojo;
 import org.kth.HI1034.security.JWT.TokenJose4jUtils;
 import org.kth.HI1034.security.JWT.TokenPojo;
 import org.kth.HI1034.model.converters.Converter;
@@ -16,7 +18,6 @@ import org.kth.HI1034.model.domain.post.UserDetached;
 import org.kth.HI1034.model.domain.user.FaceUser;
 import org.kth.HI1034.model.domain.keyUserServer.UserServerKeyPojo;
 import org.kth.HI1034.model.domain.user.FaceUserRepository;
-import org.kth.HI1034.model.domain.user.FaceuserPojo;
 import org.kth.HI1034.security.util.PasswordSaltUtil;
 import org.kth.HI1034.security.util.CipherUtils;
 import org.kth.HI1034.security.util.KeyUtil;
@@ -26,6 +27,8 @@ import org.kth.HI1034.util.GsonX;
 import org.kth.HI1034.util.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -48,7 +51,7 @@ public class RegisterServiceImpl implements RegisterService {
 	private UserAuthorityRepository userAuthorityRepo;
 
 	@Autowired
-	UserDetachedRepository postUserRepo;
+	private UserDetachedRepository postUserRepo;
 
 	@Autowired
 	private KeyService keyService;
@@ -57,7 +60,7 @@ public class RegisterServiceImpl implements RegisterService {
 	public String serverSecretKey;
 
 	@Override
-	public TokenPojo registerNewUser(TokenPojo tokenPojo) throws GeneralSecurityException, JoseException {
+	public ResponseEntity<?> registerNewUser(TokenPojo tokenPojo) throws GeneralSecurityException {
 
 
 		Assert.notNull(tokenPojo, "RegisterServiceImpl.registerNewUser the TokenPojo is null");
@@ -81,41 +84,72 @@ public class RegisterServiceImpl implements RegisterService {
 		);
 
 
-		FaceuserPojo faceuserPojo = GsonX.gson.fromJson(payload, FaceuserPojo.class);
+		FaceUserPojo faceUserPojo = GsonX.gson.fromJson(payload, FaceUserPojo.class);
 
-		Assert.notNull(faceuserPojo, "RegisterServiceImpl.registerNewUser the faceuserPojo could not be parsed from token");
+		Assert.notNull(faceUserPojo, "RegisterServiceImpl.registerNewUser the faceUserPojo could not be parsed from token");
 
+        FaceUser faceUserAvailability = userRepository.findOneUserByEmailOrUsername(faceUserPojo.getEmail(), faceUserPojo.getUsername());
 
-		String decryptedShareKey = CipherUtils.decryptWithPrivateKey(faceuserPojo.getUserServerKeyPojo().getSharedKey() , AppKeyFactory.getPrivateKey());
+        if( faceUserAvailability!= null){
+            if(faceUserAvailability.getEmail().equals(faceUserPojo.getEmail()) && faceUserAvailability.getUsername().equals(faceUserPojo.getUsername()) ){
+                return ResponseEntity.status(HttpStatus.IM_USED)
+                        .contentType(MediaTypes.JsonUtf8)
+                        .body("{email: im_used, username: im: im_used}");
+            }
+            else if(faceUserAvailability.getEmail().equals(faceUserPojo.getEmail()) ){
+                return ResponseEntity.status(HttpStatus.IM_USED)
+                        .contentType(MediaTypes.JsonUtf8)
+                        .body("{ email: im_used }");
+            }
+            else if(  faceUserAvailability.getUsername().equals(faceUserPojo.getUsername()) ){
+                return ResponseEntity.status(HttpStatus.IM_USED)
+                        .contentType(MediaTypes.JsonUtf8)
+                        .body("{ username: im: im_used }");
+            }
 
-		faceuserPojo.getUserServerKeyPojo().setSharedKey(decryptedShareKey);
+            else return ResponseEntity.status(HttpStatus.IM_USED)
+                        .contentType(MediaTypes.JsonUtf8)
+                        .body(faceUserPojo); // this should never be returned
+        }
+
+		String decryptedShareKey = CipherUtils.decryptWithPrivateKey(faceUserPojo.getUserServerKeyPojo().getSharedKey() , AppKeyFactory.getPrivateKey());
+
+		faceUserPojo.getUserServerKeyPojo().setSharedKey(decryptedShareKey);
 
 		// salt the password with servers secret key or some other salt method
 /*		String password = PasswordSaltUtil.encryptSalt( "password", "registerTest@gmail.com"+"password" );*/
 		String password = null;
 
-		password = PasswordSaltUtil.generateHmacSHA256Signature( faceuserPojo.getPassword(), serverSecretKey );
+		password = PasswordSaltUtil.generateHmacSHA256Signature( faceUserPojo.getPassword(), serverSecretKey );
 
 		Assert.notNull(password, "RegisterServiceImpl.registerNewUser the password could not be salted");
 
-		faceuserPojo.setPassword(password);
+		faceUserPojo.setPassword(password);
 
-		UserServerKeyPojo userServerKeyPojo = keyService.save(faceuserPojo.getUserServerKeyPojo());
 
-		FaceUser faceUserEntity =  userRepository.save( Converter.convert(faceuserPojo) );
+
+		FaceUser faceUserEntity =  userRepository.save( Converter.convert(faceUserPojo) );
 		userRepository.flush();
 
-		postUserRepo.save(new UserDetached(faceuserPojo.getEmail(), faceuserPojo.getUsername()));
+		Assert.notNull(faceUserEntity, "RegisterServiceImpl.registerNewUser Could not save User 108?");
+
+		postUserRepo.save(new UserDetached(faceUserPojo.getEmail()));
 		postUserRepo.flush();
 
-		faceuserPojo = Converter.convert(faceUserEntity);
+
+
+		UserServerKeyPojo userServerKeyPojo = keyService.save(faceUserPojo.getUserServerKeyPojo());
+
+		Assert.notNull(faceUserEntity, "RegisterServiceImpl.registerNewUser Could not save userServerKeyPojo 117?");
+
+		faceUserPojo = Converter.convert(faceUserEntity);
 
 		AuthorityPojo authorityPojo = new AuthorityPojo(Role.ROLE_USER);
-		faceuserPojo.setAuthorities(Arrays.asList(authorityPojo));
+		faceUserPojo.setAuthorities(Arrays.asList(authorityPojo));
 
-		List<Authority> authorities = faceuserPojo.getAuthorities().stream().map(Converter::convert).collect(Collectors.toList());
-		Assert.notNull(authorities, "could not convert faceuserPojo.getAuthorities() == null?");
-		Assert.notNull(authorities, "could not convert faceuserPojo.getAuthorities() is Empty?");
+		List<Authority> authorities = faceUserPojo.getAuthorities().stream().map(Converter::convert).collect(Collectors.toList());
+		Assert.notNull(authorities, "could not convert faceUserPojo.getAuthorities() == null?");
+		Assert.notNull(authorities, "could not convert faceUserPojo.getAuthorities() is Empty?");
 
 		List<UserAuthority> userAuthorities = new ArrayList<>();
 		for(Authority A: authorities){
@@ -128,15 +162,15 @@ public class RegisterServiceImpl implements RegisterService {
 		Assert.notEmpty(userAuthorities, "could not save faceUserEntity.getAuthorities() is Empty?");
 
 		SecretKey secretKey = KeyUtil.SymmetricKey.getSecretKeyFromString(userServerKeyPojo.getSharedKey());
-		faceuserPojo.setUserServerKeyPojo(userServerKeyPojo);
+		faceUserPojo.setUserServerKeyPojo(userServerKeyPojo);
 
 		tokenPojo = new TokenPojo();
 		tokenPojo.setIssuer("fackeBook.org");
-		tokenPojo.setAudience(faceuserPojo.getEmail());
+		tokenPojo.setAudience(faceUserPojo.getEmail());
 		tokenPojo.setSubject("you are registered and Authenticated");
 
 		Map<String , String> sendPayload = new HashMap<>( );
-		sendPayload.put("payload", faceuserPojo.toString());
+		sendPayload.put("payload", faceUserPojo.toString());
 
 		String JWT = null;
 		try {
@@ -148,14 +182,16 @@ public class RegisterServiceImpl implements RegisterService {
 					sendPayload, 10);
 		} catch (JoseException e) {
 			e.printStackTrace();
-			throw new JoseException(e.getMessage(), e.getCause());
+			throw new GeneralSecurityException(e.getMessage(), e.getCause());
 		}
 
 
 		tokenPojo.setToken(JWT);
 
 
-		return tokenPojo;
+		return ResponseEntity.ok()
+                .contentType(MediaTypes.JsonUtf8)
+                .body(tokenPojo.toString());
 
 	}
 
@@ -165,11 +201,11 @@ public class RegisterServiceImpl implements RegisterService {
 	 * @return true if the registration can start
 	 */
 	@Override
-	public Boolean startRegistration(FaceuserPojo faceuserPojo) {
+	public Boolean startRegistration(FaceUserPojo faceUserPojo) {
 
 
 		List<FaceUser> faceUsers = this.userRepository.findUserByUsernameOrEmail(
-				faceuserPojo.getUsername(), faceuserPojo.getEmail());
+				faceUserPojo.getUsername(), faceUserPojo.getEmail());
 
 		if (faceUsers == null || faceUsers.isEmpty()) return true;
 
@@ -177,15 +213,22 @@ public class RegisterServiceImpl implements RegisterService {
 
 	}
 
-
 	@Override
+	public ResponseEntity<?> emailExist(FaceUserPojo faceUserPojo) {
 
-	public Boolean emailExist(FaceuserPojo faceuserPojo) {
-		return null;
+		if(faceUserPojo == null || faceUserPojo.getEmail() == null ){
+			ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+
+		return (userRepository.findByEmail(faceUserPojo != null ? faceUserPojo.getEmail() : null) != null) ?
+				ResponseEntity.status(HttpStatus.FOUND).build() :
+				ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+
 	}
 
 	@Override
-	public Boolean userNameExist(FaceuserPojo faceuserPojo) {
+	public Boolean userNameExist(FaceUserPojo faceUserPojo) {
 		return null;
 	}
 

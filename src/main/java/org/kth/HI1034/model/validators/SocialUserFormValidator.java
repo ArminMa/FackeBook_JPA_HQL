@@ -40,7 +40,7 @@
 //    }
 //
 //    private void validateUsername(Errors errors, SocialUserDTO form) {
-//        if (userService.getUserByUsername(form.getUserName()) != null) {
+//        if (userService.getUserByUsername(form.getUsername()) != null) {
 //            errors.reject("user.exists", "User with this username already exists");
 //        }
 //    }

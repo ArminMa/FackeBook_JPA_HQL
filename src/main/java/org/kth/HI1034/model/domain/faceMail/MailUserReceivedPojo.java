@@ -1,6 +1,14 @@
 package org.kth.HI1034.model.domain.faceMail;
 
-public class MailUserReceivedPojo {
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.kth.HI1034.util.GsonX;
+
+import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
+
+@XmlRootElement
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class MailUserReceivedPojo implements Serializable, Comparable<MailUserReceivedPojo> {
   private Long id;
   private String message_read;
   private java.sql.Date received_date;
@@ -45,5 +53,18 @@ public class MailUserReceivedPojo {
 
   public void setUser_id(Long user_id) {
     this.user_id = user_id;
+  }
+
+  @Override
+  public int compareTo(MailUserReceivedPojo o) {
+    int thisObject = this.hashCode();
+    long anotherEntity = o.hashCode();
+    return (thisObject < anotherEntity ? -1 : (thisObject == anotherEntity ? 0 : 1));
+  }
+
+
+  @Override
+  public String toString() {
+    return GsonX.gson.toJson(this);
   }
 }
